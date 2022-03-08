@@ -1,16 +1,15 @@
-#from lib2to3.pgen2 import driver
-from turtle import width
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import Select
 from myclass.captcha import Captcha
 from myclass.gb import Cut
 from decouple import config
-#import urllib.request
-import time, random, os
+import time, random, os,json
 
 class Paginas:
     def __init__(self,cpf='000'):
+        self.login = False
+        self.path_download = config('PATH_FILE_LOCAL')+cpf
         if cpf != "000":
             opt = webdriver.ChromeOptions()
 
@@ -28,7 +27,7 @@ class Paginas:
             opt.add_experimental_option( "prefs", {
                                                     'profile.default_content_settings.popups': 0,
                                                     'download.prompt_for_download' : False,
-                                                    'download.default_directory': f'C:\{cpf}',
+                                                    'download.default_directory': f'{self.path_download}',
                                                     'profile.default_content_setting_values.automatic_downloads':1
                                                 })
 
@@ -38,6 +37,7 @@ class Paginas:
             print("Pronto!, Chrome já esta inicializado.")
         else:
             print("Não consigo criar a pasta.")
+            
     def _login_esaj(self):
         self.driver.get(config('ESAJ_PAGE_LOGIN')) 
         self._existenciaPage("usernameForm") 
@@ -49,16 +49,13 @@ class Paginas:
         while len(self.driver.find_elements(By.CLASS_NAME,"esajLogout")) < 1:
             time.sleep(1)
 
+        self.login = True    
+
 
     def _existenciaPage(self,id):
-        while True:
-                if self.driver.page_source.find(f"{id}"):
-                    print(f"encontrado na pagina {id}")
-                    break
-                else:
-                    print(f"não encontramos {id} na pagina")
-                    time.sleep(0.5)
-                    pass
+        while len(self.driver.find_elements(By.ID, id)) < 1:
+            print(f"não encontramos {id} na pagina")
+            time.sleep(0.5)
 
     def _select(self,id,value):
         while True:
@@ -162,3 +159,40 @@ class Paginas:
 
         else:
             print("Ausencia de parametros para consulta.")    
+
+    def _esaj_certidao(self,dados):
+        
+        if self.login == False:
+            self._login_esaj()
+            self._esaj_certidao(dados)
+        else:    
+            genero = dados.get("genero")
+            self.driver.get(config('PAGE_URL_CRIMINAL_1'))
+            self._select("cdModelo",dados.get("modelo"))
+            time.sleep(1)
+            self.driver.find_element(By.ID,"nmCadastroF").send_keys(dados.get("nome"))
+            self.driver.find_element(By.ID,"identity.nuCpfFormatado").send_keys(dados.get("cpf"))
+            self.driver.find_element(By.ID,"identity.nuRgFormatado").send_keys(dados.get("rg"))
+
+            self.driver.find_element(By.ID,f"flGenero{genero}").click()
+            self.driver.find_element(By.ID,"nmMaeCadastro").send_keys(dados.get("mae"))
+            self.driver.find_element(By.ID,"dataNascimento").send_keys(dados.get("nascimento"))
+            self.driver.find_element(By.ID,"confirmacaoInformacoes").click()
+            self.driver.find_element(By.ID,"pbEnviar").click()
+            tentativa = 0
+            while True:               
+                try:
+                    if self.driver.page_source.find("Já foi cadastrado um pedido de certidão para este"):
+                        self.driver.find_element(By.ID,"btnSim").click()
+                        break
+                except:
+                    if tentativa < 2 :
+                        tentativa += 1
+                        time.sleep(1)
+                        pass   
+                    else:
+                        break 
+
+            self._existenciaPage("pbImprimir")
+
+            self.driver.save_screenshot(f"{self.path_download}\\print_tela_esaj.png")
