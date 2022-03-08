@@ -4,12 +4,12 @@ from selenium.webdriver.support.ui import Select
 from myclass.captcha import Captcha
 from myclass.gb import Cut
 from decouple import config
-import time, random, os,json
+import time, random, os,json,urllib.request
 
 class Paginas:
     def __init__(self,cpf='000'):
         self.login = False
-        self.path_download = config('PATH_FILE_LOCAL')+cpf
+        self.path_download = config('PATH_FILES')+cpf
         if cpf != "000":
             opt = webdriver.ChromeOptions()
 
@@ -109,9 +109,9 @@ class Paginas:
             self.driver.save_screenshot("page_"+str(namefile)+".png")
             a = Cut()
             #CROP ARQUIVO DE PRINT TELA, NOME DO ARQUIVO QUANDO CORTADO
-            test = a.crop("page_"+str(namefile)+".png","crop_"+str(namefile))
+            image_cap = a.crop("page_"+str(namefile)+".png","crop_"+str(namefile)+".png")
 
-            c = Captcha(test,"")
+            c = Captcha(image_cap,"")
             
             self.driver.find_element(By.ID,"ctl00_ConteudoPrincipal_txtValorCaptcha").send_keys(f"{c._resolve_img()}")
             time.sleep(0.5)
@@ -195,4 +195,36 @@ class Paginas:
 
             self._existenciaPage("pbImprimir")
 
-            self.driver.save_screenshot(f"{self.path_download}\\print_tela_esaj.png")
+            self.driver.save_screenshot(f"{self.path_download}\print_tela_esaj.png")
+
+    def _trtsp(self,dados):
+        namefile = random.randrange(99999)
+        self.driver.get(config('PAGE_URL_TRTSP'))
+        self._existenciaPage("numeroDocumentoPesquisado")
+        self.driver.find_element(By.ID,"numeroDocumentoPesquisado").send_keys(dados.get('cpf'))
+        self.driver.find_element(By.ID,"nomePesquisado").send_keys(dados.get('nome'))
+        urlimage = self.driver.find_element(By.XPATH,"//*[@id='captcha-element']/table/tbody/tr[1]/td[1]/img").get_attribute("src")
+        urllib.request.urlretrieve(urlimage, "page_"+str(namefile)+".png")
+        
+        a = Cut()
+        image_cap = a._converte_image_to_base64("page_"+str(namefile)+".png")
+        c = Captcha(image_cap,"")
+        self.driver.find_element(By.ID,"captcha-input").send_keys(c._resolve_img())
+        self.driver.find_element(By.ID,"submit").click()
+
+        os.remove("page_"+str(namefile)+".png")
+
+        while True:
+            try:
+                if self.driver.page_source.find("Visualizar Certidão"):
+                    self.driver.find_element(By.XPATH,"//*[@id='main-content']/div/fieldset/button").click()
+                    break
+                else:
+                    pass         
+            except:
+                print("Não apareceu o imprimir ainda")
+                time.sleep(1)
+                pass
+
+        time.sleep(5)
+        print("Final...")        
