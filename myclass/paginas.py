@@ -1,4 +1,5 @@
 #from lib2to3.pgen2 import driver
+from turtle import width
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import Select
@@ -37,14 +38,25 @@ class Paginas:
             print("Pronto!, Chrome já esta inicializado.")
         else:
             print("Não consigo criar a pasta.")
+    def _login_esaj(self):
+        self.driver.get(config('ESAJ_PAGE_LOGIN')) 
+        self._existenciaPage("usernameForm") 
+        self.driver.find_element(By.ID,"usernameForm").send_keys(f"{config('ESAJ_USER')}")
+        self.driver.find_element(By.ID,"passwordForm").send_keys(f"{config('ESAJ_PASS')}")
+
+        self.driver.find_element(By.ID,"pbEntrar").click()
+        #ENQUANTO NÂO ACHAR O BOTAO SAIR, ELE VAI FICAR ESPERANDO PQ NÂO CONCLUIU O LOGIN
+        while len(self.driver.find_elements(By.CLASS_NAME,"esajLogout")) < 1:
+            time.sleep(1)
+
 
     def _existenciaPage(self,id):
         while True:
                 if self.driver.page_source.find(f"{id}"):
-                    print("Tem o botão para clicar")
+                    print(f"encontrado na pagina {id}")
                     break
                 else:
-                    print("Ainda não tem o botão")
+                    print(f"não encontramos {id} na pagina")
                     time.sleep(0.5)
                     pass
 
