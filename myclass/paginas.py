@@ -307,3 +307,16 @@ class Paginas:
             self.driver.find_element(By.ID,"botaoConsultarProcessos").click()
             time.sleep(4)
             self.driver.save_screenshot(f"{self.path_download}\print_tela_{ValueSelect}.png")
+
+    def _protestos(self,dados):
+        self.driver.get(config('PAGE_URL_PROTESTO'))
+        self._existenciaPage("AbrangenciaNacional")
+        self.driver.find_element(By.ID,"AbrangenciaNacional").click()
+        self._select("TipoDocumento","1")
+        self.driver.find_element(By.ID,"Documento").send_keys(dados.get('cpf'))
+        self.driver.execute_script("ValidarConsulta(this)")
+        time.sleep(4)
+        self.driver.execute_script("document.getElementById('cf-root').style.display = 'none'")
+        self.driver.save_screenshot(f"{self.path_download}\print_tela_protesto.png")
+        time.sleep(1000)
+        
