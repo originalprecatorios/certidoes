@@ -66,7 +66,7 @@ class Paginas:
                 except:
                     time.sleep(2)
                     pass
-
+    
     def _CND_Estadual (self,cpf='000'):
         if cpf != "000":
             
@@ -226,5 +226,84 @@ class Paginas:
                 time.sleep(1)
                 pass
 
-        time.sleep(5)
+        time.sleep(4)
         print("Final...")        
+    
+    def _tst_trabalhista(self, cpf):
+        self.driver.get(config('PAGE_URL_TST'))
+        self._existenciaPage("corpo")
+
+        self.driver.find_element(By.XPATH,"//*[@id='corpo']/div/div[2]/input[1]").click()
+
+        while True:
+            try:
+                image_cap = self.driver.find_element(By.ID,"idImgBase64").get_attribute("src")
+                print(image_cap.replace("data:image/png;base64, ",""))
+                break
+            except:
+                time.sleep(0.5)
+                pass  
+        c = Captcha(image_cap,"")
+        print(f"Meu saldo atual é : {c._saldo()}.")
+
+        self.driver.find_element(By.ID,"gerarCertidaoForm:cpfCnpj").send_keys(cpf)
+        self.driver.find_element(By.ID,"idCaptcha").send_keys(c._resolve_img())
+        self.driver.find_element(By.ID,"gerarCertidaoForm:btnEmitirCertidao").click()
+        del c
+        time.sleep(4)
+
+    def _trt15(self,cpf="000"):
+        namefile = random.randrange(999999999)
+        self.driver.get(config('PAGE_URL_TRT15'))
+        self._existenciaPage("certidaoActionForm:j_id23:doctoPesquisa")
+        self.driver.find_element(By.ID,"certidaoActionForm:j_id23:doctoPesquisa").send_keys(cpf)
+
+        self.driver.save_screenshot("page_"+str(namefile)+".png")
+        a = Cut()
+        #CROP ARQUIVO DE PRINT TELA, NOME DO ARQUIVO QUANDO CORTADO
+        image_cap = a.crop("page_"+str(namefile)+".png","crop_"+str(namefile)+".png",215,250,62,132)
+        c = Captcha(image_cap,"")
+        self.driver.find_element(By.ID,"certidaoActionForm:j_id51:verifyCaptcha").send_keys(c._resolve_img())
+        self.driver.find_element(By.ID,"certidaoActionForm:certidaoActionEmitir").click()
+
+        self._existenciaPage("certidaoActionForm:certidaoActionImprimir")
+        self.driver.find_element(By.ID,"certidaoActionForm:certidaoActionImprimir").click()
+
+        del c
+        del a
+        os.remove("page_"+str(namefile)+".png")
+        os.remove("crop_"+str(namefile)+".png")
+
+        time.sleep(4)
+
+    def _trf3_jus(self,dados):
+        self.driver.get(config('PAGE_URL_TRF3_JUS'))
+        self._existenciaPage("Nome")
+        self.driver.find_element(By.ID,"abrangenciaSJSP").click()
+        self.driver.find_element(By.ID,"Nome").send_keys(dados.get('nome'))
+        #self.driver.find_element(By.ID,"CpfCnpj").send_keys(dados.get('cpf'))
+        self.driver.execute_script(f"document.getElementById('CpfCnpj').value = '{dados.get('cpf')}'")
+        self.driver.find_element(By.ID,"BtGeraCerticao").click()
+
+        time.sleep(1000)
+
+    def _esaj_busca_nome_cpf(self,dados,parm):
+        if self.login == False:
+            self._login_esaj()
+            self._esaj_busca_nome_cpf(dados,parm)
+        else:
+            self.driver.get(config('PAGE_URL_ESAJ_B_NOME_CPF'))
+            self._existenciaPage("botaoConsultarProcessos")  
+            
+            if parm == "nome":
+                ValueSelect = "NMPARTE"
+                ValueInput = dados.get('nome')
+            else:
+                ValueSelect = "DOCPARTE"  
+                ValueInput = dados.get('cpf')
+
+            self._select("cbPesquisa",ValueSelect)
+            self.driver.find_element(By.ID, f"campo_{ValueSelect}").send_keys(ValueInput)
+            self.driver.find_element(By.ID,"botaoConsultarProcessos").click()
+            time.sleep(4)
+            self.driver.save_screenshot(f"{self.path_download}\print_tela_{ValueSelect}.png")
