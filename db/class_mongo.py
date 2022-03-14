@@ -1,16 +1,15 @@
 # -*- coding: utf-8 -*-
 from pymongo import MongoClient
-import os
+from decouple import config
 
 class Mongo:
     
     def __init__(self, collection):
         self.BATCH_SIZE=10
-        print(os.getenv('AMBIENTE'))
-        if os.getenv('AMBIENTE') == "PROD":
-            self.client = MongoClient(f"mongodb://{os.getenv('MONGO_USR')}:{os.getenv('MONGO_PWD')}@{os.getenv('MONGO_HOST')}:{os.getenv('MONGO_PORT')}/?authSource={os.getenv('MONGO_AUTH_DB')}")
+        if config('AMBIENTE') == "PROD":
+            self.client = MongoClient(f"mongodb://{config('MONGO_USR')}:{config('MONGO_PWD')}@{config('MONGO_HOST')}:{config('MONGO_PORT')}/?authSource={config('MONGO_AUTH_DB')}")
         else:
-            self.client = MongoClient(f"mongodb://{os.getenv('MONGO_USR')}:{os.getenv('MONGO_PWD')}@{os.getenv('MONGO_HOST')}:{os.getenv('MONGO_PORT')}")   
+            self.client = MongoClient(f"mongodb://{config('MONGO_USR')}:{config('MONGO_PWD')}@{config('MONGO_HOST')}:{config('MONGO_PORT')}")   
         self.db = self.client[collection]
         self.col = ""
         

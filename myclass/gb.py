@@ -4,7 +4,7 @@ import base64
 class Cut:
 #function to crop image
 #Parameters: image to crop, contour, and the image number
-    def crop(self,image,imagecrop,x = 205,y = 267,h = 519,w = 700):
+    def crop(self,image,imagecrop,x = 205,y = 267,h = 682,w = 870):
         
         image = cv2.imread(image)
         crop = image[x:y,h:w]

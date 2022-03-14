@@ -16,6 +16,8 @@ class Paginas:
             if config('HEADLESS') == True:
                 opt.add_argument("--headless")
 
+            opt.add_argument("--window-size=2560,1440")
+            opt.add_argument("start-maximized")
             opt.add_argument("--disable-xss-auditor")
             opt.add_argument("--disable-web-security")
             opt.add_argument("--allow-running-insecure-content")
@@ -23,6 +25,7 @@ class Paginas:
             opt.add_argument("--disable-setuid-sandbox")
             opt.add_argument("--disable-webgl")
             opt.add_argument("--disable-popup-blocking")
+            opt.add_argument("ignore-certificate-errors")
 
             opt.add_experimental_option( "prefs", {
                                                     'profile.default_content_settings.popups': 0,
@@ -73,9 +76,7 @@ class Paginas:
             self.driver.get(config('PAGE_URL'))
             #VERIFICAR SE A PAGINA JA ESTA CARREGADA
             self._existenciaPage("MainContent_txtDocumento")
-
             self.driver.find_element(By.ID,"MainContent_txtDocumento").send_keys(f"{cpf}")
-
             c = Captcha(config('DATA_SITE_KEY'),config('PAGE_URL'))
 
             #print(f"Meu saldo atual é : {c._saldo()}.")
@@ -283,6 +284,14 @@ class Paginas:
         self.driver.find_element(By.ID,"Nome").send_keys(dados.get('nome'))
         #self.driver.find_element(By.ID,"CpfCnpj").send_keys(dados.get('cpf'))
         self.driver.execute_script(f"document.getElementById('CpfCnpj').value = '{dados.get('cpf')}'")
+
+        #RECAPTCHA
+        c = Captcha(config('DATA_SITE_KEY_TRF3_JUS'),config('PAGE_URL_TRF3_JUS'))
+        c._resolve()
+
+        wirte_tokon_js = f'document.getElementById("g-recaptcha-response-100000").innerHTML="{c._resolve()}";'
+        self.driver.execute_script(wirte_tokon_js)
+
         self.driver.find_element(By.ID,"BtGeraCerticao").click()
 
         time.sleep(1000)

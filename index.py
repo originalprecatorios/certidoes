@@ -12,14 +12,26 @@ def _process():
     mongo = Mongo('original')
     mongo_datas = Mongo('certidoes')   
     mongo_datas._getcoll('dados_busca')
-    datas = mongo_datas._return_query({'status_process':{'$exists':false}})
+    datas = mongo_datas._return_query({'status_process':{'$exists':False}})
 
     for data in datas:
         _id = data['_id']
+        _cpf = data['cpf']
 
-        print(_id)
+        p = Paginas(_cpf)
+        #p._CND_Estadual(_cpf)
+        #p._CND_Contribuinte(_cpf)
+        #p._CND_Municipal(_cpf)
+        #p._CND_Federal(_cpf)
+        #p._trtsp(data)
+        p._trf3_jus(data)
+        #6LdDCtAZAAAAAOMqmEijWlAhOAvdXLukZCLWmwkD
+        #g-recaptcha-response-100000
 
-dados = {'modelo':'6', 'cpf': '325.044.888-58', 'rg' : '336343255', 'nascimento':'08/04/1983', 'nome': 'Gelson Luiz Ramos Pereira Junior', 'genero' : 'M', 'mae' : 'Teresinha Lucia da Costa Ramos Pereira'}
+        #mongo_datas._update_one({'$set' :{'status_process': True}}, {'_id': _id})
+
+
+#dados = {'modelo':'6', 'cpf': '325.044.888-58', 'rg' : '336343255', 'nascimento':'08/04/1983', 'nome': 'Gelson Luiz Ramos Pereira Junior', 'genero' : 'M', 'mae' : 'Teresinha Lucia da Costa Ramos Pereira'}
 
 #p = Paginas(dados.get('cpf'))
 
