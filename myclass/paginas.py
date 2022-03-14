@@ -286,11 +286,11 @@ class Paginas:
         self.driver.execute_script(f"document.getElementById('CpfCnpj').value = '{dados.get('cpf')}'")
 
         #RECAPTCHA
-        c = Captcha(config('DATA_SITE_KEY_TRF3_JUS'),config('PAGE_URL_TRF3_JUS'))
-        c._resolve()
+        #c = Captcha(config('DATA_SITE_KEY_TRF3_JUS'),config('PAGE_URL_TRF3_JUS'))
+        #c._resolve()
 
-        wirte_tokon_js = f'document.getElementById("g-recaptcha-response-100000").innerHTML="{c._resolve()}";'
-        self.driver.execute_script(wirte_tokon_js)
+        #wirte_tokon_js = f'document.getElementById("g-recaptcha-response-100000").innerHTML="{c._resolve()}";'
+        #self.driver.execute_script(wirte_tokon_js)
 
         self.driver.find_element(By.ID,"BtGeraCerticao").click()
 
