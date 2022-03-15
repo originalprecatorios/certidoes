@@ -4,9 +4,10 @@ import requests, time
 
 class Captcha:
 
-    def __init__(self,data,page):
+    def __init__(self,data,page,method = "userrecaptcha"):
         self.data_site_key = data
         self.page_url = page
+        self.method = method
         pass
 
     def _saldo(self):
@@ -27,7 +28,11 @@ class Captcha:
         return form_tokon
 
     def _resolve(self):
-        u1 = f"https://2captcha.com/in.php?key={config('API_KEY')}&method=userrecaptcha&googlekey={self.data_site_key}&pageurl={self.page_url}&json=1&invisible=1"
+        if self.method == "userrecaptcha":
+            u1 = f"https://2captcha.com/in.php?key={config('API_KEY')}&method={self.method}&googlekey={self.data_site_key}&pageurl={self.page_url}&json=1&invisible=1"
+        else:
+            u1 = f"https://2captcha.com/in.php?key={config('API_KEY')}&method={self.method}&sitekey={self.data_site_key}&pageurl={self.page_url}&json=1"
+
         r1 = requests.get(u1)
         print(r1.json())
         id = r1.json().get("request")

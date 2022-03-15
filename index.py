@@ -1,5 +1,6 @@
 # CERTIDÃO NEGATIVAS
 from myclass.paginas import Paginas
+from myclass.nodistill import Nodistill
 from myclass.smtp import Smtp
 from db.class_mongo import Mongo
 from decouple import config
@@ -19,16 +20,24 @@ def _process():
         _cpf = data['cpf']
 
         p = Paginas(_cpf)
-        #p._CND_Estadual(_cpf)
-        #p._CND_Contribuinte(_cpf)
-        #p._CND_Municipal(_cpf)
+        #pd = Nodistill()
+
+        #pd._pje_trf3(_cpf)
+        p._CND_Estadual(_cpf)
+        p._CND_Contribuinte(_cpf)
+        p._CND_Municipal(_cpf)
         #p._CND_Federal(_cpf)
         #p._trtsp(data)
-        p._trf3_jus(data)
-        #6LdDCtAZAAAAAOMqmEijWlAhOAvdXLukZCLWmwkD
-        #g-recaptcha-response-100000
+        p._tst_trabalhista(_cpf)
+        p._trt15(_cpf)
+        #p._trf3_jus(dados)
+        p._esaj_certidao(data)
+        p._esaj_busca_nome_cpf(data,"nome")
+        p._esaj_busca_nome_cpf(data,"cpf")
+        p._protestos(data)
 
-        #mongo_datas._update_one({'$set' :{'status_process': True}}, {'_id': _id})
+
+        mongo_datas._update_one({'$set' :{'status_process': True}}, {'_id': _id})
 
 
 #dados = {'modelo':'6', 'cpf': '325.044.888-58', 'rg' : '336343255', 'nascimento':'08/04/1983', 'nome': 'Gelson Luiz Ramos Pereira Junior', 'genero' : 'M', 'mae' : 'Teresinha Lucia da Costa Ramos Pereira'}

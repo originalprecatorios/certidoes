@@ -34,10 +34,12 @@ class Paginas:
                                                     'profile.default_content_setting_values.automatic_downloads':1
                                                 })
 
-            self.driver = webdriver.Chrome(options=opt)
+            self.driver = webdriver.Chrome('/opt/drivers/chromedriver' , options=opt)
             #driver.implicitly_wait(10)
             #driver.set_page_load_timeout(20)
             print("Pronto!, Chrome já esta inicializado.")
+            r = Captcha("","")
+            print(f"Meu saldo no 2Captch : {r._saldo()}")
         else:
             print("Não consigo criar a pasta.")
             
@@ -169,7 +171,7 @@ class Paginas:
         else:    
             genero = dados.get("genero")
             self.driver.get(config('PAGE_URL_CRIMINAL_1'))
-            self._select("cdModelo",dados.get("modelo"))
+            self._select("cdModelo","6")
             time.sleep(1)
             self.driver.find_element(By.ID,"nmCadastroF").send_keys(dados.get("nome"))
             self.driver.find_element(By.ID,"identity.nuCpfFormatado").send_keys(dados.get("cpf"))
@@ -196,7 +198,7 @@ class Paginas:
 
             self._existenciaPage("pbImprimir")
 
-            self.driver.save_screenshot(f"{self.path_download}\print_tela_esaj.png")
+            self.driver.save_screenshot(f"{self.path_download}/print_tela_esaj.png")
 
     def _trtsp(self,dados):
         namefile = random.randrange(99999)
@@ -215,6 +217,8 @@ class Paginas:
 
         os.remove("page_"+str(namefile)+".png")
 
+        tentativas = 0
+
         while True:
             try:
                 if self.driver.page_source.find("Visualizar Certidão"):
@@ -223,9 +227,15 @@ class Paginas:
                 else:
                     pass         
             except:
-                print("Não apareceu o imprimir ainda")
-                time.sleep(1)
-                pass
+
+                if tentativas < 2:
+                    print("Não apareceu o imprimir ainda")
+                    tentativas += 1
+                    time.sleep(1)
+                    pass
+                else:
+                    print("Não conseguiu resolver TRT SP")
+                    break
 
         time.sleep(4)
         print("Final...")        
@@ -315,17 +325,35 @@ class Paginas:
             self.driver.find_element(By.ID, f"campo_{ValueSelect}").send_keys(ValueInput)
             self.driver.find_element(By.ID,"botaoConsultarProcessos").click()
             time.sleep(4)
-            self.driver.save_screenshot(f"{self.path_download}\print_tela_{ValueSelect}.png")
+            self.driver.save_screenshot(f"{self.path_download}/print_tela_{ValueSelect}.png")
 
     def _protestos(self,dados):
         self.driver.get(config('PAGE_URL_PROTESTO'))
         self._existenciaPage("AbrangenciaNacional")
+        self.driver.execute_script("document.getElementById('cf-root').style.display = 'none'")
         self.driver.find_element(By.ID,"AbrangenciaNacional").click()
         self._select("TipoDocumento","1")
         self.driver.find_element(By.ID,"Documento").send_keys(dados.get('cpf'))
         self.driver.execute_script("ValidarConsulta(this)")
         time.sleep(4)
         self.driver.execute_script("document.getElementById('cf-root').style.display = 'none'")
-        self.driver.save_screenshot(f"{self.path_download}\print_tela_protesto.png")
+        self.driver.save_screenshot(f"{self.path_download}/print_tela_protesto.png")
+        time.sleep(4)
+
+    def _pje_trf3_(self,cpf):
+        self.driver.get(config('PAGE_URL_PJE_TRF3'))
+        self._existenciaPage("fPP:dpDec:documentoParte")
+        self.driver.find_element(By.ID,"fPP:dpDec:documentoParte").send_keys(cpf)
+        self.driver.find_element(By.ID,"fPP:searchProcessos").click()
+
+        c = Captcha(config('DATA_SITE_KEY_HCAPTCHA_PJE'),config('PAGE_URL_PJE_TRF3'),'hcaptcha')
+        resp = c._resolve()
+        #PEGAR O data-hcaptcha-widget-id DO FRAME
+        id = self.driver.find_element(By.XPATH,"//*[@id='fPP:j_id236']/div/iframe").get_attribute("data-hcaptcha-widget-id")
+        #print(id)
+        self.driver.execute_script(f'document.getElementById("g-recaptcha-response-{id}").innerHTML="{resp}";')
+        self.driver.execute_script(f'document.getElementById("h-captcha-response-{id}").innerHTML="{resp}";')
+        #CALLBACK
+        self.driver.execute_script("A4J.AJAX.Submit('fPP',event,{'similarityGroupingId':'fPP:searchProcessos','parameters':{'fPP:searchProcessos':'fPP:searchProcessos'} } )")
         time.sleep(1000)
         
