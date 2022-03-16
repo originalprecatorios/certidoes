@@ -42,7 +42,7 @@ class Paginas:
             print(f"Meu saldo no 2Captch : {r._saldo()}")
         else:
             print("Não consigo criar a pasta.")
-            
+
     def _login_esaj(self):
         self.driver.get(config('ESAJ_PAGE_LOGIN')) 
         self._existenciaPage("usernameForm") 
@@ -145,23 +145,7 @@ class Paginas:
 
             time.sleep(4)
         else:
-            print("Ausencia de parametros para consulta.")            
-
-    def _CND_Federal(self,cpf='000'):
-        if cpf != "000":
-            self.driver.get(config('PAGE_URL_FEDERAL'))
-            self._existenciaPage("NI")
-            self.driver.find_element(By.ID,"NI").send_keys(f"{cpf}")
-            time.sleep(1)
-            self.driver.find_element(By.ID,"validar").click()
-            time.sleep(5)
-
-            if self.driver.page_source.find("Emissão de nova certidão"):
-                self.driver.find_element(By.XPATH,"//*[@id='FrmSelecao']/a[2]").click()
-                time.sleep(5)
-
-        else:
-            print("Ausencia de parametros para consulta.")    
+            print("Ausencia de parametros para consulta.")               
 
     def _esaj_certidao(self,dados):
         
@@ -339,21 +323,4 @@ class Paginas:
         self.driver.execute_script("document.getElementById('cf-root').style.display = 'none'")
         self.driver.save_screenshot(f"{self.path_download}/print_tela_protesto.png")
         time.sleep(4)
-
-    def _pje_trf3_(self,cpf):
-        self.driver.get(config('PAGE_URL_PJE_TRF3'))
-        self._existenciaPage("fPP:dpDec:documentoParte")
-        self.driver.find_element(By.ID,"fPP:dpDec:documentoParte").send_keys(cpf)
-        self.driver.find_element(By.ID,"fPP:searchProcessos").click()
-
-        c = Captcha(config('DATA_SITE_KEY_HCAPTCHA_PJE'),config('PAGE_URL_PJE_TRF3'),'hcaptcha')
-        resp = c._resolve()
-        #PEGAR O data-hcaptcha-widget-id DO FRAME
-        id = self.driver.find_element(By.XPATH,"//*[@id='fPP:j_id236']/div/iframe").get_attribute("data-hcaptcha-widget-id")
-        #print(id)
-        self.driver.execute_script(f'document.getElementById("g-recaptcha-response-{id}").innerHTML="{resp}";')
-        self.driver.execute_script(f'document.getElementById("h-captcha-response-{id}").innerHTML="{resp}";')
-        #CALLBACK
-        self.driver.execute_script("A4J.AJAX.Submit('fPP',event,{'similarityGroupingId':'fPP:searchProcessos','parameters':{'fPP:searchProcessos':'fPP:searchProcessos'} } )")
-        time.sleep(1000)
         
