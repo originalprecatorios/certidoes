@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from time import time
 from pymongo import MongoClient
 from decouple import config
 

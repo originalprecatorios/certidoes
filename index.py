@@ -10,34 +10,53 @@ import time,json
 #6 - CERTIDÃO DE DISTRIBUIÇÃO DE AÇÕES CRIMINAIS
 
 def _process():
-    mongo = Mongo('original')
+    #mongo = Mongo('original')
     mongo_datas = Mongo('certidoes')   
     mongo_datas._getcoll('dados_busca')
     datas = mongo_datas._return_query({'status_process':{'$exists':False}})
-
-    #mongo_datas._update_one({'$set' :{'extracted':{'TRF': True,'data':'16/03/2020'}}}, {'_id': _id})
     
     for data in datas:
         _id = data['_id']
-        _cpf = data['cpf']
 
-        p = Paginas(_cpf)
-        p._CND_Estadual(_cpf)
-        p._CND_Contribuinte(_cpf)
-        p._CND_Municipal(_cpf)
+        if 'extracted' not in data:
+
+            mongo_datas._update_one({'$set' :{'extracted': {}}}, {'_id': _id})
+
+            mongo_datas._update_one({'$set' :{'extracted': 
+            {
+                '_CND_ESTADUAL': False,
+                '_CND_CONTRIBUINTE':False,
+                '_CND_MUNICIPAL':False,
+                '_CND_FEDERAL':False,
+                '_TST_TRABALHISTA':False,
+                '_TRTSP':False,
+                '_TRT15':False,
+                '_TRF3_JUS':False,
+                '_ESAJ_CERTIDAO':False,
+                '_ESAJ_BUSCA_NOME':False,
+                '_ESAJ_BUSCA_CPF':False,
+                '_PROTESTOS':False,
+                '_PJE_TRF3':False
+            }}}, {'_id': _id})
+
+        p = Paginas(data)
+        p._CND_Estadual()
+        p._CND_Contribuinte()
+        p._CND_Municipal()
         #p._trtsp(data)
-        p._tst_trabalhista(_cpf)
-        p._trt15(_cpf)
+        p._tst_trabalhista()
+        p._trt15()
         #p._trf3_jus(dados)
-        p._esaj_certidao(data)
-        p._esaj_busca_nome_cpf(data,"nome")
-        p._esaj_busca_nome_cpf(data,"cpf")
-        p._protestos(data)
+        p._esaj_certidao()
+        p._esaj_busca_nome_cpf("NOME")
+        p._esaj_busca_nome_cpf("CPF")
+        p._protestos()
 
         #PARTE DE DESTILL
-        pd = Nodistill(_cpf)
+        #pd = Nodistill(data)
+        #pd._trf3_jus()
         #pd._pje_trf3(_cpf)
-        pd._CND_Federal(_cpf)
+        #pd._CND_Federal()
 
 
         mongo_datas._update_one({'$set' :{'status_process': True}}, {'_id': _id})
@@ -48,4 +67,8 @@ def _process():
 
 #pd = Nodistill("325.044.888-58")
 #pd._CND_Federal("325.044.888-58")
+
+#mongo_datas = Mongo('certidoes')
+#mongo_datas._update_one({'$pull' :{'extracted':{'TRF': True,'data':'16/03/2020'}}}, {'_id': object("6230f2c58016eeeba8ce9f34")})
+
 _process()
