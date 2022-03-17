@@ -57,7 +57,7 @@ class Paginas:
             print("\033[32m"+"Pronto!, Chrome já esta inicializado."+"\033[0;0m")
             r = Captcha("","")
             
-            print(f'\033[31m'+'Meu saldo no 2Captch : {r._saldo()}'+'\033[0;0m')
+            print('\033[33m'+f'Meu saldo no 2Captch : {r._saldo()}'+'\033[0;0m')
         else:
             print("Não consigo criar a pasta.")
 
