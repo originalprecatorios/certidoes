@@ -96,7 +96,7 @@ class Paginas:
         mongo._update_one({'$set' :{f'extracted.{fild}': True}}, {'_id': _id})
 
     def _CND_Estadual (self):  
-        if not self.ex.get('_CND_ESTADUAL') or '_CND_ESTADUAL' not in self.dados.get('extracted'):    
+        if 'extracted' not in self.dados:    
             self.driver.get(config('PAGE_URL'))
             #VERIFICAR SE A PAGINA JA ESTA CARREGADA
             self._existenciaPage("MainContent_txtDocumento")
@@ -117,7 +117,7 @@ class Paginas:
             self._update_extract('_CND_ESTADUAL', self.dados.get('_id'))
 
     def _CND_Municipal(self):
-        if not self.ex.get('_CND_MUNICIPAL') or '_CND_MUNICIPAL' not in self.dados.get('extracted'):
+        if not self.ex.get('_CND_MUNICIPAL') or 'extracted' not in self.dados:
             self.driver.get(config('PAGE_URL_MUN'))
             self._select('ctl00_ConteudoPrincipal_ddlTipoCertidao','1')
             self._select('ctl00_ConteudoPrincipal_ddlTipoDocumento','CPF')
@@ -144,7 +144,7 @@ class Paginas:
             self._update_extract('_CND_MUNICIPAL', self.dados.get('_id'))  
 
     def _CND_Contribuinte(self):
-        if not self.ex.get('_CND_CONTRIBUINTE') or '_CND_CONTRIBUINTE' not in self.dados.get('extracted'):
+        if not self.ex.get('_CND_CONTRIBUINTE') or 'extracted' not in self.dados:
             self.driver.get(config('PAGE_URL_CONTRIBUINTE'))
             self._existenciaPage("emitirCrda:crdaInputCpf")
             self.driver.find_element(By.ID,"emitirCrda:crdaInputCpf").send_keys(self.dados.get('cpf'))
@@ -159,7 +159,7 @@ class Paginas:
             self._update_extract('_CND_CONTRIBUINTE', self.dados.get('_id'))             
 
     def _esaj_certidao(self):
-        if not self.ex.get('_ESAJ_CERTIDAO') or '_ESAJ_CERTIDAO' not in self.dados.get('extracted'):
+        if not self.ex.get('_ESAJ_CERTIDAO') or 'extracted' not in self.dados:
             if self.login == False:
                 self._login_esaj()
                 self._esaj_certidao()
@@ -199,7 +199,7 @@ class Paginas:
                 self._update_extract('_ESAJ_CERTIDAO', self.dados.get('_id'))
 
     def _trtsp(self):
-        if not self.ex.get('_TRTSP') or '_TRTSP' not in self.dados.get('extracted'):
+        if not self.ex.get('_TRTSP') or 'extracted' not in self.dados:
             namefile = random.randrange(99999)
             self.driver.get(config('PAGE_URL_TRTSP'))
             self._existenciaPage("numeroDocumentoPesquisado")
@@ -241,7 +241,7 @@ class Paginas:
             self._update_extract('_TRTSP', self.dados.get('_id'))      
     
     def _tst_trabalhista(self):
-        if not self.ex.get('_TST_TRABALHISTA') or '_TST_TRABALHISTA' not in self.dados.get('extracted'):
+        if not self.ex.get('_TST_TRABALHISTA') or 'extracted' not in self.dados:
             self.driver.get(config('PAGE_URL_TST'))
             self._existenciaPage("corpo")
             self.driver.find_element(By.XPATH,"//*[@id='corpo']/div/div[2]/input[1]").click()
@@ -262,7 +262,7 @@ class Paginas:
             self._update_extract('_TST_TRABALHISTA', self.dados.get('_id'))
 
     def _trt15(self):
-        if not self.ex.get('_TRT15') or '_TRT15' not in self.dados.get('extracted'):
+        if not self.ex.get('_TRT15') or 'extracted' not in self.dados:
             namefile = random.randrange(999999999)
             self.driver.get(config('PAGE_URL_TRT15'))
             self._existenciaPage("certidaoActionForm:j_id23:doctoPesquisa")
@@ -288,7 +288,7 @@ class Paginas:
             self._update_extract('_TRT15', self.dados.get('_id'))
 
     def _esaj_busca_nome_cpf(self,parm):
-        if not self.ex.get(f'_ESAJ_BUSCA_{parm}') or f'_ESAJ_BUSCA_{parm}' not in self.dados.get('extracted'):
+        if not self.ex.get(f'_ESAJ_BUSCA_{parm}') or 'extracted' not in self.dados:
             if self.login == False:
                 self._login_esaj()
                 self._esaj_busca_nome_cpf(parm)
@@ -311,7 +311,7 @@ class Paginas:
                 self._update_extract(f'_ESAJ_BUSCA_{parm}', self.dados.get('_id'))
 
     def _protestos(self):
-        if not self.ex.get('_PROTESTOS') or '_PROTESTOS' not in self.dados.get('extracted'):
+        if not self.ex.get('_PROTESTOS') or 'extracted' not in self.dados:
             self.driver.get(config('PAGE_URL_PROTESTO'))
             self._existenciaPage("AbrangenciaNacional")
             self.driver.execute_script("document.getElementById('cf-root').style.display = 'none'")
