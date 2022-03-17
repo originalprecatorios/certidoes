@@ -1,4 +1,3 @@
-from ast import Or
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import Select
@@ -55,9 +54,10 @@ class Paginas:
             self.driver = webdriver.Chrome('/opt/drivers/chromedriver' , options=opt)
             #driver.implicitly_wait(10)
             #driver.set_page_load_timeout(20)
-            print("Pronto!, Chrome já esta inicializado.")
+            print("\033[32m"+"Pronto!, Chrome já esta inicializado."+"\033[0;0m")
             r = Captcha("","")
-            print(f"Meu saldo no 2Captch : {r._saldo()}")
+            
+            print(f'\033[31m'+'Meu saldo no 2Captch : {r._saldo()}'+'\033[0;0m')
         else:
             print("Não consigo criar a pasta.")
 
