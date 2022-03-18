@@ -74,7 +74,6 @@ class Paginas:
 
         self.login = True    
 
-
     def _existenciaPage(self,id):
         while len(self.driver.find_elements(By.ID, id)) < 1:
             print(f"não encontramos {id} na pagina")

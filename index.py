@@ -46,7 +46,6 @@ def _process():
         #p._trtsp(data)
         p._tst_trabalhista()
         p._trt15()
-        #p._trf3_jus(dados)
         p._esaj_certidao()
         p._esaj_busca_nome_cpf("NOME")
         p._esaj_busca_nome_cpf("CPF")
@@ -58,17 +57,9 @@ def _process():
         #pd._pje_trf3(_cpf)
         #pd._CND_Federal()
 
-
         mongo_datas._update_one({'$set' :{'status_process': True}}, {'_id': _id})
-
 
 #e = Smtp()
 #e._Envia_Email("junior.ppp@gmail.com","Olá Gelson sua certidões foi extraidas com sucesso.")
-
-#pd = Nodistill("325.044.888-58")
-#pd._CND_Federal("325.044.888-58")
-
-#mongo_datas = Mongo('certidoes')
-#mongo_datas._update_one({'$pull' :{'extracted':{'TRF': True,'data':'16/03/2020'}}}, {'_id': object("6230f2c58016eeeba8ce9f34")})
 
 _process()
