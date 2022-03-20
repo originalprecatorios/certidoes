@@ -10,7 +10,6 @@ import time,json
 #6 - CERTIDÃO DE DISTRIBUIÇÃO DE AÇÕES CRIMINAIS
 
 def _process():
-    #mongo = Mongo('original')
     mongo_datas = Mongo('certidoes')   
     mongo_datas._getcoll('dados_busca')
     datas = mongo_datas._return_query({'status_process':{'$exists':False}})
@@ -62,4 +61,4 @@ def _process():
 #e = Smtp()
 #e._Envia_Email("junior.ppp@gmail.com","Olá Gelson sua certidões foi extraidas com sucesso.")
 
-_process()
+#_process()
