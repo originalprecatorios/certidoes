@@ -11,8 +11,9 @@ class Paginas:
     def __init__(self,dados):
         self.login = False
         self.path_download = config('PATH_FILES')+dados.get('cpf')
-        self.ex = dados.get("extracted")
+        #self.ex = dados.get("extracted")
         self.dados = dados
+        self.tentativas = 0
 
         if dados.get('cpf') != "000.000.000-00":
             opt = webdriver.ChromeOptions()
@@ -77,256 +78,295 @@ class Paginas:
     def _existenciaPage(self,id):
         while len(self.driver.find_elements(By.ID, id)) < 1:
             print(f"não encontramos {id} na pagina")
-            time.sleep(0.5)
+            if self.tentativas >= config('TENTATIVAS'):
+                self.tentativas = 0
+                break
+            else:
+                self.tentativas += 1
+                time.sleep(0.5)
 
     def _select(self,id,value):
         while True:
                 try:
                     select = Select(self.driver.find_element(By.ID, f"{id}"))
                     select.select_by_value(f'{value}')
+                    self.tentativas = 0
                     break
                 except:
-                    time.sleep(2)
-                    pass
+                    if self.tentativas >= config('TENTATIVAS'):
+                        break
+                    else:
+                        self.tentativas += 1
+                        time.sleep(2)
+                        pass
     
     def _update_extract(self,fild,_id):
-        mongo = Mongo("certidoes")
-        mongo._getcoll('dados_busca')
+        mongo = Mongo(config('MONGO_DB'))
+        mongo._getcoll(config('MONGO_COLL'))
         mongo._update_one({'$set' :{f'extracted.{fild}': True}}, {'_id': _id})
 
     def _CND_Estadual (self):  
-        if 'extracted' not in self.dados:    
-            self.driver.get(config('PAGE_URL'))
-            #VERIFICAR SE A PAGINA JA ESTA CARREGADA
-            self._existenciaPage("MainContent_txtDocumento")
-            self.driver.find_element(By.ID,"MainContent_txtDocumento").send_keys(f"{self.dados.get('cpf')}")
-            c = Captcha(config('DATA_SITE_KEY'),config('PAGE_URL'))
-            #print(f"Meu saldo atual é : {c._saldo()}.")
-            wirte_tokon_js = f'document.getElementById("g-recaptcha-response").innerHTML="{c._resolve()}";'
-            self.driver.execute_script(wirte_tokon_js)
-            time.sleep(1)
-            self.driver.find_element(By.ID,"MainContent_btnPesquisar").click()
-            time.sleep(0.5)
-            #VOU VERIFICAR SE EXISTE O BOTÂO DE IMPRIMIR NA TELA, SE SIM CLICK NELE
-            self._existenciaPage("MainContent_btnImpressao")   
-            self.driver.find_element(By.ID,"MainContent_btnImpressao").click()
+        if 'extracted' not in self.dados:   
+            try: 
+                self.driver.get(config('PAGE_URL'))
+                #VERIFICAR SE A PAGINA JA ESTA CARREGADA
+                self._existenciaPage("MainContent_txtDocumento")
+                self.driver.find_element(By.ID,"MainContent_txtDocumento").send_keys(f"{self.dados.get('cpf')}")
+                c = Captcha(config('DATA_SITE_KEY'),config('PAGE_URL'))
+                #print(f"Meu saldo atual é : {c._saldo()}.")
+                wirte_tokon_js = f'document.getElementById("g-recaptcha-response").innerHTML="{c._resolve()}";'
+                self.driver.execute_script(wirte_tokon_js)
+                time.sleep(1)
+                self.driver.find_element(By.ID,"MainContent_btnPesquisar").click()
+                time.sleep(0.5)
+                #VOU VERIFICAR SE EXISTE O BOTÂO DE IMPRIMIR NA TELA, SE SIM CLICK NELE
+                self._existenciaPage("MainContent_btnImpressao")   
+                self.driver.find_element(By.ID,"MainContent_btnImpressao").click()
 
-            del c
-            time.sleep(4)
-            self._update_extract('_CND_ESTADUAL', self.dados.get('_id'))
+                del c
+                time.sleep(4)
+            except:
+                print("ERRO _CND_ESTADUAL")    
+
+            self._update_extract('_CND_ESTADUAL', self.dados.get('_id'))    
 
     def _CND_Municipal(self):
         if 'extracted' not in self.dados:
-            self.driver.get(config('PAGE_URL_MUN'))
-            self._select('ctl00_ConteudoPrincipal_ddlTipoCertidao','1')
-            self._select('ctl00_ConteudoPrincipal_ddlTipoDocumento','CPF')
-            time.sleep(0.8)
-            self.driver.find_element(By.ID,"ctl00_ConteudoPrincipal_txtCPF").send_keys(f"{self.dados.get('cpf')}")
+            try:
+                self.driver.get(config('PAGE_URL_MUN'))
+                self._select('ctl00_ConteudoPrincipal_ddlTipoCertidao','1')
+                self._select('ctl00_ConteudoPrincipal_ddlTipoDocumento','CPF')
+                time.sleep(0.8)
+                self.driver.find_element(By.ID,"ctl00_ConteudoPrincipal_txtCPF").send_keys(f"{self.dados.get('cpf')}")
 
-            namefile = random.randrange(99999)
-            self.driver.save_screenshot("page_"+str(namefile)+".png")
-            a = Cut()
-            #CROP ARQUIVO DE PRINT TELA, NOME DO ARQUIVO QUANDO CORTADO
-            image_cap = a.crop("page_"+str(namefile)+".png","crop_"+str(namefile)+".png")
+                namefile = random.randrange(99999)
+                self.driver.save_screenshot("page_"+str(namefile)+".png")
+                a = Cut()
+                #CROP ARQUIVO DE PRINT TELA, NOME DO ARQUIVO QUANDO CORTADO
+                image_cap = a.crop("page_"+str(namefile)+".png","crop_"+str(namefile)+".png")
 
-            c = Captcha(image_cap,"")
-            
-            self.driver.find_element(By.ID,"ctl00_ConteudoPrincipal_txtValorCaptcha").send_keys(f"{c._resolve_img()}")
-            time.sleep(0.5)
-            self.driver.find_element(By.ID,"ctl00_ConteudoPrincipal_btnEmitir").click()
-            #APAGAR OS ARQUIVOS GERADOS
-            os.remove("page_"+str(namefile)+".png")
-            os.remove("crop_"+str(namefile)+".png")
+                c = Captcha(image_cap,"")
+                
+                self.driver.find_element(By.ID,"ctl00_ConteudoPrincipal_txtValorCaptcha").send_keys(f"{c._resolve_img()}")
+                time.sleep(0.5)
+                self.driver.find_element(By.ID,"ctl00_ConteudoPrincipal_btnEmitir").click()
+                #APAGAR OS ARQUIVOS GERADOS
+                os.remove("page_"+str(namefile)+".png")
+                os.remove("crop_"+str(namefile)+".png")
 
-            del c               
-            time.sleep(4)
+                del c               
+                time.sleep(4)
+            except:
+                print("ERRO _CND_MUNICIPAL")    
             self._update_extract('_CND_MUNICIPAL', self.dados.get('_id'))  
 
     def _CND_Contribuinte(self):
         if 'extracted' not in self.dados:
-            self.driver.get(config('PAGE_URL_CONTRIBUINTE'))
-            self._existenciaPage("emitirCrda:crdaInputCpf")
-            self.driver.find_element(By.ID,"emitirCrda:crdaInputCpf").send_keys(self.dados.get('cpf'))
-            c = Captcha(config('DATA_SITE_KEY_CONTRIBUINTE'),config('PAGE_URL_CONTRIBUINTE'))
-            #print(f"Meu saldo atual é : {c._saldo()}.")
-            wirte_tokon_js = f'document.getElementById("g-recaptcha-response").innerHTML="{c._resolve()}";'
-            self.driver.execute_script(wirte_tokon_js)
-            time.sleep(3)
-            self.driver.find_element(By.XPATH,"//*[@id='emitirCrda:j_id136_body']/div[2]/input[2]").click()
-            del c
-            time.sleep(4)  
+            try:
+                self.driver.get(config('PAGE_URL_CONTRIBUINTE'))
+                self._existenciaPage("emitirCrda:crdaInputCpf")
+                self.driver.find_element(By.ID,"emitirCrda:crdaInputCpf").send_keys(self.dados.get('cpf'))
+                c = Captcha(config('DATA_SITE_KEY_CONTRIBUINTE'),config('PAGE_URL_CONTRIBUINTE'))
+                #print(f"Meu saldo atual é : {c._saldo()}.")
+                wirte_tokon_js = f'document.getElementById("g-recaptcha-response").innerHTML="{c._resolve()}";'
+                self.driver.execute_script(wirte_tokon_js)
+                time.sleep(3)
+                self.driver.find_element(By.XPATH,"//*[@id='emitirCrda:j_id136_body']/div[2]/input[2]").click()
+                del c
+                time.sleep(4)  
+            except:
+                print("ERRO _CND_CONTRIBUINTE")    
             self._update_extract('_CND_CONTRIBUINTE', self.dados.get('_id'))             
 
     def _esaj_certidao(self):
         if 'extracted' not in self.dados:
-            if self.login == False:
-                self._login_esaj()
-                self._esaj_certidao()
-            else:    
-                genero = self.dados.get("genero")
-                self.driver.get(config('PAGE_URL_CRIMINAL_1'))
-                self._select("cdModelo","6")
-                time.sleep(1)
-                self.driver.find_element(By.ID,"nmCadastroF").send_keys(self.dados.get("nome"))
-                self.driver.find_element(By.ID,"identity.nuCpfFormatado").send_keys(self.dados.get("cpf"))
-                self.driver.find_element(By.ID,"identity.nuRgFormatado").send_keys(self.dados.get("rg"))
+            try:
+                if self.login == False:
+                    self._login_esaj()
+                    self._esaj_certidao()
+                else:    
+                    genero = self.dados.get("genero")
+                    self.driver.get(config('PAGE_URL_CRIMINAL_1'))
+                    self._select("cdModelo","6")
+                    time.sleep(1)
+                    self.driver.find_element(By.ID,"nmCadastroF").send_keys(self.dados.get("nome"))
+                    self.driver.find_element(By.ID,"identity.nuCpfFormatado").send_keys(self.dados.get("cpf"))
+                    self.driver.find_element(By.ID,"identity.nuRgFormatado").send_keys(self.dados.get("rg"))
 
-                self.driver.find_element(By.ID,f"flGenero{genero}").click()
-                self.driver.find_element(By.ID,"nmMaeCadastro").send_keys(self.dados.get("mae"))
-                self.driver.find_element(By.ID,"dataNascimento").send_keys(self.dados.get("nascimento"))
-                self.driver.find_element(By.ID,"identity.solicitante.deEmail").send_keys(config('EMAILESAJ'))
-                self.driver.find_element(By.ID,"confirmacaoInformacoes").click()
-                self.driver.find_element(By.ID,"pbEnviar").click()
-                tentativa = 0
-                while True:               
-                    try:
-                        if self.driver.page_source.find("Já foi cadastrado um pedido de certidão para este"):
-                            self.driver.find_element(By.ID,"btnSim").click()
-                            break
-                    except:
-                        if tentativa < 2 :
-                            tentativa += 1
-                            time.sleep(1)
-                            pass   
-                        else:
-                            break 
+                    self.driver.find_element(By.ID,f"flGenero{genero}").click()
+                    self.driver.find_element(By.ID,"nmMaeCadastro").send_keys(self.dados.get("mae"))
+                    self.driver.find_element(By.ID,"dataNascimento").send_keys(self.dados.get("nascimento"))
+                    self.driver.find_element(By.ID,"identity.solicitante.deEmail").send_keys(config('EMAILESAJ'))
+                    self.driver.find_element(By.ID,"confirmacaoInformacoes").click()
+                    self.driver.find_element(By.ID,"pbEnviar").click()
 
-                if self.driver.page_source.find("Não foi possível executar esta operação. Tente novamente mais tarde.") <= -1 :
-                    self._existenciaPage("pbImprimir")
+                    while True:               
+                        try:
+                            if self.driver.page_source.find("Já foi cadastrado um pedido de certidão para este"):
+                                self.driver.find_element(By.ID,"btnSim").click()
+                                self.tentativas = 0
+                                break
+                        except:
+                            if self.tentativas < config('TENTATIVAS') :
+                                self.tentativas += 1
+                                time.sleep(1)
+                                pass   
+                            else:
+                                self.tentativas = 0
+                                break 
 
-                self.driver.save_screenshot(f"{self.path_download}/print_tela_esaj.png")
-                self._update_extract('_ESAJ_CERTIDAO', self.dados.get('_id'))
+                    if self.driver.page_source.find("Não foi possível executar esta operação. Tente novamente mais tarde.") <= -1 :
+                        self._existenciaPage("pbImprimir")
+
+                    self.driver.save_screenshot(f"{self.path_download}/print_tela_esaj.png")
+            except:
+                print("ERRO _ESAJ_CERTIFICADO")    
+            self._update_extract('_ESAJ_CERTIDAO', self.dados.get('_id'))
 
     def _trtsp(self):
         if 'extracted' not in self.dados:
-            namefile = random.randrange(99999)
-            self.driver.get(config('PAGE_URL_TRTSP'))
-            self._existenciaPage("numeroDocumentoPesquisado")
-            self.driver.find_element(By.ID,"numeroDocumentoPesquisado").send_keys(self.dados.get('cpf'))
-            self.driver.find_element(By.ID,"nomePesquisado").send_keys(self.dados.get('nome'))
-            urlimage = self.driver.find_element(By.XPATH,"//*[@id='captcha-element']/table/tbody/tr[1]/td[1]/img").get_attribute("src")
-            urllib.request.urlretrieve(urlimage, "page_"+str(namefile)+".png")
-            
-            a = Cut()
-            image_cap = a._converte_image_to_base64("page_"+str(namefile)+".png")
-            c = Captcha(image_cap,"")
-            self.driver.find_element(By.ID,"captcha-input").send_keys(c._resolve_img())
-            self.driver.find_element(By.ID,"submit").click()
+            try:
+                namefile = random.randrange(99999)
+                self.driver.get(config('PAGE_URL_TRTSP'))
+                self._existenciaPage("numeroDocumentoPesquisado")
+                self.driver.find_element(By.ID,"numeroDocumentoPesquisado").send_keys(self.dados.get('cpf'))
+                self.driver.find_element(By.ID,"nomePesquisado").send_keys(self.dados.get('nome'))
+                urlimage = self.driver.find_element(By.XPATH,"//*[@id='captcha-element']/table/tbody/tr[1]/td[1]/img").get_attribute("src")
+                urllib.request.urlretrieve(urlimage, "page_"+str(namefile)+".png")
+                
+                a = Cut()
+                image_cap = a._converte_image_to_base64("page_"+str(namefile)+".png")
+                c = Captcha(image_cap,"")
+                self.driver.find_element(By.ID,"captcha-input").send_keys(c._resolve_img())
+                self.driver.find_element(By.ID,"submit").click()
 
-            os.remove("page_"+str(namefile)+".png")
+                os.remove("page_"+str(namefile)+".png")
 
-            tentativas = 0
+                while True:
+                    try:
+                        if self.driver.page_source.find("Visualizar Certidão"):
+                            self.driver.find_element(By.XPATH,"//*[@id='main-content']/div/fieldset/button").click()
+                            self.tentativas = 0
+                            break
+                        else:
+                            pass         
+                    except:
 
-            while True:
-                try:
-                    if self.driver.page_source.find("Visualizar Certidão"):
-                        self.driver.find_element(By.XPATH,"//*[@id='main-content']/div/fieldset/button").click()
-                        break
-                    else:
-                        pass         
-                except:
+                        if self.tentativas < 2:
+                            print("Não apareceu o imprimir ainda")
+                            self.tentativas += 1
+                            time.sleep(1)
+                            pass
+                        else:
+                            print("Não conseguiu resolver TRT SP")
+                            self.tentativas = 0
+                            break
 
-                    if tentativas < 2:
-                        print("Não apareceu o imprimir ainda")
-                        tentativas += 1
-                        time.sleep(1)
-                        pass
-                    else:
-                        print("Não conseguiu resolver TRT SP")
-                        break
-
-            time.sleep(4)
-            print("Final...")  
+                time.sleep(4) 
+            except:
+                print("ERRO _TRTSP")    
             self._update_extract('_TRTSP', self.dados.get('_id'))      
     
     def _tst_trabalhista(self):
         if 'extracted' not in self.dados:
-            self.driver.get(config('PAGE_URL_TST'))
-            self._existenciaPage("corpo")
-            self.driver.find_element(By.XPATH,"//*[@id='corpo']/div/div[2]/input[1]").click()
-            while True:
-                try:
-                    image_cap = self.driver.find_element(By.ID,"idImgBase64").get_attribute("src")
-                    print(image_cap.replace("data:image/png;base64, ",""))
-                    break
-                except:
-                    time.sleep(0.5)
-                    pass  
-            c = Captcha(image_cap,"")
-            self.driver.find_element(By.ID,"gerarCertidaoForm:cpfCnpj").send_keys(self.dados.get('cpf'))
-            self.driver.find_element(By.ID,"idCaptcha").send_keys(c._resolve_img())
-            self.driver.find_element(By.ID,"gerarCertidaoForm:btnEmitirCertidao").click()
-            del c
-            time.sleep(4)
+            try:
+                self.driver.get(config('PAGE_URL_TST'))
+                self._existenciaPage("corpo")
+                self.driver.find_element(By.XPATH,"//*[@id='corpo']/div/div[2]/input[1]").click()
+                while True:
+                    try:
+                        image_cap = self.driver.find_element(By.ID,"idImgBase64").get_attribute("src")
+                        print(image_cap.replace("data:image/png;base64, ",""))
+                        break
+                    except:
+                        time.sleep(0.5)
+                        pass  
+                c = Captcha(image_cap,"")
+                self.driver.find_element(By.ID,"gerarCertidaoForm:cpfCnpj").send_keys(self.dados.get('cpf'))
+                self.driver.find_element(By.ID,"idCaptcha").send_keys(c._resolve_img())
+                self.driver.find_element(By.ID,"gerarCertidaoForm:btnEmitirCertidao").click()
+                del c
+                time.sleep(4)
+            except:
+                print("ERRO _TST_TRABALHISTA")    
             self._update_extract('_TST_TRABALHISTA', self.dados.get('_id'))
 
     def _trt15(self):
         if 'extracted' not in self.dados:
-            namefile = random.randrange(999999999)
-            self.driver.get(config('PAGE_URL_TRT15'))
-            self._existenciaPage("certidaoActionForm:j_id23:doctoPesquisa")
-            self.driver.find_element(By.ID,"certidaoActionForm:j_id23:doctoPesquisa").send_keys(self.dados.get('cpf'))
+            try:
+                namefile = random.randrange(999999999)
+                self.driver.get(config('PAGE_URL_TRT15'))
+                self._existenciaPage("certidaoActionForm:j_id23:doctoPesquisa")
+                self.driver.find_element(By.ID,"certidaoActionForm:j_id23:doctoPesquisa").send_keys(self.dados.get('cpf'))
 
-            self.driver.save_screenshot("page_"+str(namefile)+".png")
-            a = Cut()
-            #CROP ARQUIVO DE PRINT TELA, NOME DO ARQUIVO QUANDO CORTADO
-            image_cap = a.crop("page_"+str(namefile)+".png","crop_"+str(namefile)+".png",215,250,62,132)
-            c = Captcha(image_cap,"")
-            self.driver.find_element(By.ID,"certidaoActionForm:j_id51:verifyCaptcha").send_keys(c._resolve_img())
-            self.driver.find_element(By.ID,"certidaoActionForm:certidaoActionEmitir").click()
+                self.driver.save_screenshot("page_"+str(namefile)+".png")
+                a = Cut()
+                #CROP ARQUIVO DE PRINT TELA, NOME DO ARQUIVO QUANDO CORTADO
+                image_cap = a.crop("page_"+str(namefile)+".png","crop_"+str(namefile)+".png",215,250,62,132)
+                c = Captcha(image_cap,"")
+                self.driver.find_element(By.ID,"certidaoActionForm:j_id51:verifyCaptcha").send_keys(c._resolve_img())
+                self.driver.find_element(By.ID,"certidaoActionForm:certidaoActionEmitir").click()
 
-            self._existenciaPage("certidaoActionForm:certidaoActionImprimir")
-            self.driver.find_element(By.ID,"certidaoActionForm:certidaoActionImprimir").click()
+                self._existenciaPage("certidaoActionForm:certidaoActionImprimir")
+                self.driver.find_element(By.ID,"certidaoActionForm:certidaoActionImprimir").click()
 
-            del c
-            del a
-            os.remove("page_"+str(namefile)+".png")
-            os.remove("crop_"+str(namefile)+".png")
+                del c
+                del a
+                os.remove("page_"+str(namefile)+".png")
+                os.remove("crop_"+str(namefile)+".png")
 
-            time.sleep(4)
+                time.sleep(4)
+            except:
+                print("ERRO _TRT15")    
             self._update_extract('_TRT15', self.dados.get('_id'))
 
     def _esaj_busca_nome_cpf(self,parm):
         if 'extracted' not in self.dados:
-            if self.login == False:
-                self._login_esaj()
-                self._esaj_busca_nome_cpf(parm)
-            else:
-                self.driver.get(config('PAGE_URL_ESAJ_B_NOME_CPF'))
-                self._existenciaPage("botaoConsultarProcessos")  
-                
-                if parm == "NOME":
-                    ValueSelect = "NMPARTE"
-                    ValueInput = self.dados.get('nome')
+            try:
+                if self.login == False:
+                    self._login_esaj()
+                    self._esaj_busca_nome_cpf(parm)
                 else:
-                    ValueSelect = "DOCPARTE"  
-                    ValueInput = self.dados.get('cpf')
+                    self.driver.get(config('PAGE_URL_ESAJ_B_NOME_CPF'))
+                    self._existenciaPage("botaoConsultarProcessos")  
+                    
+                    if parm == "NOME":
+                        ValueSelect = "NMPARTE"
+                        ValueInput = self.dados.get('nome')
+                    else:
+                        ValueSelect = "DOCPARTE"  
+                        ValueInput = self.dados.get('cpf')
 
-                self._select("cbPesquisa",ValueSelect)
-                self.driver.find_element(By.ID, f"campo_{ValueSelect}").send_keys(ValueInput)
-                self.driver.find_element(By.ID,"botaoConsultarProcessos").click()
-                time.sleep(4)
-                self.driver.save_screenshot(f"{self.path_download}/print_tela_{ValueSelect}.png")
-                self._update_extract(f'_ESAJ_BUSCA_{parm}', self.dados.get('_id'))
+                    self._select("cbPesquisa",ValueSelect)
+                    self.driver.find_element(By.ID, f"campo_{ValueSelect}").send_keys(ValueInput)
+                    self.driver.find_element(By.ID,"botaoConsultarProcessos").click()
+                    time.sleep(4)
+                    self.driver.save_screenshot(f"{self.path_download}/print_tela_{ValueSelect}.png")
+            except:
+                print(f"ERRO _ESAJ_BUSCA_{parm}")        
+            self._update_extract(f'_ESAJ_BUSCA_{parm}', self.dados.get('_id'))
 
     def _protestos(self):
         if 'extracted' not in self.dados:
-            self.driver.get(config('PAGE_URL_PROTESTO'))
-            self._existenciaPage("AbrangenciaNacional")
-            self.driver.execute_script("document.getElementById('cf-root').style.display = 'none'")
-            self.driver.find_element(By.ID,"AbrangenciaNacional").click()
-            self._select("TipoDocumento","1")
-            self.driver.find_element(By.ID,"Documento").send_keys(self.dados.get('cpf'))
-            self.driver.execute_script("ValidarConsulta(this)")
-            time.sleep(4)
-
-            if self.driver.page_source.find("o recaptcha do Google identificou um acesso inesperado") > -1:
-                print("O robô esta sofrendo um bloqueio de ip")
-            else:    
+            try:
+                self.driver.get(config('PAGE_URL_PROTESTO'))
+                self._existenciaPage("AbrangenciaNacional")
                 self.driver.execute_script("document.getElementById('cf-root').style.display = 'none'")
-            #self.driver.save_screenshot(f"{self.path_download}/print_tela_protesto.png")
-            time.sleep(4)
-            self.driver.execute_script('window.print();')
-            time.sleep(1)
+                self.driver.find_element(By.ID,"AbrangenciaNacional").click()
+                self._select("TipoDocumento","1")
+                self.driver.find_element(By.ID,"Documento").send_keys(self.dados.get('cpf'))
+                self.driver.execute_script("ValidarConsulta(this)")
+                time.sleep(4)
+
+                if self.driver.page_source.find("o recaptcha do Google identificou um acesso inesperado") > -1:
+                    print("O robô esta sofrendo um bloqueio de ip")
+                else:    
+                    self.driver.execute_script("document.getElementById('cf-root').style.display = 'none'")
+                #self.driver.save_screenshot(f"{self.path_download}/print_tela_protesto.png")
+                time.sleep(4)
+                self.driver.execute_script('window.print();')
+                time.sleep(1)
+            except:
+                print("ERRO _PROTESTO")    
             self._update_extract('_PROTESTOS', self.dados.get('_id'))    
         

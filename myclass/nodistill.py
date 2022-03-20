@@ -2,6 +2,7 @@ from myclass.captcha import Captcha
 from decouple import config
 from selenium.webdriver.common.by import By
 import undetected_chromedriver.v2 as uc
+from db.class_mongo import Mongo
 import time
 
 class Nodistill:
@@ -25,62 +26,73 @@ class Nodistill:
     def _existenciaPage(self,id):
         while len(self.driver.find_elements(By.ID, id)) < 1:
             print(f"não encontramos {id} na pagina")
-            time.sleep(0.5)    
+            time.sleep(0.5) 
+
+    def _update_extract(self,fild,_id):
+        mongo = Mongo(config('MONGO_DB'))
+        mongo._getcoll(config('MONGO_COLL'))
+        mongo._update_one({'$set' :{f'extracted.{fild}': True}}, {'_id': _id})
 
     def _pje_trf3(self):
-        self.driver.get(config('PAGE_URL_PJE_TRF3'))
-        self.driver.find_element(By.ID,"fPP:dpDec:documentoParte").send_keys(self.dados.get('cpf'))
-        self.driver.find_element(By.ID,"fPP:searchProcessos").click()
+        if 'extracted' not in self.dados:
+            self.driver.get(config('PAGE_URL_PJE_TRF3'))
+            self.driver.find_element(By.ID,"fPP:dpDec:documentoParte").send_keys(self.dados.get('cpf'))
+            self.driver.find_element(By.ID,"fPP:searchProcessos").click()
 
-        c = Captcha(config('DATA_SITE_KEY_HCAPTCHA_PJE'),config('PAGE_URL_PJE_TRF3'),'hcaptcha')
-        resp = c._resolve()
-        #PEGAR O data-hcaptcha-widget-id DO FRAME
-        id = self.driver.find_element(By.XPATH,"//*[@id='fPP:j_id236']/div/iframe").get_attribute("data-hcaptcha-widget-id")
-        #print(id)
-        #self.driver.execute_script(f'document.getElementById("g-recaptcha-response-{id}").innerHTML="{resp}";')
-        self.driver.execute_script(f'document.getElementById("h-captcha-response-{id}").innerHTML="{resp}";')
-        #CALLBACK
-        self.driver.execute_script("A4J.AJAX.Submit('fPP',event,{'similarityGroupingId':'fPP:searchProcessos','parameters':{'fPP:searchProcessos':'fPP:searchProcessos'} } )")    
-        time.sleep(4)
+            c = Captcha(config('DATA_SITE_KEY_HCAPTCHA_PJE'),config('PAGE_URL_PJE_TRF3'),'hcaptcha')
+            resp = c._resolve()
+            #PEGAR O data-hcaptcha-widget-id DO FRAME
+            id = self.driver.find_element(By.XPATH,"//*[@id='fPP:j_id236']/div/iframe").get_attribute("data-hcaptcha-widget-id")
+            self.driver.execute_script(f'document.getElementById("h-captcha-response-{id}").innerHTML="{resp}";')
+            #CALLBACK
+            self.driver.execute_script("A4J.AJAX.Submit('fPP',event,{'similarityGroupingId':'fPP:searchProcessos','parameters':{'fPP:searchProcessos':'fPP:searchProcessos'} } )")    
+            time.sleep(4)
 
     def _CND_Federal(self):
-        self.driver.get(config('PAGE_URL_FEDERAL'))
-        self.driver.find_element(By.ID,"NI").send_keys(self.dados.get('cpf'))
-        time.sleep(0.8)
-        self.driver.find_element(By.ID,"validar").click()
-        self._existenciaPage("FrmSelecao")
+        if 'extracted' not in self.dados:
+            try:
+                self.driver.get(config('PAGE_URL_FEDERAL'))
+                self.driver.find_element(By.ID,"NI").send_keys(self.dados.get('cpf'))
+                time.sleep(0.8)
+                self.driver.find_element(By.ID,"validar").click()
+                self._existenciaPage("FrmSelecao")
+                url = self.driver.find_element(By.XPATH,"//*[@id='FrmSelecao']/a[1]").get_attribute("href")
+                self.driver.get(url)
+                self._existenciaPage("PeriodoInicio")
+                time.sleep(0.8)
+                self.driver.find_element(By.ID,"validar").click()
+                self._existenciaPage("resultado")
+                self.driver.find_element(By.XPATH,"//*[@id='resultado']/table/tbody/tr[1]/td[7]/a").click()
+                time.sleep(4)
+            except:
+                print("Erro ocorrido ao rodar o _CND_FEDERAL")
 
-        url = self.driver.find_element(By.XPATH,"//*[@id='FrmSelecao']/a[1]").get_attribute("href")
-        self.driver.get(url)
-
-        self._existenciaPage("PeriodoInicio")
-
-        time.sleep(0.8)
-        self.driver.find_element(By.ID,"validar").click()
-
-        self._existenciaPage("resultado")
-
-        self.driver.find_element(By.XPATH,"//*[@id='resultado']/table/tbody/tr[1]/td[7]/a").click()
-        time.sleep(4)
+            self._update_extract('_CND_FEDERAL', self.dados.get('_id'))            
 
     def _trf3_jus(self):
-        self.driver.get(config('PAGE_URL_TRF3_JUS'))
-        self._existenciaPage("Nome")
-        self.driver.find_element(By.ID,"abrangenciaSJSP").click()
-        self.driver.find_element(By.ID,"Nome").send_keys(self.dados.get('nome'))
-        time.sleep(0.8)
-        self.driver.execute_script(f"document.getElementById('CpfCnpj').value = '{self.dados.get('cpf')}'")
-        time.sleep(0.8)
-        self.driver.find_element(By.ID,"BtGeraCerticao").click()
+        if 'extracted' not in self.dados:
+            try:
+                self.driver.get(config('PAGE_URL_TRF3_JUS'))
+                self._existenciaPage("Nome")
+                self.driver.find_element(By.ID,"abrangenciaSJSP").click()
+                self.driver.find_element(By.ID,"Nome").send_keys(self.dados.get('nome'))
+                time.sleep(0.8)
+                self.driver.execute_script(f"document.getElementById('CpfCnpj').value = '{self.dados.get('cpf')}'")
+                time.sleep(0.8)
+                self.driver.find_element(By.ID,"BtGeraCerticao").click()
 
-        while True:
-            if self.driver.pag_source.find("Gerar PDF") > -1:
-                print("O cara existe")
-                self.driver.find_element(By.XPATH,"//*[@id='frm']/p/a").click()
-                break
-            else:
-                print("Não existe ainda")
-                time.sleep(2)
-                pass
-        time.sleep(4)    
+                while True:
+                    if self.driver.pag_source.find("Gerar PDF") > -1:
+                        print("O cara existe")
+                        self.driver.find_element(By.XPATH,"//*[@id='frm']/p/a").click()
+                        break
+                    else:
+                        print("Não existe ainda")
+                        time.sleep(2)
+                        pass
+                time.sleep(4)    
+            except:
+                print("Erro ocorrido ao rodar _trf3_jus")    
+
+            self._update_extract('_TRF3_JUS', self.dados.get('_id'))    
 
