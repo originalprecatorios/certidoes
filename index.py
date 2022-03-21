@@ -9,9 +9,6 @@ from apscheduler.executors.pool import ProcessPoolExecutor, ThreadPoolExecutor
 from apscheduler.schedulers.background import BackgroundScheduler
 import time,json,pytz
 
-#MODELOS apenas para esaj certificdo
-#6 - CERTIDÃO DE DISTRIBUIÇÃO DE AÇÕES CRIMINAIS
-
 def _process():
     print("INICIALIZANDO PROCESSO...")
     mongo_datas = Mongo('certidoes')   
@@ -26,8 +23,6 @@ def _process():
         if 'extracted' not in data:
 
             mongo_datas._update_one({'$set' :{'extracted': {}}}, {'_id': _id})
-            
-
             mongo_datas._update_one({'$set' :{'extracted': 
             {
                 '_CND_ESTADUAL': False,
@@ -76,18 +71,15 @@ job_defaults = {
     'coalesce': False,
     #DEFINE A QUANTIDADE DE INSTANCIAS QUE PODE TRABALHAR
     'max_instances': 1
-}
-    
+}  
 scheduler = BackgroundScheduler(
     executors=executors, job_defaults=job_defaults,
     timezone=pytz.timezone('America/Sao_Paulo')
 )
-
 #scheduler.add_job(_process, trigger='cron', hour='7')
 scheduler.add_job(_process, 'interval', hours=1)
 
 if __name__ == '__main__':  
-    print('Start')
     scheduler.start()
     try:
         while True:
