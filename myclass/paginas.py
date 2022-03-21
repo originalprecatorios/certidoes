@@ -1,3 +1,4 @@
+from tabnanny import check
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import Select
@@ -105,8 +106,18 @@ class Paginas:
         mongo._getcoll(config('MONGO_COLL'))
         mongo._update_one({'$set' :{f'extracted.{fild}': True}}, {'_id': _id})
 
+    def _check_exists(self,parm):
+        check_exists = False
+        if 'extracted' in self.dados:
+            if f'{parm}' in self.dados['extracted']:
+                if self.dados['extracted'][f'{parm}'] == True:
+                    check_exists = True
+
+        return check_exists  
+
     def _CND_Estadual (self):  
-        if 'extracted' not in self.dados:   
+        
+        if not self._check_exists('_CND_ESTADUAL'):   
             try: 
                 self.driver.get(config('PAGE_URL'))
                 #VERIFICAR SE A PAGINA JA ESTA CARREGADA
@@ -131,7 +142,7 @@ class Paginas:
             self._update_extract('_CND_ESTADUAL', self.dados.get('_id'))    
 
     def _CND_Municipal(self):
-        if 'extracted' not in self.dados:
+        if not self._check_exists('_CND_MUNICIPAL'): 
             try:
                 self.driver.get(config('PAGE_URL_MUN'))
                 self._select('ctl00_ConteudoPrincipal_ddlTipoCertidao','1')
@@ -161,7 +172,7 @@ class Paginas:
             self._update_extract('_CND_MUNICIPAL', self.dados.get('_id'))  
 
     def _CND_Contribuinte(self):
-        if 'extracted' not in self.dados:
+        if not self._check_exists('_CND_CONTRIBUINTE'): 
             try:
                 self.driver.get(config('PAGE_URL_CONTRIBUINTE'))
                 self._existenciaPage("emitirCrda:crdaInputCpf")
@@ -178,31 +189,35 @@ class Paginas:
                 print("ERRO _CND_CONTRIBUINTE")    
             self._update_extract('_CND_CONTRIBUINTE', self.dados.get('_id'))             
 
-    def _esaj_certidao(self):
-        if 'extracted' not in self.dados:
+    def _esaj_certidao(self,valor):
+        if not self._check_exists(f'_ESAJ_CERTIDAO_{valor}'): 
             try:
                 if self.login == False:
                     self._login_esaj()
-                    self._esaj_certidao()
+                    self._esaj_certidao(valor)
                 else:    
                     genero = self.dados.get("genero")
                     self.driver.get(config('PAGE_URL_CRIMINAL_1'))
-                    self._select("cdModelo","6")
+                    self._select("cdModelo",valor)
                     time.sleep(1)
                     self.driver.find_element(By.ID,"nmCadastroF").send_keys(self.dados.get("nome"))
                     self.driver.find_element(By.ID,"identity.nuCpfFormatado").send_keys(self.dados.get("cpf"))
                     self.driver.find_element(By.ID,"identity.nuRgFormatado").send_keys(self.dados.get("rg"))
 
                     self.driver.find_element(By.ID,f"flGenero{genero}").click()
-                    self.driver.find_element(By.ID,"nmMaeCadastro").send_keys(self.dados.get("mae"))
-                    self.driver.find_element(By.ID,"dataNascimento").send_keys(self.dados.get("nascimento"))
+
+                    if valor == "6":
+                        self.driver.find_element(By.ID,"nmMaeCadastro").send_keys(self.dados.get("mae"))
+                        self.driver.find_element(By.ID,"dataNascimento").send_keys(self.dados.get("nascimento"))
+
                     self.driver.find_element(By.ID,"identity.solicitante.deEmail").send_keys(config('EMAILESAJ'))
                     self.driver.find_element(By.ID,"confirmacaoInformacoes").click()
+                    time.sleep(1)
                     self.driver.find_element(By.ID,"pbEnviar").click()
 
                     while True:               
                         try:
-                            if self.driver.page_source.find("Já foi cadastrado um pedido de certidão para este"):
+                            if self.driver.page_source.find("Já foi cadastrado um pedido de certidão para este") > -1:
                                 self.driver.find_element(By.ID,"btnSim").click()
                                 self.tentativas = 0
                                 break
@@ -218,13 +233,16 @@ class Paginas:
                     if self.driver.page_source.find("Não foi possível executar esta operação. Tente novamente mais tarde.") <= -1 :
                         self._existenciaPage("pbImprimir")
 
-                    self.driver.save_screenshot(f"{self.path_download}/print_tela_esaj.png")
+                    self.driver.save_screenshot(f"{self.path_download}/print_tela_esaj_{valor}.png")
             except:
-                print("ERRO _ESAJ_CERTIFICADO")    
-            self._update_extract('_ESAJ_CERTIDAO', self.dados.get('_id'))
+                print(f"ERRO _ESAJ_CERTIDAO_{valor}")
+
+            if self.driver.page_source.find("Não foi possível executar esta operação. Tente novamente mais tarde.") > -1:
+                print("ERRO - Não foi possível executar esta operação. Tente novamente mais tarde.")       
+            self._update_extract(f'_ESAJ_CERTIDAO_{valor}', self.dados.get('_id'))
 
     def _trtsp(self):
-        if 'extracted' not in self.dados:
+        if not self._check_exists('_TRTSP'): 
             try:
                 namefile = random.randrange(99999)
                 self.driver.get(config('PAGE_URL_TRTSP'))
@@ -268,7 +286,7 @@ class Paginas:
             self._update_extract('_TRTSP', self.dados.get('_id'))      
     
     def _tst_trabalhista(self):
-        if 'extracted' not in self.dados:
+        if not self._check_exists('_TST_TRABALHISTA'): 
             try:
                 self.driver.get(config('PAGE_URL_TST'))
                 self._existenciaPage("corpo")
@@ -292,7 +310,7 @@ class Paginas:
             self._update_extract('_TST_TRABALHISTA', self.dados.get('_id'))
 
     def _trt15(self):
-        if 'extracted' not in self.dados:
+        if not self._check_exists('_TRT15'): 
             try:
                 namefile = random.randrange(999999999)
                 self.driver.get(config('PAGE_URL_TRT15'))
@@ -321,7 +339,7 @@ class Paginas:
             self._update_extract('_TRT15', self.dados.get('_id'))
 
     def _esaj_busca_nome_cpf(self,parm):
-        if 'extracted' not in self.dados:
+        if not self._check_exists(f'_ESAJ_BUSCA_{parm}'): 
             try:
                 if self.login == False:
                     self._login_esaj()
@@ -341,13 +359,15 @@ class Paginas:
                     self.driver.find_element(By.ID, f"campo_{ValueSelect}").send_keys(ValueInput)
                     self.driver.find_element(By.ID,"botaoConsultarProcessos").click()
                     time.sleep(4)
-                    self.driver.save_screenshot(f"{self.path_download}/print_tela_{ValueSelect}.png")
+                    self.driver.execute_script('window.print();')
+                    time.sleep(1)
+                    #self.driver.save_screenshot(f"{self.path_download}/print_tela_{ValueSelect}.png")
             except:
                 print(f"ERRO _ESAJ_BUSCA_{parm}")        
             self._update_extract(f'_ESAJ_BUSCA_{parm}', self.dados.get('_id'))
 
     def _protestos(self):
-        if 'extracted' not in self.dados:
+        if not self._check_exists('_PROTESTOS'): 
             try:
                 self.driver.get(config('PAGE_URL_PROTESTO'))
                 self._existenciaPage("AbrangenciaNacional")

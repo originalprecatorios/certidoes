@@ -33,7 +33,8 @@ def _process():
                 '_TRTSP':False,
                 '_TRT15':False,
                 '_TRF3_JUS':False,
-                '_ESAJ_CERTIDAO':False,
+                '_ESAJ_CERTIDAO_1':False,
+                '_ESAJ_CERTIDAO_52':False,
                 '_ESAJ_BUSCA_NOME':False,
                 '_ESAJ_BUSCA_CPF':False,
                 '_PROTESTOS':False,
@@ -47,7 +48,10 @@ def _process():
         p._trtsp()
         p._tst_trabalhista()
         p._trt15()
-        p._esaj_certidao()
+
+        p._esaj_certidao('6')
+        p._esaj_certidao('52')
+
         p._esaj_busca_nome_cpf("NOME")
         p._esaj_busca_nome_cpf("CPF")
         p._protestos()
@@ -62,7 +66,7 @@ def _process():
 
 #e = Smtp()
 #e._Envia_Email("junior.ppp@gmail.com","Olá Gelson sua certidões foi extraidas com sucesso.")
-
+_process()
 executors = {
     'default': ThreadPoolExecutor(20),      
     'processpool': ProcessPoolExecutor(5)

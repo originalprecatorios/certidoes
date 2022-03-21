@@ -28,6 +28,15 @@ class Nodistill:
             print(f"não encontramos {id} na pagina")
             time.sleep(0.5) 
 
+    def _check_exists(self,parm):
+        check_exists = False
+        if 'extracted' in self.dados:
+            if f'{parm}' in self.dados['extracted']:
+                if self.dados['extracted'][f'{parm}'] == True:
+                    check_exists = True
+
+        return check_exists          
+
     def _update_extract(self,fild,_id):
         mongo = Mongo(config('MONGO_DB'))
         mongo._getcoll(config('MONGO_COLL'))
@@ -49,7 +58,7 @@ class Nodistill:
             time.sleep(4)
 
     def _CND_Federal(self):
-        if 'extracted' not in self.dados:
+        if not self._check_exists('_CND_FEDERAL'): 
             try:
                 self.driver.get(config('PAGE_URL_FEDERAL'))
                 self.driver.find_element(By.ID,"NI").send_keys(self.dados.get('cpf'))
@@ -70,7 +79,7 @@ class Nodistill:
             self._update_extract('_CND_FEDERAL', self.dados.get('_id'))            
 
     def _trf3_jus(self):
-        if 'extracted' not in self.dados:
+        if not self._check_exists('_TRF3_JUS'): 
             try:
                 self.driver.get(config('PAGE_URL_TRF3_JUS'))
                 self._existenciaPage("Nome")
