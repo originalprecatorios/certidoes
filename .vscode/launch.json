@@ -15,6 +15,18 @@
                 "PYTHONPATH": "${workspaceFolder}"
             },
             "justMyCode": true
+        },
+        {
+            "name": "CERTIDOES2",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/index2.py",
+            "console": "integratedTerminal",
+            "envFile": "${workspaceFolder}/.env",
+            "env": {
+                "PYTHONPATH": "${workspaceFolder}"
+            },
+            "justMyCode": true
         }
     ]
 }

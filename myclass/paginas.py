@@ -47,7 +47,7 @@ class Paginas:
                                                 })
 
             self.driver = webdriver.Chrome('/opt/drivers/chromedriver' , options=opt)
-            self.driver.implicitly_wait(10)
+            #self.driver.implicitly_wait(10)
             #driver.set_page_load_timeout(20)
             print("\033[32m"+"Pronto!, Chrome já esta inicializado."+"\033[0;0m")
         else:
@@ -185,12 +185,13 @@ class Paginas:
                 self.Erro = 1    
                         
 
-    def _esaj_certidao(self,valor,print=False):
+    def _esaj_certidao(self,valor,prt_sc="1"):
         if not self._check_exists(f'_ESAJ_CERTIDAO_{valor}'): 
             try:
                 if self.login == False:
                     self._login_esaj()
-                    self._esaj_certidao(valor)
+                    self._esaj_certidao(valor,print)
+                    exit
                 else:    
                     genero = self.dados.get("genero")
                     self.driver.get(config('PAGE_URL_CRIMINAL_1'))
@@ -229,7 +230,7 @@ class Paginas:
                     print("Rodou esaj.")
                     time.sleep(4)
 
-                    if print:
+                    if str(prt_sc) == "1":
                         try:
                             self.driver.execute_script('window.print();')
                         except:

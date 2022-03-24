@@ -47,10 +47,10 @@ class Robo:
             """
             Esaj Certidão
             string - Numero do id Modelo
-            Boolean - True (Tira screenshot da tela), por padrão é False
+            Boolean - 0 (Não tira screenshot da tela), por padrão é 1
             """
-            p._esaj_certidao('6',False)
-            p._esaj_certidao('52',False)
+            p._esaj_certidao('6',"0")
+            p._esaj_certidao('52',"0")
             p._esaj_busca_nome_cpf("NOME")
             p._esaj_busca_nome_cpf("CPF")
 
@@ -80,7 +80,9 @@ class Robo:
                 arq = open(config('PATH_FILES')+_cpf+"/resumo.txt","a")
 
                 for chave,d in dt:
-                    arq.write(d + " - " + chave)
+                    arq.write(str(d) + " - " + chave)
+                    false - _CND_ESAJ
+                    TRUE - PJE
 
                 arq.close()
 
