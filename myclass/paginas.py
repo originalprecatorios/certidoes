@@ -1,4 +1,3 @@
-from tabnanny import check
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import Select
@@ -12,9 +11,9 @@ class Paginas:
     def __init__(self,dados):
         self.login = False
         self.path_download = config('PATH_FILES')+dados.get('cpf')
-        #self.ex = dados.get("extracted")
         self.dados = dados
         self.tentativas = 0
+        self.Erro = 0
 
         if dados.get('cpf') != "000.000.000-00":
             opt = webdriver.ChromeOptions()
@@ -34,12 +33,6 @@ class Paginas:
 
             opt.add_argument("--window-size=2560,1440")
             opt.add_argument("start-maximized")
-            opt.add_argument("--disable-xss-auditor")
-            opt.add_argument("--disable-web-security")
-            opt.add_argument("--allow-running-insecure-content")
-            opt.add_argument("--no-sandbox")
-            opt.add_argument("--disable-setuid-sandbox")
-            opt.add_argument("--disable-webgl")
             opt.add_argument("--disable-popup-blocking")
             opt.add_argument("ignore-certificate-errors")
             opt.add_argument('--kiosk-printing')
@@ -54,12 +47,9 @@ class Paginas:
                                                 })
 
             self.driver = webdriver.Chrome('/opt/drivers/chromedriver' , options=opt)
-            #driver.implicitly_wait(10)
+            self.driver.implicitly_wait(10)
             #driver.set_page_load_timeout(20)
             print("\033[32m"+"Pronto!, Chrome já esta inicializado."+"\033[0;0m")
-            r = Captcha("","")
-            
-            print('\033[33m'+f'Meu saldo no 2Captch : {r._saldo()}'+'\033[0;0m')
         else:
             print("Não consigo criar a pasta.")
 
@@ -138,7 +128,8 @@ class Paginas:
                 time.sleep(4)
                 self._update_extract('_CND_ESTADUAL', self.dados.get('_id')) 
             except:
-                print("ERRO _CND_ESTADUAL")    
+                print("ERRO _CND_ESTADUAL")
+                self.Erro = 1  
 
                
 
@@ -170,7 +161,8 @@ class Paginas:
                 time.sleep(4)
                 self._update_extract('_CND_MUNICIPAL', self.dados.get('_id')) 
             except:
-                print("ERRO _CND_MUNICIPAL")    
+                print("ERRO _CND_MUNICIPAL")
+                self.Erro = 1   
              
 
     def _CND_Contribuinte(self):
@@ -189,10 +181,11 @@ class Paginas:
                 time.sleep(4)  
                 self._update_extract('_CND_CONTRIBUINTE', self.dados.get('_id')) 
             except:
-                print("ERRO _CND_CONTRIBUINTE")    
+                print("ERRO _CND_CONTRIBUINTE")
+                self.Erro = 1    
                         
 
-    def _esaj_certidao(self,valor):
+    def _esaj_certidao(self,valor,print=False):
         if not self._check_exists(f'_ESAJ_CERTIDAO_{valor}'): 
             try:
                 if self.login == False:
@@ -220,10 +213,9 @@ class Paginas:
 
                     while True:               
                         try:
-                            if self.driver.page_source.find("Já foi cadastrado um pedido de certidão para este") > -1:
-                                self.driver.find_element(By.ID,"btnSim").click()
-                                self.tentativas = 0
-                                break
+                            self.driver.find_element(By.ID,"btnSim").click()
+                            self.tentativas = 0
+                            break
                         except:
                             if int(self.tentativas) < int(config('TENTATIVAS')) :
                                 self.tentativas += 1
@@ -231,20 +223,22 @@ class Paginas:
                                 pass   
                             else:
                                 self.tentativas = 0
+                                print("Esgotou as tentativas")
                                 break 
 
-                    #if self.driver.page_source.find("Não foi possível executar esta operação. Tente novamente mais tarde.") <= -1 :
-                        #self._existenciaPage("pbImprimir")
-                    print("fui")
+                    print("Rodou esaj.")
                     time.sleep(4)
-                    try:
-                        self.driver.execute_script('window.print();')
-                    except:
-                        print("Não conseguiu printar a tela")
+
+                    if print:
+                        try:
+                            self.driver.execute_script('window.print();')
+                        except:
+                            print("Não conseguiu printar a tela")
 
                     self._update_extract(f'_ESAJ_CERTIDAO_{valor}', self.dados.get('_id'))
             except:
                 print(f"ERRO _ESAJ_CERTIDAO_{valor}")
+                self.Erro = 1
 
     def _trtsp(self):
         if not self._check_exists('_TRTSP'): 
@@ -288,7 +282,8 @@ class Paginas:
                 time.sleep(4) 
                 self._update_extract('_TRTSP', self.dados.get('_id'))
             except:
-                print("ERRO _TRTSP")    
+                print("ERRO _TRTSP")
+                self.Erro = 1   
                   
     def _tst_trabalhista(self):
         if not self._check_exists('_TST_TRABALHISTA'): 
@@ -313,6 +308,7 @@ class Paginas:
                 self._update_extract('_TST_TRABALHISTA', self.dados.get('_id'))
             except:
                 print("ERRO _TST_TRABALHISTA")    
+                self.Erro = 1 
             
 
     def _trt15(self):
@@ -343,6 +339,7 @@ class Paginas:
                 self._update_extract('_TRT15', self.dados.get('_id'))
             except:
                 print("ERRO _TRT15")    
+                self.Erro = 1 
 
     def _esaj_busca_nome_cpf(self,parm):
         if not self._check_exists(f'_ESAJ_BUSCA_{parm}'): 
@@ -370,7 +367,8 @@ class Paginas:
                     #self.driver.save_screenshot(f"{self.path_download}/print_tela_{ValueSelect}.png")
                     self._update_extract(f'_ESAJ_BUSCA_{parm}', self.dados.get('_id'))
             except:
-                print(f"ERRO _ESAJ_BUSCA_{parm}")        
+                print(f"ERRO _ESAJ_BUSCA_{parm}")  
+                self.Erro = 1       
 
     def _protestos(self):
         if not self._check_exists('_PROTESTOS'): 
@@ -394,5 +392,6 @@ class Paginas:
                 time.sleep(1)
                 self._update_extract('_PROTESTOS', self.dados.get('_id')) 
             except:
-                print("ERRO _PROTESTO")       
+                print("ERRO _PROTESTO")  
+                self.Erro = 1      
         

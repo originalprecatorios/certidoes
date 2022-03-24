@@ -17,6 +17,7 @@ class Robo:
         
         for data in datas:
             _id = data['_id']
+            _cpf = data['cpf']
             
             mongo_datas._update_one({'$set' : {'process':True}}, {'_id': _id})
 
@@ -43,19 +44,22 @@ class Robo:
                 }}}, {'_id': _id})
 
             p = Paginas(data)
+            """
+            Esaj Certidão
+            string - Numero do id Modelo
+            Boolean - True (Tira screenshot da tela), por padrão é False
+            """
+            p._esaj_certidao('6',False)
+            p._esaj_certidao('52',False)
+            p._esaj_busca_nome_cpf("NOME")
+            p._esaj_busca_nome_cpf("CPF")
+
             p._CND_Estadual()
             p._CND_Contribuinte()
             p._CND_Municipal()
             p._trtsp()
             p._tst_trabalhista()
-            p._trt15()
-
-            p._esaj_certidao('6')
-            p._esaj_certidao('52')
-
-            p._esaj_busca_nome_cpf("NOME")
-            p._esaj_busca_nome_cpf("CPF")
-            
+            p._trt15()            
             p._protestos()
 
             #PARTE DE DESTILL
@@ -63,8 +67,26 @@ class Robo:
             pd._CND_Federal()
             pd._trf3_jus('TRF')
             pd._trf3_jus('SJSP')
+
+            
+
             #pd._pje_trf3(_cpf)
 
-            mongo_datas._update_one({'$set' :{'status_process': True}}, {'_id': _id})
+            #CASO OUVER ALGUM ERRO NÂO ATUALIZA STATUS_PROCESS E PROCESS
+            if p.Erro == 1 or pd.Erro == 1:
+                mongo_datas._update_one({'$set' : {'process':False}}, {'_id': _id})
+                dt = mongo_datas._return_query({'_id':_id},{'extracted':1})
+
+                arq = open(config('PATH_FILES')+_cpf+"/resumo.txt","a")
+
+                for chave,d in dt:
+                    arq.write(d + " - " + chave)
+
+                arq.close()
+
+            else:
+                mongo_datas._update_one({'$set' :{'status_process': True}}, {'_id': _id})
+
+               
         #e = Smtp()
         #e._Envia_Email("junior.ppp@gmail.com","Olá Gelson sua certidões foi extraidas com sucesso.")

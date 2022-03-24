@@ -6,6 +6,7 @@ from decouple import config
 import time
 
 if __name__ == '__main__':
+
     path_download = config('PATH_FILES')+"325.044.888-52"
     options = uc.ChromeOptions()
     options.add_argument('--no-first-run')
@@ -17,29 +18,18 @@ if __name__ == '__main__':
     }
 
     driver.execute_cdp_cmd("Page.setDownloadBehavior", params)
-    driver.get('https://solucoes.receita.fazenda.gov.br/Servicos/certidaointernet/PF/Emitir')  # known url using cloudflare's "under attack mode"
+
+    arq = open(config('PATH_FILES')+"022.090.028-00/resumo.txt","a")
+    arq.write("Teste \n")
+    arq.close()
+                
+    driver.get('https://www10.fazenda.sp.gov.br/CertidaoNegativaDeb/Pages/EmissaoCertidaoNegativa.aspx')  # known url using cloudflare's "under attack mode"
     #time.sleep(6)
-    driver.find_element(By.ID,"NI").send_keys("325.044.888-58")
-    time.sleep(0.8)
-    driver.find_element(By.ID,"validar").click()
-    while len(driver.find_elements(By.ID, "FrmSelecao")) < 1:
-        print(f"não encontramos")
-        time.sleep(0.5)
+    driver.find_element(By.ID,"MainContent_txtDocumento").send_keys("325.044.888-58")
 
-    url = driver.find_element(By.XPATH,"//*[@id='FrmSelecao']/a[1]").get_attribute("href")
-    driver.get(url)
+    frame = driver.find_element(By.XPATH,"//*[@id='ReCaptchContainer']/div/div/iframe") 
+    driver.switch_to.frame(frame)
+    driver.find_element(By.CLASS_NAME,"recaptcha-checkbox-border").click()
 
-    while len(driver.find_elements(By.ID, "PeriodoInicio")) < 1:
-        print(f"não encontramos")
-        time.sleep(0.5)
-
-    time.sleep(0.8)
-    driver.find_element(By.ID,"validar").click()
-
-    while len(driver.find_elements(By.ID, "resultado")) < 1:
-        print(f"não encontramos")
-        time.sleep(0.5)
-
-    driver.find_element(By.XPATH,"//*[@id='resultado']/table/tbody/tr[1]/td[7]/a").click()
-    time.sleep(4)
+    time.sleep(100)
 

@@ -12,6 +12,7 @@ class Nodistill:
         self.path_download = config('PATH_FILES')+dados.get('cpf')
         self.dados = dados
         self.tentativas = 0
+        self.Erro = 0 
 
         options = uc.ChromeOptions()
         options.add_argument('--no-first-run')
@@ -45,7 +46,8 @@ class Nodistill:
                 if self.dados['extracted'][f'{parm}'] == True:
                     check_exists = True
 
-        return check_exists          
+        return check_exists
+         
 
     def _update_extract(self,fild,_id):
         mongo = Mongo(config('MONGO_DB'))
@@ -67,9 +69,11 @@ class Nodistill:
                 #CALLBACK
                 self.driver.execute_script("A4J.AJAX.Submit('fPP',event,{'similarityGroupingId':'fPP:searchProcessos','parameters':{'fPP:searchProcessos':'fPP:searchProcessos'} } )")    
                 time.sleep(4)
+                self._update_extract('_PJE_TRF3', self.dados.get('_id')) 
             except:
-                print("ERRO - _PJE_TRF3")    
-            self._update_extract('_PJE_TRF3', self.dados.get('_id'))      
+                print("ERRO - _PJE_TRF3")
+                self.Erro = 1     
+                 
 
     def _CND_Federal(self):
         if not self._check_exists('_CND_FEDERAL'): 
@@ -95,7 +99,8 @@ class Nodistill:
                 time.sleep(4)
                 self._update_extract('_CND_FEDERAL', self.dados.get('_id'))
             except Exception as e:
-                print("Erro ocorrido ao rodar o _CND_FEDERAL" + str(e))            
+                print("Erro ocorrido ao rodar o _CND_FEDERAL" + str(e))
+                self.Erro = 1           
 
     def _trf3_jus(self,tipo):
         if not self._check_exists(f'_TRF3_JUS_{tipo}'): 
@@ -128,5 +133,6 @@ class Nodistill:
                 time.sleep(4) 
                 self._update_extract(f'_TRF3_JUS_{tipo}', self.dados.get('_id'))    
             except:
-                print(f"Erro ocorrido ao rodar _trf3_jus_{tipo}")       
+                print(f"Erro ocorrido ao rodar _trf3_jus_{tipo}")  
+                self.Erro = 1      
 
