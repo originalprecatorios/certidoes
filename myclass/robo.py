@@ -4,6 +4,7 @@ from myclass.nodistill import Nodistill
 #from myclass.smtp import Smtp
 from db.class_mongo import Mongo
 from decouple import config
+import os
 
 class Robo:
     def __init__(self):
@@ -77,12 +78,17 @@ class Robo:
                 mongo_datas._update_one({'$set' : {'process':False}}, {'_id': _id})
                 dt = mongo_datas._return_query({'_id':_id},{'extracted':1})
 
-                arq = open(config('PATH_FILES')+_cpf+"/resumo.txt","a")
+                try:
+                    os.makedirs(f"{config('PATH_FILES')}{_cpf}/")
+                except:
+                    pass
 
-                for chave,d in dt:
-                    arq.write(str(d) + " - " + chave)
-                    false - _CND_ESAJ
-                    TRUE - PJE
+                arq = open(f"{config('PATH_FILES')}{_cpf}/resumo.txt","w")
+                for dado in dt:
+                    chave = dado['_id']
+                    for ex in dado['extracted']:
+                        arq.write(f"{str(dado['extracted'][ex])} - {ex}")
+        
 
                 arq.close()
 

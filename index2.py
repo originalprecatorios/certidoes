@@ -49,7 +49,6 @@ def _process():
         
         p._esaj_certidao('6',"0")
         p._esaj_certidao('52',"0")
-        """
         p._esaj_busca_nome_cpf("NOME")
         p._esaj_busca_nome_cpf("CPF")
 
@@ -66,30 +65,27 @@ def _process():
         pd._CND_Federal()
         pd._trf3_jus('TRF')
         pd._trf3_jus('SJSP')
-        """
-
-        
-
         #pd._pje_trf3(_cpf)
 
         #CASO OUVER ALGUM ERRO NÂO ATUALIZA STATUS_PROCESS E PROCESS
         
         mongo_datas._update_one({'$set' : {'process':False}}, {'_id': _id})
         dt = mongo_datas._return_query({'_id':_id},{'extracted':1})
+        if p.Erro == 1 or pd.Erro == 1:
+            try:
+                os.makedirs(f"{config('PATH_FILES')}{_cpf}/")
+            except:
+                pass
 
-        try:
-            os.makedirs(f"{config('PATH_FILES')}{_cpf}/")
-        except:
-            pass
-
-        arq = open(f"{config('PATH_FILES')}{_cpf}/resumo.txt","w")
-        for dado in dt:
-            chave = dado['_id']
-            for ex in dado['extracted']:
-                arq.write(f"{str(dado['extracted'][ex])} - {ex}")
-        
-
-        arq.close()
+            arq = open(f"{config('PATH_FILES')}{_cpf}/resumo.txt","w")
+            for dado in dt:
+                chave = dado['_id']
+                for ex in dado['extracted']:
+                    arq.write(f"{str(dado['extracted'][ex])} - {ex}")
+            
+            arq.close()
+        else:
+            mongo_datas._update_one({'$set' :{'status_process': True}}, {'_id': _id})    
 
                
         #e = Smtp()
