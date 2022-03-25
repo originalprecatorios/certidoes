@@ -68,9 +68,6 @@ class Robo:
             pd._CND_Federal()
             pd._trf3_jus('TRF')
             pd._trf3_jus('SJSP')
-
-            
-
             #pd._pje_trf3(_cpf)
 
             #CASO OUVER ALGUM ERRO NÂO ATUALIZA STATUS_PROCESS E PROCESS
