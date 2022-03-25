@@ -12,8 +12,8 @@ class Robo:
     
     def _process(self):
         print("INICIALIZANDO PROCESSO...")
-        mongo_datas = Mongo('certidoes')   
-        mongo_datas._getcoll('dados_busca')
+        mongo_datas = Mongo(config('MONGO_DB'))   
+        mongo_datas._getcoll(config('MONGO_COLL'))
         datas = mongo_datas._return_query({'status_process':{'$exists':False}, 'process':{'$exists':False}})
         
         for data in datas:
@@ -72,7 +72,7 @@ class Robo:
 
             #CASO OUVER ALGUM ERRO NÂO ATUALIZA STATUS_PROCESS E PROCESS
             if p.Erro == 1 or pd.Erro == 1:
-                
+
                 mongo_datas._update_one({'$set' : {'process':False}}, {'_id': _id})
                 dt = mongo_datas._return_query({'_id':_id},{'extracted':1})
 
