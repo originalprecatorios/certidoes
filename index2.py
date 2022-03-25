@@ -68,10 +68,11 @@ def _process():
         #pd._pje_trf3(_cpf)
 
         #CASO OUVER ALGUM ERRO NÂO ATUALIZA STATUS_PROCESS E PROCESS
-        
-        mongo_datas._update_one({'$set' : {'process':False}}, {'_id': _id})
-        dt = mongo_datas._return_query({'_id':_id},{'extracted':1})
         if p.Erro == 1 or pd.Erro == 1:
+            
+            mongo_datas._update_one({'$set' : {'process':False}}, {'_id': _id})
+            dt = mongo_datas._return_query({'_id':_id},{'extracted':1})
+
             try:
                 os.makedirs(f"{config('PATH_FILES')}{_cpf}/")
             except:
