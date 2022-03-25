@@ -88,7 +88,6 @@ class Robo:
                     chave = dado['_id']
                     for ex in dado['extracted']:
                         arq.write(f"{str(dado['extracted'][ex])} - {ex}")
-        
 
                 arq.close()
 
