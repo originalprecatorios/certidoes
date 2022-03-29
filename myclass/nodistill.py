@@ -41,7 +41,7 @@ class Nodistill:
                 time.sleep(0.5) 
 
     def _existenciaPage(self,id):
-        self.wait = WebDriverWait(self.driver, 60)
+        self.wait = WebDriverWait(self.driver, 120)
         self.wait.until(EC.presence_of_element_located((By.ID, id)))            
 
     def _check_exists(self,parm):
@@ -63,6 +63,7 @@ class Nodistill:
         if 'extracted' not in self.dados:
             try:
                 self.driver.get(config('PAGE_URL_PJE_TRF3'))
+                self._existenciaPage("fPP:dpDec:documentoParte")
                 self.driver.find_element(By.ID,"fPP:dpDec:documentoParte").send_keys(self.dados.get('cpf'))
                 self.driver.find_element(By.ID,"fPP:searchProcessos").click()
 
