@@ -40,7 +40,7 @@ def _process():
                 '_PJE_TRF3':False
             }}}, {'_id': _id})
 
-        p = Paginas(data)
+        p = Paginas(data,"FIREFOX")
         """
         Esaj Certidão
         string - Numero do id Modelo
