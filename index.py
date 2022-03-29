@@ -5,7 +5,7 @@ from myclass.robo import Robo
 
 def _import():
     try:
-        with open('csv/file.csv','r') as file:
+        with open('/files_csv/certidoes.csv','r') as file:
             linha = file.read()
             quebra = linha.split("\n")
             mongo_datas = Mongo('certidoes')
@@ -16,7 +16,7 @@ def _import():
                     mongo_datas._add_one({'nome': itens[0],'cpf':itens[1],'rg':itens[2].replace('.',"").replace("-",""),'nascimento':itens[3],'mae':itens[4],'genero':itens[6]})
                     print("INCLUIDO...")
             del mongo_datas
-            os.remove("csv/file.csv")
+            os.remove("/files_csv/certidoes.csv")
 
             robo = Robo()
             robo._process()
