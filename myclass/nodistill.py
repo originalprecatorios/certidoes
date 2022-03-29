@@ -1,7 +1,8 @@
-from lib2to3.pgen2 import driver
 from myclass.captcha import Captcha
 from decouple import config
 from selenium.webdriver.common.by import By
+from selenium.webdriver.support.wait import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 import undetected_chromedriver.v2 as uc
 from db.class_mongo import Mongo
 import time, os
@@ -29,7 +30,7 @@ class Nodistill:
         if not os.path.isdir(config('PATH_FILES')+dados.get('cpf')):
             os.mkdir(config('PATH_FILES')+dados.get('cpf'))
 
-    def _existenciaPage(self,id):
+    def _existenciaItem(self,id):
         while len(self.driver.find_elements(By.ID, id)) < 1:
             print(f"não encontramos {id} na pagina")
             if int(self.tentativas) >= int(config('TENTATIVAS')):
@@ -38,6 +39,10 @@ class Nodistill:
             else:
                 self.tentativas += 1
                 time.sleep(0.5) 
+
+    def _existenciaPage(self,id):
+        self.wait = WebDriverWait(self.driver, 60)
+        self.wait.until(EC.presence_of_element_located((By.ID, id)))            
 
     def _check_exists(self,parm):
         check_exists = False
@@ -79,10 +84,11 @@ class Nodistill:
         if not self._check_exists('_CND_FEDERAL'): 
             try:
                 self.driver.get(config('PAGE_URL_FEDERAL'))
+                self._existenciaPage("NI")
                 self.driver.find_element(By.ID,"NI").send_keys(self.dados.get('cpf'))
                 time.sleep(0.8)
                 self.driver.find_element(By.ID,"validar").click()
-                self._existenciaPage("FrmSelecao")
+                self._existenciaItem("FrmSelecao")
 
                 try:
                     
@@ -91,7 +97,7 @@ class Nodistill:
                     self._existenciaPage("PeriodoInicio")
                     time.sleep(0.8)
                     self.driver.find_element(By.ID,"validar").click()
-                    self._existenciaPage("resultado")
+                    self._existenciaItem("resultado")
                     self.driver.find_element(By.XPATH,"//*[@id='resultado']/table/tbody/tr[1]/td[7]/a").click()
                 except:
                     print("Não encontrado o link")

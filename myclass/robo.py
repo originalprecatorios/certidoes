@@ -44,7 +44,7 @@ class Robo:
                     '_PJE_TRF3':False
                 }}}, {'_id': _id})
 
-            p = Paginas(data,"FIREFOX")
+            p = Paginas(data)
             """
             Esaj Certidão
             string - Numero do id Modelo

@@ -1,0 +1,22 @@
+OK 2- CND ESTADUAL https://www10.fazenda.sp.gov.br/CertidaoNegativaDeb/Pages/EmissaoCertidaoNegativa.aspx
+OK 3- CND MUNICIPAL https://duc.prefeitura.sp.gov.br/certidoes/forms_anonimo/frmConsultaEmissaoCertificado.aspx Sempre de acordo com o município onde mora- por exemplo diadema, tem que ser especifico.
+OK [RESALVAS] 4- CND FEDERAL http://servicos.receita.fazenda.gov.br/Servicos/certidao/CndConjuntaInter/InformaNICertidao.asp?Tipo=2&?codServico=1061
+OK 5 E 6- CERTIDÃO DE DISTRIBUIÇÃO CIVIL E CRIMINAL 1ª INSTÂNCIA  https://esaj.tjsp.jus.br/sco/abrirCadastro.do
+OK 7- CERTIDÃO DE DISTRIBUIÇÃO CIVIL 2ª INSTÂNCIA – DEVE PREENCHER O FORMULÁRIO E ENVIAR POR E-MAIL
+OK 8- CERTIDÃO DE DISTRIBUIÇÃO CRIMINAL 2ª INSTÂNCIA - DEVE PREENCHER O FORMULÁRIO E ENVIAR POR E-MAIL
+OK 9 E 10- CERTIDÃO DE DISTRIBUIÇÃO FEDERAL 1ª E 2ª INSTÂNCIA http://web.trf3.jus.br/certidao/Certidao/Solicitar
+OK 11- CERTIDÃO TRABALHISTA https://aplicacoes10.trt2.jus.br/certidao_trabalhista_eletronica/public/index.php/index/solicitacao
+OK 12- CERTIDÃO DE DÉBITOS TRABALHISTAS http://www.tst.jus.br/certidao
+OK 13- CENPROT https://www.protestosp.com.br/consulta-de-protesto
+OK 14- TRT 15ª https://trt15.jus.br/servicos/certidoes/certidao-eletronica-de-acoes-trabalhistas-ceat
+OK 15- https://esaj.tjsp.jus.br/cpopg/open.do CONSULTA PELO CPF
+OK 15.1- https://esaj.tjsp.jus.br/cpopg/open.do CONSULTA PELO NOME
+16- https://www.trf3.jus.br/ PESQUISA TRF
+OK 17- https://www.dividaativa.pge.sp.gov.br/sc/pages/crda/emitirCrda.jsf?param=150304
+
+
+
+
+
+https://newassets.hcaptcha.com/captcha/v1/2d8c75f/static/hcaptcha-challenge.html#id=08arvfm8k05&host=pje1g.trf3.jus.br&sentry=true&reportapi=https%3A%2F%2Faccounts.hcaptcha.com&recaptchacompat=true&custom=false&hl=pt-BR&tplinks=on
+&sitekey=7e009f34-bff7-4068-a486-0b6fcf730b25&size=invisible&theme=light
