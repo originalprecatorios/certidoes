@@ -38,6 +38,7 @@ class Paginas:
             opt.add_argument("--disable-popup-blocking")
             opt.add_argument("ignore-certificate-errors")
             opt.add_argument('--kiosk-printing')
+            opt.add_argument('--no-sandbox')
 
             opt.add_experimental_option( "prefs", {
                                                     'printing.print_preview_sticky_settings.appState': json.dumps(settings),
