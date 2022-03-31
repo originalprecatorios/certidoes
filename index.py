@@ -1,3 +1,4 @@
+#!/usr/bin/python3
 from time import time
 from db.class_mongo import Mongo
 import os, time
@@ -16,7 +17,7 @@ def _import():
                     mongo_datas._add_one({'nome': itens[0],'cpf':itens[1],'rg':itens[2].replace('.',"").replace("-",""),'nascimento':itens[3],'mae':itens[4],'genero':itens[6]})
                     print("INCLUIDO...")
             del mongo_datas
-            os.remove("/files/files_csvfiles_csv/certidoes.csv")
+            os.remove("/files/files_csv/certidoes.csv")
 
             robo = Robo()
             robo._process()

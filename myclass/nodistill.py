@@ -14,22 +14,29 @@ class Nodistill:
         self.dados = dados
         self.tentativas = 0
         self.Erro = 0 
+        self.OpenBrowser = 0
 
-        options = uc.ChromeOptions()
-        options.add_argument('--no-first-run')
-        options.add_argument("--window-size=2560,1440")
-        options.add_argument('--no-sandbox')
-        self.driver = uc.Chrome(options=options, version_main=89)
-        #MUDAR A PARSTA DE DOWNLOAD
-        params = {
-            "behavior": "allow",
-            "downloadPath": self.path_download
-        }
+    def _navegador(self):
+        if self.OpenBrowser == 0:
+            options = uc.ChromeOptions()
+            options.add_argument('--no-first-run')
+            options.add_argument("--window-size=2560,1440")
+            options.add_argument('--no-sandbox')
+            self.driver = uc.Chrome(options=options, version_main=89)
+            #MUDAR A PARSTA DE DOWNLOAD
+            params = {
+                "behavior": "allow",
+                "downloadPath": self.path_download
+            }
 
-        self.driver.execute_cdp_cmd("Page.setDownloadBehavior", params)
+            self.driver.execute_cdp_cmd("Page.setDownloadBehavior", params)
 
-        if not os.path.isdir(config('PATH_FILES')+dados.get('cpf')):
-            os.mkdir(config('PATH_FILES')+dados.get('cpf'))
+            if not os.path.isdir(f"{config('PATH_FILES')}{self.dados.get('cpf')}"):
+                os.mkdir(f"{config('PATH_FILES')}{self.dados.get('cpf')}")
+
+            self.OpenBrowser = 1
+        else:
+            pass
 
     def _existenciaItem(self,id):
         while len(self.driver.find_elements(By.ID, id)) < 1:
@@ -40,9 +47,10 @@ class Nodistill:
             else:
                 self.tentativas += 1
                 time.sleep(0.5) 
-
-    def _existenciaPage(self,id):
+    def _wait(self):
         self.wait = WebDriverWait(self.driver, 120)
+
+    def _existenciaPage(self,id):    
         self.wait.until(EC.presence_of_element_located((By.ID, id)))            
 
     def _check_exists(self,parm):
@@ -84,8 +92,10 @@ class Nodistill:
 
     def _CND_Federal(self):
         if not self._check_exists('_CND_FEDERAL'): 
+            self._navegador()
             try:
                 self.driver.get(config('PAGE_URL_FEDERAL'))
+                self._wait()
                 self._existenciaPage("NI")
                 self.driver.find_element(By.ID,"NI").send_keys(self.dados.get('cpf'))
                 time.sleep(0.8)
@@ -112,8 +122,10 @@ class Nodistill:
 
     def _trf3_jus(self,tipo):
         if not self._check_exists(f'_TRF3_JUS_{tipo}'): 
+            self._navegador()
             try:
                 self.driver.get(config('PAGE_URL_TRF3_JUS'))
+                self._wait()
                 self._existenciaPage("Nome")
                 self.driver.find_element(By.ID, f"abrangencia{tipo}").click()
                 self.driver.find_element(By.ID,"Nome").send_keys(self.dados.get('nome'))

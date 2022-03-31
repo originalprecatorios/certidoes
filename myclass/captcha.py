@@ -34,7 +34,8 @@ class Captcha:
             u1 = f"https://2captcha.com/in.php?key={config('API_KEY')}&method={self.method}&sitekey={self.data_site_key}&pageurl={self.page_url}&json=1"
 
         r1 = requests.get(u1)
-        print(r1.json())
+        #print(r1.json())
+        #print("RESOLVENDO O RECAPTCHA")
         id = r1.json().get("request")
 
         return self._resposta(id)
@@ -43,7 +44,7 @@ class Captcha:
         payload = {'key': config('API_KEY'), 'method': 'base64', 'json' : 1, 'body' : self.data_site_key}
         resposta = requests.post("https://2captcha.com/in.php", data=payload)
         
-        print(resposta.json())
+        #print(resposta.json())
         id = resposta.json().get("request")
 
         return self._resposta(id)

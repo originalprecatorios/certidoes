@@ -14,13 +14,13 @@ class Robo:
         print("INICIALIZANDO PROCESSO...")
         mongo_datas = Mongo(config('MONGO_DB'))   
         mongo_datas._getcoll(config('MONGO_COLL'))
-        datas = mongo_datas._return_query({'status_process':{'$exists':False}, 'process':{'$exists':False}})
+        datas = mongo_datas._return_query({'status_process':{'$exists':False}})
         
         for data in datas:
             _id = data['_id']
             _cpf = data['cpf']
             
-            mongo_datas._update_one({'$set' : {'process':True}}, {'_id': _id})
+            #mongo_datas._update_one({'$set' : {'process':True}}, {'_id': _id})
 
             if 'extracted' not in data:
 
@@ -65,30 +65,31 @@ class Robo:
 
             #PARTE DE DESTILL
             pd = Nodistill(data)
-            pd._CND_Federal()
-            pd._trf3_jus('TRF')
-            pd._trf3_jus('SJSP')
-            #pd._pje_trf3(_cpf)
+            #pd._CND_Federal()
+            #pd._trf3_jus('TRF')
+            #pd._trf3_jus('SJSP')
 
-            #CASO OUVER ALGUM ERRO NÂO ATUALIZA STATUS_PROCESS E PROCESS
+            #GERA RELATORIO DA EXTRACAO
+            
+
+            #mongo_datas._update_one({'$set' : {'process':False}}, {'_id': _id})
+            dt = mongo_datas._return_query({'_id':_id},{'extracted':1})
+
+            try:
+                os.makedirs(f"{config('PATH_FILES')}{_cpf}/")
+            except:
+                pass
+
+            arq = open(f"{config('PATH_FILES')}{_cpf}/resumo.txt","w")
+            for dado in dt:
+                chave = dado['_id']
+                for ex in dado['extracted']:
+                    arq.write(f"{str(dado['extracted'][ex])} - {ex}\n")
+
+            arq.close()
+
             if p.Erro == 1 or pd.Erro == 1:
-
-                mongo_datas._update_one({'$set' : {'process':False}}, {'_id': _id})
-                dt = mongo_datas._return_query({'_id':_id},{'extracted':1})
-
-                try:
-                    os.makedirs(f"{config('PATH_FILES')}{_cpf}/")
-                except:
-                    pass
-
-                arq = open(f"{config('PATH_FILES')}{_cpf}/resumo.txt","w")
-                for dado in dt:
-                    chave = dado['_id']
-                    for ex in dado['extracted']:
-                        arq.write(f"{str(dado['extracted'][ex])} - {ex}")
-
-                arq.close()
-
+                print("HOUVE ERRO")
             else:
                 mongo_datas._update_one({'$set' :{'status_process': True}}, {'_id': _id})
 
