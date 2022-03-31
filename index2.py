@@ -10,7 +10,7 @@ def _process():
     print("INICIALIZANDO PROCESSO...")
     mongo_datas = Mongo(config('MONGO_DB'))   
     mongo_datas._getcoll(config('MONGO_COLL'))
-    datas = mongo_datas._return_query({'status_process':{'$exists':False}, 'process':{'$exists':False}})
+    datas = mongo_datas._return_query({'status_process':{'$exists':False}})
     
     for data in datas:
         _id = data['_id']

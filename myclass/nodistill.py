@@ -18,7 +18,8 @@ class Nodistill:
         options = uc.ChromeOptions()
         options.add_argument('--no-first-run')
         options.add_argument("--window-size=2560,1440")
-        self.driver = uc.Chrome(options=options, version_main=99)
+        options.add_argument('--no-sandbox')
+        self.driver = uc.Chrome(options=options, version_main=89)
         #MUDAR A PARSTA DE DOWNLOAD
         params = {
             "behavior": "allow",
