@@ -47,15 +47,15 @@ def _process():
         Boolean - 0 (Não tira screenshot da tela), por padrão é 1
         """
         
-        #p._esaj_certidao('6',"0")
-        #p._esaj_certidao('52',"0")
-        #p._esaj_busca_nome_cpf("NOME")
-        #p._esaj_busca_nome_cpf("CPF")
+        p._esaj_certidao('6',"0")
+        p._esaj_certidao('52',"0")
+        p._esaj_busca_nome_cpf("NOME")
+        p._esaj_busca_nome_cpf("CPF")
 
-        #p._CND_Estadual()
-        #p._CND_Contribuinte()
-        #p._CND_Municipal()
-        #p._trtsp()
+        p._CND_Estadual()
+        p._CND_Contribuinte()
+        p._CND_Municipal()
+        p._trtsp()
         p._tst_trabalhista()
         p._trt15()            
         p._protestos()
