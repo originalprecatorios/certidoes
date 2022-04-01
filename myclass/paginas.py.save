@@ -12,7 +12,7 @@ import time, random, os,json,urllib.request
 class Paginas:
     def __init__(self,dados):
         self.login = False
-        self.path_download = f"{config('PATH_FILES')}{dados.get('cpf')}"
+        self.path_download = config('PATH_FILES')+dados.get('cpf')
         self.dados = dados
         self.tentativas = 0
         self.Erro = 0
@@ -53,17 +53,16 @@ class Paginas:
                                                 })
 
             self.driver = webdriver.Chrome('/opt/drivers/chromedriver' , options=opt)
+            self.wait = WebDriverWait(self.driver, 120)
             #self.driver.implicitly_wait(10)
             #driver.set_page_load_timeout(20)
             print("\033[32m"+"Pronto!, Chrome já esta inicializado."+"\033[0;0m")
             self.OpenBrowser = 1
-            self.wait = WebDriverWait(self.driver, 120)
         else:
             pass
 	
-    def _espera(self):
-        #self.wait = WebDriverWait(self.driver, 120)
-        time.sleep(5)
+    #def _wait(self):
+    #    self.wait = WebDriverWait(self.driver, 120)
     def _existenciaPage(self,id):
         self.wait.until(EC.presence_of_element_located((By.ID, id)))
 
@@ -106,34 +105,31 @@ class Paginas:
 
         return check_exists  
 
-    def _login_esaj(self):
-        if self.login == False:
-            self._navegador()
-            self.driver.get(config('ESAJ_PAGE_LOGIN')) 
-            self._espera()
-            self._existenciaPage("usernameForm") 
-            self.driver.find_element(By.ID,"usernameForm").send_keys(f"{config('ESAJ_USER')}")
-            self.driver.find_element(By.ID,"passwordForm").send_keys(f"{config('ESAJ_PASS')}")
+    def _login_esaj(self)
+:
+        self._navegador()
+        self.driver.get(config('ESAJ_PAGE_LOGIN')) 
+        #self._wait()
+        self._existenciaPage("usernameForm") 
+        self.driver.find_element(By.ID,"usernameForm").send_keys(f"{config('ESAJ_USER')}")
+        self.driver.find_element(By.ID,"passwordForm").send_keys(f"{config('ESAJ_PASS')}")
 
-            self.driver.find_element(By.ID,"pbEntrar").click()
-            time.sleep(4)
-            #ENQUANTO NÂO ACHAR O BOTAO SAIR, ELE VAI FICAR ESPERANDO PQ NÂO CONCLUIU O LOGIN
-            while len(self.driver.find_elements(By.CLASS_NAME,"esajLogout")) < 1:
-                time.sleep(1)
+        self.driver.find_element(By.ID,"pbEntrar").click()
+        time.sleep(4)
+        #ENQUANTO NÂO ACHAR O BOTAO SAIR, ELE VAI FICAR ESPERANDO PQ NÂO CONCLUIU O LOGIN
+        while len(self.driver.find_elements(By.CLASS_NAME,"esajLogout")) < 1:
+            time.sleep(1)
 
-            self.login = True  
-        else:
-            print("Logado")  
+        self.login = True    
 
     def _CND_Estadual (self):  
         if not self._check_exists('_CND_ESTADUAL'):   
             self._navegador()
             try: 
                 self.driver.get(config('PAGE_URL'))
-                self._espera()
+                #self._wait()
                 self._existenciaPage("MainContent_txtDocumento")
-                #self.driver.find_element(By.ID,"MainContent_txtDocumento").send_keys(f"{self.dados.get('cpf')}")
-                self.driver.execute_script(f"document.getElementById('MainContent_txtDocumento').value = '{self.dados.get('cpf')}'")
+                self.driver.find_element(By.ID,"MainContent_txtDocumento").send_keys(f"{self.dados.get('cpf')}")
                 c = Captcha(config('DATA_SITE_KEY'),config('PAGE_URL'))
                 #print(f"Meu saldo atual é : {c._saldo()}.")
                 wirte_tokon_js = f'document.getElementById("g-recaptcha-response").innerHTML="{c._resolve()}";'
@@ -159,7 +155,7 @@ class Paginas:
             self._navegador()
             try:
                 self.driver.get(config('PAGE_URL_MUN'))
-                self._espera()
+                #self._wait()
                 self._existenciaPage("ctl00_ConteudoPrincipal_ddlTipoCertidao")
 
                 self._select('ctl00_ConteudoPrincipal_ddlTipoCertidao','1')
@@ -195,7 +191,7 @@ class Paginas:
             self._navegador()
             try:
                 self.driver.get(config('PAGE_URL_CONTRIBUINTE'))
-                self._espera()
+                #self._wait()
                 self._existenciaPage("emitirCrda:crdaInputCpf")
                 self.driver.find_element(By.ID,"emitirCrda:crdaInputCpf").send_keys(self.dados.get('cpf'))
                 c = Captcha(config('DATA_SITE_KEY_CONTRIBUINTE'),config('PAGE_URL_CONTRIBUINTE'))
@@ -214,7 +210,7 @@ class Paginas:
 
     def _esaj_certidao(self,valor,prt_sc="1"):
         if not self._check_exists(f'_ESAJ_CERTIDAO_{valor}'): 
-            #self._navegador()
+            self._navegador()
             try:
                 if self.login == False:
                     self._login_esaj()
@@ -222,9 +218,8 @@ class Paginas:
                 else:    
                     genero = self.dados.get("genero")
                     self.driver.get(config('PAGE_URL_CRIMINAL_1'))
-                    self._espera()
+                    self.wait()
                     self._existenciaPage("cdModelo")
-                    print(valor)
                     self._select("cdModelo",valor)
                     time.sleep(1)
                     self.driver.find_element(By.ID,"nmCadastroF").send_keys(self.dados.get("nome"))
@@ -277,7 +272,7 @@ class Paginas:
             try:
                 namefile = random.randrange(99999)
                 self.driver.get(config('PAGE_URL_TRTSP'))
-                self._espera()
+                #self._wait()
                 self._existenciaPage("numeroDocumentoPesquisado")
                 self.driver.find_element(By.ID,"numeroDocumentoPesquisado").send_keys(self.dados.get('cpf'))
                 self.driver.find_element(By.ID,"nomePesquisado").send_keys(self.dados.get('nome'))
@@ -323,24 +318,17 @@ class Paginas:
             self._navegador()
             try:
                 self.driver.get(config('PAGE_URL_TST'))
-                self._espera()
+                self.wait()
                 self._existenciaPage("corpo")
                 self.driver.find_element(By.XPATH,"//*[@id='corpo']/div/div[2]/input[1]").click()
-
                 while True:
                     try:
                         image_cap = self.driver.find_element(By.ID,"idImgBase64").get_attribute("src")
-                        #print(image_cap.replace("data:image/png;base64, ",""))
-                        if image_cap == None:
-                            time.sleep(0.5)
-                            pass
-                        else:
-                            break
+                        print(image_cap.replace("data:image/png;base64, ",""))
+                        break
                     except:
                         time.sleep(0.5)
-                        pass 
-                #print(image_cap)
-                #time.sleep(1000) 
+                        pass  
                 c = Captcha(image_cap,"")
                 self.driver.find_element(By.ID,"gerarCertidaoForm:cpfCnpj").send_keys(self.dados.get('cpf'))
                 self.driver.find_element(By.ID,"idCaptcha").send_keys(c._resolve_img())
@@ -359,7 +347,7 @@ class Paginas:
             try:
                 namefile = random.randrange(999999999)
                 self.driver.get(config('PAGE_URL_TRT15'))
-                self._espera()
+                #self._wait()
                 self._existenciaPage("certidaoActionForm:j_id23:doctoPesquisa")
                 self.driver.find_element(By.ID,"certidaoActionForm:j_id23:doctoPesquisa").send_keys(self.dados.get('cpf'))
 
@@ -387,14 +375,14 @@ class Paginas:
 
     def _esaj_busca_nome_cpf(self,parm):
         if not self._check_exists(f'_ESAJ_BUSCA_{parm}'): 
-            #self._navegador()
+            self._navegador()
             try:
                 if self.login == False:
                     self._login_esaj()
                     self._esaj_busca_nome_cpf(parm)
                 else:
                     self.driver.get(config('PAGE_URL_ESAJ_B_NOME_CPF'))
-                    self._espera()
+                    #self._wait()
                     self._existenciaPage("botaoConsultarProcessos")  
                     
                     if parm == "NOME":
@@ -409,7 +397,7 @@ class Paginas:
                     self.driver.find_element(By.ID,"botaoConsultarProcessos").click()
                     time.sleep(4)
                     self.driver.execute_script('window.print();')
-                    time.sleep(10)
+                    time.sleep(1)
                     #self.driver.save_screenshot(f"{self.path_download}/print_tela_{ValueSelect}.png")
                     self._update_extract(f'_ESAJ_BUSCA_{parm}', self.dados.get('_id'))
             except Exception as e:
@@ -421,7 +409,7 @@ class Paginas:
             self._navegador()
             try:
                 self.driver.get(config('PAGE_URL_PROTESTO'))
-                self._espera()
+                #self._wait()
                 self._existenciaPage("AbrangenciaNacional")
                 self.driver.execute_script("document.getElementById('cf-root').style.display = 'none'")
                 self.driver.find_element(By.ID,"AbrangenciaNacional").click()
@@ -434,7 +422,7 @@ class Paginas:
 
                 time.sleep(4)
                 self.driver.execute_script('window.print();')
-                time.sleep(10)
+                time.sleep(4)
                 self._update_extract('_PROTESTOS', self.dados.get('_id')) 
                 #COMO ESSE CARA ELE E O ULTIMO VOU FAZER ELE FECHAR O BROWSER
                 self.driver.quit()

@@ -18,12 +18,16 @@ class Captcha:
     def _resposta(self,id):
         u2 = f"https://2captcha.com/res.php?key={config('API_KEY')}&action=get&id={int(id)}&json=1"
         time.sleep(5)
+        i = 1
         while True:
             r2 = requests.get(u2)
-            print(r2.json())
+            print(f"\033[33m\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b[{i}] Tentativas\033[0;0m ", end="", flush=True)
+
             if r2.json().get("status") == 1:
                 form_tokon = r2.json().get("request")
+                print(f"\033[32m\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b[{i}] Resolvido\033[0;0m ", end="", flush=True)
                 break
+            i += 1
             time.sleep(5)
         return form_tokon
 
