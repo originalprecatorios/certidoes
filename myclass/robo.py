@@ -88,10 +88,7 @@ class Robo:
 
             arq.close()
 
-            if p.Erro == 1 or pd.Erro == 1:
-                print("HOUVE ERRO")
-            else:
-                mongo_datas._update_one({'$set' :{'status_process': True}}, {'_id': _id})
+            mongo_datas._update_one({'$set' :{'status_process': True}}, {'_id': _id})
 
                
         #e = Smtp()

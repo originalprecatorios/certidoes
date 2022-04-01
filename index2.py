@@ -1,7 +1,6 @@
 # CERTIDÃO NEGATIVAS
 from myclass.paginas import Paginas
 from myclass.nodistill import Nodistill
-#from myclass.smtp import Smtp
 from db.class_mongo import Mongo
 from decouple import config
 import os
@@ -84,13 +83,7 @@ def _process():
             
         arq.close()
 
-        if p.Erro == 1 or pd.Erro == 1:
-            print("Houve erros")
-        else:
-            mongo_datas._update_one({'$set' :{'status_process': True}}, {'_id': _id})    
+        mongo_datas._update_one({'$set' :{'status_process': True}}, {'_id': _id})    
 
-               
-        #e = Smtp()
-        #e._Envia_Email("junior.ppp@gmail.com","Olá Gelson sua certidões foi extraidas com sucesso.")
 
 _process()
