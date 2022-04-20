@@ -8,6 +8,7 @@ class Captcha:
         self.data_site_key = data
         self.page_url = page
         self.method = method
+        self.idcap = ""
         pass
 
     def _saldo(self):
@@ -41,6 +42,7 @@ class Captcha:
         #print(r1.json())
         #print("RESOLVENDO O RECAPTCHA")
         id = r1.json().get("request")
+        self.idcap = id
 
         return self._resposta(id)
 
@@ -52,4 +54,9 @@ class Captcha:
         id = resposta.json().get("request")
 
         return self._resposta(id)
+
+    def _report(self,action="reportbad"):
+        u = f"https://2captcha.com/res.php?key={config('API_KEY')}&action={action}&id={self.idcap}&json=1"
+        r = requests.get(u)
+        return r.json().get("request")
         

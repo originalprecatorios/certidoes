@@ -26,7 +26,7 @@ def _import():
     except Exception as e:
         pass
         #print("..." + str(e))
-
+print("ROBÔ EM FUNCIONAMENTO...")
 while True:
     _import()
     time.sleep(300)

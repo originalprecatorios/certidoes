@@ -1,6 +1,7 @@
 # CERTIDÃO NEGATIVAS
 from myclass.paginas import Paginas
 from myclass.nodistill import Nodistill
+#from myclass.smtp import Smtp
 from db.class_mongo import Mongo
 from decouple import config
 import os
@@ -46,18 +47,28 @@ def _process():
         Boolean - 0 (Não tira screenshot da tela), por padrão é 1
         """
         
-        p._esaj_certidao('6',"0")
-        p._esaj_certidao('52',"0")
-        p._esaj_busca_nome_cpf("NOME")
-        p._esaj_busca_nome_cpf("CPF")
-
-        p._CND_Estadual()
-        p._CND_Contribuinte()
-        p._CND_Municipal()
-        p._trtsp()
-        p._tst_trabalhista()
-        p._trt15()            
-        p._protestos()
+        certidao = p._esaj_certidao('6',"0")
+        print(certidao['msg'])
+        certificado = p._esaj_certidao('52',"0")
+        print(certificado['msg'])
+        esaj_nome = p._esaj_busca_nome_cpf("NOME")
+        print(esaj_nome['msg'])
+        esaj_cpf = p._esaj_busca_nome_cpf("CPF")
+        print(esaj_cpf['msg'])
+        estadual = p._CND_Estadual()
+        print(estadual['msg'])
+        contribuinte = p._CND_Contribuinte()
+        print(contribuinte['msg'])
+        municipal = p._CND_Municipal()
+        print(municipal['msg'])
+        trtsp = p._trtsp()
+        print(trtsp['msg'])
+        trabalhista = p._tst_trabalhista()
+        print(trabalhista['msg'])
+        trt15 = p._trt15()
+        print(trt15['msg'])         
+        protesto = p._protestos()
+        print(protesto['msg'])
 
         #PARTE DE DESTILL
         pd = Nodistill(data)
@@ -83,7 +94,11 @@ def _process():
             
         arq.close()
 
-        mongo_datas._update_one({'$set' :{'status_process': True}}, {'_id': _id})    
+        if p.Erro == 1 or pd.Erro == 1:
+            #print("Houve erros")
+            pass
+        else:
+            mongo_datas._update_one({'$set' :{'status_process': True}}, {'_id': _id})    
 
 
 _process()

@@ -3,6 +3,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import Select
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from myclass.captcha import Captcha
 from myclass.gb import Cut
 from decouple import config
@@ -51,10 +52,10 @@ class Paginas:
                                                     'download.default_directory': f'{self.path_download}',
                                                     'profile.default_content_setting_values.automatic_downloads':1
                                                 })
+            capa = DesiredCapabilities.CHROME
+            capa["pageLoadStrategy"] = "none"
 
-            self.driver = webdriver.Chrome('/opt/drivers/chromedriver' , options=opt)
-            #self.driver.implicitly_wait(10)
-            #driver.set_page_load_timeout(20)
+            self.driver = webdriver.Chrome(desired_capabilities=capa,executable_path='/opt/drivers/chromedriver' , options=opt)
             print("\033[32m"+"Pronto!, Chrome já esta inicializado."+"\033[0;0m")
             self.OpenBrowser = 1
             self.wait = WebDriverWait(self.driver, 120)
@@ -62,20 +63,23 @@ class Paginas:
             pass
 	
     def _espera(self):
-        #self.wait = WebDriverWait(self.driver, 120)
         time.sleep(5)
     def _existenciaPage(self,id):
         self.wait.until(EC.presence_of_element_located((By.ID, id)))
 
     def _existenciaItem(self,id):
+        ind = False
         while len(self.driver.find_elements(By.ID, id)) < 1:
             print(f"não encontramos {id} na pagina")
             if int(self.tentativas) >= int(config('TENTATIVAS')):
                 self.tentativas = 0
+                ind = True
                 break
             else:
                 self.tentativas += 1
-                time.sleep(0.5) 
+                time.sleep(0.5)
+
+        return ind       
 
     def _select(self,id,value):
         while True:
@@ -132,10 +136,8 @@ class Paginas:
                 self.driver.get(config('PAGE_URL'))
                 self._espera()
                 self._existenciaPage("MainContent_txtDocumento")
-                #self.driver.find_element(By.ID,"MainContent_txtDocumento").send_keys(f"{self.dados.get('cpf')}")
                 self.driver.execute_script(f"document.getElementById('MainContent_txtDocumento').value = '{self.dados.get('cpf')}'")
                 c = Captcha(config('DATA_SITE_KEY'),config('PAGE_URL'))
-                #print(f"Meu saldo atual é : {c._saldo()}.")
                 wirte_tokon_js = f'document.getElementById("g-recaptcha-response").innerHTML="{c._resolve()}";'
                 self.driver.execute_script(wirte_tokon_js)
                 time.sleep(1)
@@ -144,13 +146,16 @@ class Paginas:
                 #VOU VERIFICAR SE EXISTE O BOTÂO DE IMPRIMIR NA TELA, SE SIM CLICK NELE
                 self._existenciaItem("MainContent_btnImpressao")   
                 self.driver.find_element(By.ID,"MainContent_btnImpressao").click()
-
                 del c
                 time.sleep(4)
-                self._update_extract('_CND_ESTADUAL', self.dados.get('_id')) 
+                self._update_extract('_CND_ESTADUAL', self.dados.get('_id'))
+                return {"status":200,"msg":"CONCLUIDO COM EXITO","msg_s":"SEM FALHAS NO SISTEMA"}
             except Exception as e:
-                print(f"ERRO _CND_ESTADUAL - {e}")
-                self.Erro = 1  
+                self.Erro = 1
+                return {"status":404,"msg":"ERRO _CND_ESTADUAL","msg_s":f"{e}"}
+        else:
+            return {"status":200, "msg":"Estadual - Já extraido","msg_s":""}        
+                 
 
                
 
@@ -177,17 +182,28 @@ class Paginas:
                 
                 self.driver.find_element(By.ID,"ctl00_ConteudoPrincipal_txtValorCaptcha").send_keys(f"{c._resolve_img()}")
                 time.sleep(0.5)
-                self.driver.find_element(By.ID,"ctl00_ConteudoPrincipal_btnEmitir").click()
                 #APAGAR OS ARQUIVOS GERADOS
                 os.remove("page_"+str(namefile)+".png")
                 os.remove("crop_"+str(namefile)+".png")
 
-                del c               
-                time.sleep(4)
-                self._update_extract('_CND_MUNICIPAL', self.dados.get('_id')) 
+                self.driver.find_element(By.ID,"ctl00_ConteudoPrincipal_btnEmitir").click()
+                                       
+                time.sleep(6)
+                try:
+                    if self.driver.switch_to.alert.text.find("Conversion from string    to type 'Long' is not valid.") > -1:
+                        c._report()
+                        return {"status":404,"msg":"CND_MUNICIPAL - ERRO AO RESOLVER O RECAPTCHA","msg_s":"ERRO"} 
+                except:
+                    pass 
+
+                del c    
+                self._update_extract('_CND_MUNICIPAL', self.dados.get('_id'))
+                return {"status":200,"msg":"CONCLUIDO COM EXITO","msg_s":"SEM FALHAS NO SISTEMA"}
             except Exception as e:
-                print(f"ERRO _CND_MUNICIPAL - {e}")
-                self.Erro = 1   
+                self.Erro = 1
+                return {"status":404,"msg":"ERRO _CND_MUNICIPAL","msg_s":f"{e}"}  
+        else:
+            return {"status":200, "msg":"Municipal - Já extraido","msg_s":""}         
              
 
     def _CND_Contribuinte(self):
@@ -203,13 +219,17 @@ class Paginas:
                 wirte_tokon_js = f'document.getElementById("g-recaptcha-response").innerHTML="{c._resolve()}";'
                 self.driver.execute_script(wirte_tokon_js)
                 time.sleep(3)
-                self.driver.find_element(By.XPATH,"//*[@id='emitirCrda:j_id136_body']/div[2]/input[2]").click()
+                #self.driver.find_element(By.XPATH,"//*[@id='emitirCrda:j_id136_body']/div[2]/input[2]").click()
+                self.driver.find_element(By.XPATH,"/html/body/div[1]/div/div/div/div[2]/div/div[3]/div/div[2]/div[2]/span/form/div/div[2]/div[2]/input[2]").click()
                 del c
                 time.sleep(4)  
                 self._update_extract('_CND_CONTRIBUINTE', self.dados.get('_id')) 
+                return {"status":200,"msg":"CONCLUIDO COM EXITO","msg_s":"SEM FALHAS NO SISTEMA"}
             except Exception as e:
-                print(f"ERRO _CND_CONTRIBUINTE - {e}")
-                self.Erro = 1    
+                self.Erro = 1
+                return {"status":404,"msg":"ERRO _CND_CONTRIBUINTE","msg_s":f"{e}"}  
+        else:
+            return {"status":200, "msg":"Contribuinte - Já extraido","msg_s":""}            
                         
 
     def _esaj_certidao(self,valor,prt_sc="1"):
@@ -224,7 +244,6 @@ class Paginas:
                     self.driver.get(config('PAGE_URL_CRIMINAL_1'))
                     self._espera()
                     self._existenciaPage("cdModelo")
-                    print(valor)
                     self._select("cdModelo",valor)
                     time.sleep(1)
                     self.driver.find_element(By.ID,"nmCadastroF").send_keys(self.dados.get("nome"))
@@ -242,34 +261,35 @@ class Paginas:
                     time.sleep(1)
                     self.driver.find_element(By.ID,"pbEnviar").click()
 
+                    time.sleep(2)
+
                     while True:               
                         try:
                             self.driver.find_element(By.ID,"btnSim").click()
                             self.tentativas = 0
                             break
                         except:
-                            if int(self.tentativas) < int(config('TENTATIVAS')) :
+                            if int(self.tentativas) < 3 :
                                 self.tentativas += 1
                                 time.sleep(1)
                                 pass   
                             else:
-                                self.tentativas = 0
-                                print("Esgotou as tentativas")
                                 break 
 
-                    print("Rodou esaj.")
-                    time.sleep(4)
+                    time.sleep(6)
 
-                    if str(prt_sc) == "1":
-                        try:
-                            self.driver.execute_script('window.print();')
-                        except:
-                            print("Não conseguiu printar a tela")
+                    if self.driver.page_source.find("Não foi possível executar esta operação. Tente novamente mais tarde.") > -1:
+                        self.Erro = 1
+                        return {"status":404,"msg":"ESAJ_CERTIDAO - Nao foi possivel executar esta operacao. Tente novamente mais tarde","msg_s":"ERRO"}
 
                     self._update_extract(f'_ESAJ_CERTIDAO_{valor}', self.dados.get('_id'))
+                    return {"status":200,"msg":"CERTIDAO CONCLUIDO COM EXITO","msg_s":"SEM FALHAS NO SISTEMA"}
+
             except Exception as e:
-                print(f"ERRO _ESAJ_CERTIDAO_{valor} - {e}")
                 self.Erro = 1
+                return {"status":404,"msg":f"ERRO _ESAJ_CERTIDAO_{valor}","msg_s":f"{e}"} 
+        else:
+            return {"status":200, "msg":f"Certidão {valor}- Já extraido","msg_s":""}         
 
     def _trtsp(self):
         if not self._check_exists('_TRTSP'): 
@@ -289,34 +309,48 @@ class Paginas:
                 c = Captcha(image_cap,"")
                 self.driver.find_element(By.ID,"captcha-input").send_keys(c._resolve_img())
                 self.driver.find_element(By.ID,"submit").click()
+                time.sleep(3)
+                
+                if self.driver.page_source.find("informado do captcha incorreto") > -1:
+                    c._report()
+                    #erro no recaptch
 
                 os.remove("page_"+str(namefile)+".png")
 
                 while True:
                     try:
-                        if self.driver.page_source.find("Visualizar Certidão"):
+                        if self.driver.page_source.find("Visualizar Certidão") > -1:
                             self.driver.find_element(By.XPATH,"//*[@id='main-content']/div/fieldset/button").click()
                             self.tentativas = 0
                             break
                         else:
-                            pass         
+                            if int(self.tentativas) < int(config('TENTATIVAS')):
+                                self.tentativas += 1
+                                time.sleep(2)
+                                pass
+                            else:
+                                self.tentativas = 0  
+                                self.Erro = 1         
+                                return {"status":404,"msg":"ERRO _TRTSP","msg_s":"EXPIROU AS TENTATIVAS DE ABAIXAR O PDF"}         
                     except:
 
                         if int(self.tentativas) < int(config('TENTATIVAS')):
-                            print("Não apareceu o imprimir ainda")
                             self.tentativas += 1
-                            time.sleep(1)
+                            time.sleep(2)
                             pass
                         else:
-                            print("Não conseguiu resolver TRT SP")
-                            self.tentativas = 0
-                            break
+                            self.tentativas = 0  
+                            self.Erro = 1         
+                            return {"status":404,"msg":"ERRO _TRTSP","msg_s":"EXPIROU AS TENTATIVAS DE ABAIXAR O PDF"}
 
                 time.sleep(4) 
                 self._update_extract('_TRTSP', self.dados.get('_id'))
+                return {"status":200,"msg":"CONCLUIDO COM EXITO","msg_s":"SEM FALHAS NO SISTEMA"}
             except Exception as e:
-                print(f"ERRO _TRTSP - {e}")
-                self.Erro = 1   
+                self.Erro = 1
+                return {"status":404,"msg":"ERRO _TRTSP","msg_s":f"{e}"}   
+        else:
+            return {"status":200, "msg":"TRTSP - Já extraido","msg_s":""}         
                   
     def _tst_trabalhista(self):
         if not self._check_exists('_TST_TRABALHISTA'): 
@@ -339,18 +373,25 @@ class Paginas:
                     except:
                         time.sleep(0.5)
                         pass 
-                #print(image_cap)
-                #time.sleep(1000) 
                 c = Captcha(image_cap,"")
                 self.driver.find_element(By.ID,"gerarCertidaoForm:cpfCnpj").send_keys(self.dados.get('cpf'))
                 self.driver.find_element(By.ID,"idCaptcha").send_keys(c._resolve_img())
                 self.driver.find_element(By.ID,"gerarCertidaoForm:btnEmitirCertidao").click()
+                time.sleep(5)
+                
+                if self.driver.page_source.find("Código de validação inválido.") > -1:
+                    c._report()
+                    self.Erro = 1
+                    return {"status":404,"msg":"TST_TRABALHISTA - ERRO DE RECAPTCHA","msg_s":"ERRO"}
+
                 del c
-                time.sleep(4)
                 self._update_extract('_TST_TRABALHISTA', self.dados.get('_id'))
+                return {"status":200,"msg":"CONCLUIDO COM EXITO","msg_s":"SEM FALHAS NO SISTEMA"}
             except Exception as e:
-                print(f"ERRO _TST_TRABALHISTA - {e}")    
-                self.Erro = 1 
+                self.Erro = 1
+                return {"status":404,"msg":"_TST_TRABALHISTA","msg_s":f"{e}"}  
+        else:
+            return {"status":200, "msg":"Trabalhista - Já extraido","msg_s":""}         
             
 
     def _trt15(self):
@@ -370,8 +411,17 @@ class Paginas:
                 c = Captcha(image_cap,"")
                 self.driver.find_element(By.ID,"certidaoActionForm:j_id51:verifyCaptcha").send_keys(c._resolve_img())
                 self.driver.find_element(By.ID,"certidaoActionForm:certidaoActionEmitir").click()
+                time.sleep(4)
 
-                self._existenciaItem("certidaoActionForm:certidaoActionImprimir")
+                if self.driver.page_source.find("incorrect response") > -1:
+                    c._report()
+                    del c
+                    del a
+                    os.remove("page_"+str(namefile)+".png")
+                    os.remove("crop_"+str(namefile)+".png")          
+                    return {"status":404,"msg":"ERRO _TRT15 Recapactha nao resolvido","msg_s":"Problema ao resolver o captcha"}
+
+                self._existenciaItem("certidaoActionForm:j_id12_body")
                 self.driver.find_element(By.ID,"certidaoActionForm:certidaoActionImprimir").click()
 
                 del c
@@ -381,9 +431,12 @@ class Paginas:
 
                 time.sleep(4)
                 self._update_extract('_TRT15', self.dados.get('_id'))
+                return {"status":200,"msg":"CONCLUIDO COM EXITO","msg_s":"SEM FALHAS NO SISTEMA"}
             except  Exception as e:
-                print(f"ERRO _TRT15 - {e}")    
-                self.Erro = 1 
+                self.Erro = 1
+                return {"status":404,"msg":"ERRO _TRT15","msg_s":f"{e}"}  
+        else:
+            return {"status":200, "msg":"TRT15 - Já extraido","msg_s":""}         
 
     def _esaj_busca_nome_cpf(self,parm):
         if not self._check_exists(f'_ESAJ_BUSCA_{parm}'): 
@@ -409,12 +462,14 @@ class Paginas:
                     self.driver.find_element(By.ID,"botaoConsultarProcessos").click()
                     time.sleep(4)
                     self.driver.execute_script('window.print();')
-                    time.sleep(10)
-                    #self.driver.save_screenshot(f"{self.path_download}/print_tela_{ValueSelect}.png")
+                    time.sleep(6)
                     self._update_extract(f'_ESAJ_BUSCA_{parm}', self.dados.get('_id'))
+                    return {"status":200,"msg":"CONCLUIDO COM EXITO","msg_s":"SEM FALHAS NO SISTEMA"}
             except Exception as e:
-                print(f"ERRO _ESAJ_BUSCA_{parm} - {e}")  
-                self.Erro = 1       
+                self.Erro = 1
+                return {"status":404,"msg":f"ERRO _ESAJ_BUSCA_{parm}","msg_s":f"{e}"}        
+        else:
+            return {"status":200, "msg":f"Esaj {parm} Já extraido","msg_s":""}         
 
     def _protestos(self):
         if not self._check_exists('_PROTESTOS'): 
@@ -423,23 +478,34 @@ class Paginas:
                 self.driver.get(config('PAGE_URL_PROTESTO'))
                 self._espera()
                 self._existenciaPage("AbrangenciaNacional")
-                self.driver.execute_script("document.getElementById('cf-root').style.display = 'none'")
+                try:
+                    time.sleep(2)
+                    self.driver.execute_script("document.getElementById('cookiefirst-root').style.display = 'none'")
+                except:
+                    pass
                 self.driver.find_element(By.ID,"AbrangenciaNacional").click()
                 self._select("TipoDocumento","1")
                 self.driver.find_element(By.ID,"Documento").send_keys(self.dados.get('cpf'))
                 self.driver.execute_script("ValidarConsulta(this)")
                 time.sleep(4)
 
-                self._existenciaPage("resumoConsulta")
-
-                time.sleep(4)
+                if self._existenciaItem("resumoConsulta") == True:
+                    pass
+                else:
+                    self.Erro = 1
+                    self.driver.quit()
+                    return {"status":404,"msg":"PROTESTO - TENTATIVAS ESGOTADAS","msg_s":"FALHA"}
+                
                 self.driver.execute_script('window.print();')
-                time.sleep(10)
+                time.sleep(4)
                 self._update_extract('_PROTESTOS', self.dados.get('_id')) 
                 #COMO ESSE CARA ELE E O ULTIMO VOU FAZER ELE FECHAR O BROWSER
                 self.driver.quit()
+                return {"status":200,"msg":"CONCLUIDO COM EXITO","msg_s":"SEM FALHAS NO SISTEMA"}
             except Exception as e:
-                print(f"ERRO _PROTESTO - {e}")  
-                self.Erro = 1  
-                self.driver.quit()    
+                self.driver.quit()
+                self.Erro = 1
+                return {"status":404,"msg":"ERRO _PROTESTOS","msg_s":f"{e}"}   
+        else:
+            return {"status":200, "msg":"Protesto - Já extraido","msg_s":""}             
         
