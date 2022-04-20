@@ -233,63 +233,65 @@ class Paginas:
                         
 
     def _esaj_certidao(self,valor,prt_sc="1"):
+        ret = {}
         if not self._check_exists(f'_ESAJ_CERTIDAO_{valor}'): 
-            #self._navegador()
+            if not self.login:
+                self._login_esaj()
+                  
             try:
-                if self.login == False:
-                    self._login_esaj()
-                    self._esaj_certidao(valor,prt_sc)
-                else:    
-                    genero = self.dados.get("genero")
-                    self.driver.get(config('PAGE_URL_CRIMINAL_1'))
-                    self._espera()
-                    self._existenciaPage("cdModelo")
-                    self._select("cdModelo",valor)
-                    time.sleep(1)
-                    self.driver.find_element(By.ID,"nmCadastroF").send_keys(self.dados.get("nome"))
-                    self.driver.find_element(By.ID,"identity.nuCpfFormatado").send_keys(self.dados.get("cpf"))
-                    self.driver.find_element(By.ID,"identity.nuRgFormatado").send_keys(self.dados.get("rg"))
+                   
+                genero = self.dados.get("genero")
+                self.driver.get(config('PAGE_URL_CRIMINAL_1'))
+                self._espera()
+                self._existenciaPage("cdModelo")
+                self._select("cdModelo",valor)
+                time.sleep(1)
+                self.driver.find_element(By.ID,"nmCadastroF").send_keys(self.dados.get("nome"))
+                self.driver.find_element(By.ID,"identity.nuCpfFormatado").send_keys(self.dados.get("cpf"))
+                self.driver.find_element(By.ID,"identity.nuRgFormatado").send_keys(self.dados.get("rg"))
 
-                    self.driver.find_element(By.ID,f"flGenero{genero}").click()
+                self.driver.find_element(By.ID,f"flGenero{genero}").click()
 
-                    if valor == "6":
-                        self.driver.find_element(By.ID,"nmMaeCadastro").send_keys(self.dados.get("mae"))
-                        self.driver.find_element(By.ID,"dataNascimento").send_keys(self.dados.get("nascimento"))
+                if valor == "6":
+                    self.driver.find_element(By.ID,"nmMaeCadastro").send_keys(self.dados.get("mae"))
+                    self.driver.find_element(By.ID,"dataNascimento").send_keys(self.dados.get("nascimento"))
 
-                    self.driver.find_element(By.ID,"identity.solicitante.deEmail").send_keys(config('EMAILESAJ'))
-                    self.driver.find_element(By.ID,"confirmacaoInformacoes").click()
-                    time.sleep(1)
-                    self.driver.find_element(By.ID,"pbEnviar").click()
+                self.driver.find_element(By.ID,"identity.solicitante.deEmail").send_keys(config('EMAILESAJ'))
+                self.driver.find_element(By.ID,"confirmacaoInformacoes").click()
+                time.sleep(1)
+                self.driver.find_element(By.ID,"pbEnviar").click()
 
-                    time.sleep(2)
+                time.sleep(2)
 
-                    while True:               
-                        try:
-                            self.driver.find_element(By.ID,"btnSim").click()
-                            self.tentativas = 0
-                            break
-                        except:
-                            if int(self.tentativas) < 3 :
-                                self.tentativas += 1
-                                time.sleep(1)
-                                pass   
-                            else:
-                                break 
+                while True:               
+                    try:
+                        self.driver.find_element(By.ID,"btnSim").click()
+                        self.tentativas = 0
+                        break
+                    except:
+                        if int(self.tentativas) < 3 :
+                            self.tentativas += 1
+                            time.sleep(1)
+                            pass   
+                        else:
+                            break 
 
-                    time.sleep(6)
+                time.sleep(6)
 
-                    if self.driver.page_source.find("Não foi possível executar esta operação. Tente novamente mais tarde.") > -1:
-                        self.Erro = 1
-                        return {"status":404,"msg":"ESAJ_CERTIDAO - Nao foi possivel executar esta operacao. Tente novamente mais tarde","msg_s":"ERRO"}
-
+                if self.driver.page_source.find("Não foi possível executar esta operação. Tente novamente mais tarde.") > -1:
+                    self.Erro = 1
+                    ret = {"status":404,"msg":"ESAJ_CERTIDAO - Nao foi possivel executar esta operacao. Tente novamente mais tarde","msg_s":"ERRO"}
+                else:
                     self._update_extract(f'_ESAJ_CERTIDAO_{valor}', self.dados.get('_id'))
-                    return {"status":200,"msg":"CERTIDAO CONCLUIDO COM EXITO","msg_s":"SEM FALHAS NO SISTEMA"}
+                    ret = {"status":200,"msg":"CERTIDAO CONCLUIDO COM EXITO","msg_s":"SEM FALHAS NO SISTEMA"}
 
             except Exception as e:
                 self.Erro = 1
-                return {"status":404,"msg":f"ERRO _ESAJ_CERTIDAO_{valor}","msg_s":f"{e}"} 
+                ret = {"status":404,"msg":f"ERRO _ESAJ_CERTIDAO_{valor}","msg_s":f"{e}"} 
         else:
-            return {"status":200, "msg":f"Certidão {valor}- Já extraido","msg_s":""}         
+            ret = {"status":200, "msg":f"Certidão {valor}- Já extraido","msg_s":""}         
+
+        return ret
 
     def _trtsp(self):
         if not self._check_exists('_TRTSP'): 
