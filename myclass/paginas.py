@@ -395,6 +395,29 @@ class Paginas:
         else:
             return {"status":200, "msg":"Trabalhista - Já extraido","msg_s":""}         
             
+    def __resolve_charada(self, texto):
+        #resolve s charada do captcha
+        sinal = ""
+        valor_1 = ""
+        valor_2 = ""
+        for t in texto.strip():
+            if t.isnumeric():
+                if not sinal:
+                    valor_1 += t
+                else:
+                    valor_2 += t
+            if t != '=' and not t.isnumeric():
+                sinal = t
+        
+        if valor_1:
+            if sinal == "+":
+                return int(valor_1) + int(valor_2)
+            elif sinal == "-":
+                return int(valor_1) - int(valor_2)
+            elif sinal == "*":
+                return int(valor_1) * int(valor_2)
+            elif sinal == "/":
+                return int(valor_1) / int(valor_2)
 
     def _trt15(self):
         if not self._check_exists('_TRT15'): 
@@ -411,7 +434,11 @@ class Paginas:
                 #CROP ARQUIVO DE PRINT TELA, NOME DO ARQUIVO QUANDO CORTADO
                 image_cap = a.crop("page_"+str(namefile)+".png","crop_"+str(namefile)+".png",215,250,62,132)
                 c = Captcha(image_cap,"")
-                self.driver.find_element(By.ID,"certidaoActionForm:j_id51:verifyCaptcha").send_keys(c._resolve_img())
+                texto_img = c._resolve_img()
+                if texto_img.find('=') > -1:
+                    texto_img = self.__resolve_charada(texto_img)
+
+                self.driver.find_element(By.ID,"certidaoActionForm:j_id51:verifyCaptcha").send_keys(texto_img)
                 self.driver.find_element(By.ID,"certidaoActionForm:certidaoActionEmitir").click()
                 time.sleep(4)
 

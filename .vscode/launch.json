@@ -28,6 +28,18 @@
                 "PYTHONPATH": "${workspaceFolder}"
             },
             "justMyCode": true
+        },
+        {
+            "name": "TESTES",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/teste.py",
+            "console": "integratedTerminal",
+            "envFile": "${workspaceFolder}/.env",
+            "env": {
+                "PYTHONPATH": "${workspaceFolder}"
+            },
+            "justMyCode": true
         }
     ]
 }
