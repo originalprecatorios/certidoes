@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 from time import time
-from db.class_mongo import Mongo
+#from db.class_mongo import Mongo
 import os, time
 from myclass.robo import Robo
 

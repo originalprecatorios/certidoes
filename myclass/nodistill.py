@@ -4,7 +4,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 import undetected_chromedriver.v2 as uc
-from db.class_mongo import Mongo
+#from db.class_mongo import Mongo
 import time, os
 
 class Nodistill:

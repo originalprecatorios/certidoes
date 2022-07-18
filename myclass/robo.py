@@ -2,7 +2,7 @@
 from myclass.paginas import Paginas
 from myclass.nodistill import Nodistill
 #from myclass.smtp import Smtp
-from db.class_mongo import Mongo
+#from db.class_mongo import Mongo
 from decouple import config
 import os
 
@@ -78,7 +78,7 @@ class Robo:
 
             #PARTE DE DESTILL
             pd = Nodistill(data)
-            #pd._CND_Federal()
+            pd._CND_Federal()
             #pd._trf3_jus('TRF')
             #pd._trf3_jus('SJSP')
 

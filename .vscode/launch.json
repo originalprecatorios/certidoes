@@ -9,7 +9,7 @@
             "name": "CERTIDOES",
             "type": "python",
             "request": "launch",
-            "program": "${workspaceFolder}/index.py",
+            "program": "${workspaceFolder}/main.py",
             "console": "integratedTerminal",
             "envFile": "${workspaceFolder}/.env",
             "env": {

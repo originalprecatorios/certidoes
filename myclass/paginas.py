@@ -7,7 +7,7 @@ from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from myclass.captcha import Captcha
 from myclass.gb import Cut
 from decouple import config
-from db.class_mongo import Mongo
+#from db.class_mongo import Mongo
 import time, random, os,json,urllib.request
 
 class Paginas:
