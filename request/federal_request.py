@@ -15,33 +15,31 @@ from recaptcha.captcha import Solve_Captcha
 import undetected_chromedriver as uc
 
 class Federal_request():
-    def __init__(self):
+    def __init__(self,pCnpj):
         self._sitekey = '4a65992d-58fc-4812-8b87-789f7e7c4c4b'
         self._captcha = Solve_Captcha()
         self._r = self._captcha.resolve_hcaptcha(self._sitekey,'https://solucoes.receita.fazenda.gov.br/Servicos/certidaointernet/PF/Emitir')
+        self._cnpj = pCnpj
 
     def get_cookies(self):
         url = "https://solucoes.receita.fazenda.gov.br/Servicos/certidaointernet/PF/Emitir/Verificar"
 
-        payload=f'NI=289.336.228-10&h-captcha-response={self._r}'
+        payload='NI={}&h-captcha-response={}'.format(self._cnpj,self._r)
         headers = {
-        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',
-        'Accept-Language': 'pt-BR,pt;q=0.9,en-US;q=0.8,en;q=0.7',
-        'Cache-Control': 'max-age=0',
-        'Connection': 'keep-alive',
+        'User-Agent': 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:102.0) Gecko/20100101 Firefox/102.0',
+        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8',
+        'Accept-Language': 'pt-BR,pt;q=0.8,en-US;q=0.5,en;q=0.3',
+        'Accept-Encoding': 'gzip, deflate, br',
         'Content-Type': 'application/x-www-form-urlencoded',
-        'Cookie': 'ASP.NET_SessionId=0v2vx102maa4hqaq4i45mxcf; BIGipServerPOOL_SERVICO_RECEITA=1558680737.47873.0000',
         'Origin': 'https://solucoes.receita.fazenda.gov.br',
+        'Connection': 'keep-alive',
         'Referer': 'https://solucoes.receita.fazenda.gov.br/Servicos/certidaointernet/PF/Emitir',
+        'Cookie': 'BIGipServerPOOL_SERVICO_RECEITA=1541903521.47873.0000; ASP.NET_SessionId=faozoqgfai2fsoi1hgxkral1; fileDownload=true',
+        'Upgrade-Insecure-Requests': '1',
         'Sec-Fetch-Dest': 'document',
         'Sec-Fetch-Mode': 'navigate',
         'Sec-Fetch-Site': 'same-origin',
-        'Sec-Fetch-User': '?1',
-        'Upgrade-Insecure-Requests': '1',
-        'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Safari/537.36',
-        'sec-ch-ua': '".Not/A)Brand";v="99", "Google Chrome";v="103", "Chromium";v="103"',
-        'sec-ch-ua-mobile': '?0',
-        'sec-ch-ua-platform': '"Linux"'
+        'Sec-Fetch-User': '?1'
         }
 
         response = requests.request("POST", url, headers=headers, data=payload)
@@ -49,50 +47,48 @@ class Federal_request():
         print(response.text)
 
 
-        url = "https://solucoes.receita.fazenda.gov.br/Servicos/certidaointernet/PF/Emitir/EmProcessamento?Ni=28933622810"
+        url = "https://solucoes.receita.fazenda.gov.br/Servicos/certidaointernet/PF/Emitir/EmProcessamento?Ni={}".format(self._cnpj.replace('.','').replace('-',''))
 
         payload={}
         headers = {
-        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',
-        'Accept-Language': 'pt-BR,pt;q=0.9,en-US;q=0.8,en;q=0.7',
+        'User-Agent': 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:102.0) Gecko/20100101 Firefox/102.0',
+        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8',
+        'Accept-Language': 'pt-BR,pt;q=0.8,en-US;q=0.5,en;q=0.3',
+        'Accept-Encoding': 'gzip, deflate, br',
         'Connection': 'keep-alive',
-        'Cookie': 'ASP.NET_SessionId=0v2vx102maa4hqaq4i45mxcf; BIGipServerPOOL_SERVICO_RECEITA=1558680737.47873.0000',
         'Referer': 'https://solucoes.receita.fazenda.gov.br/Servicos/certidaointernet/PF/Emitir/Verificar',
+        'Cookie': 'BIGipServerPOOL_SERVICO_RECEITA=1541903521.47873.0000; ASP.NET_SessionId=faozoqgfai2fsoi1hgxkral1; fileDownload=true',
+        'Upgrade-Insecure-Requests': '1',
         'Sec-Fetch-Dest': 'document',
         'Sec-Fetch-Mode': 'navigate',
         'Sec-Fetch-Site': 'same-origin',
-        'Sec-Fetch-User': '?1',
-        'Upgrade-Insecure-Requests': '1',
-        'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Safari/537.36',
-        'sec-ch-ua': '".Not/A)Brand";v="99", "Google Chrome";v="103", "Chromium";v="103"',
-        'sec-ch-ua-mobile': '?0',
-        'sec-ch-ua-platform': '"Linux"'
+        'Sec-Fetch-User': '?1'
         }
 
         response = requests.request("GET", url, headers=headers, data=payload)
 
         print(response.text)
 
-
-        url = "https://solucoes.receita.fazenda.gov.br/Servicos/certidaointernet/PF/Emitir/Emitir?Ni=28933622810"
+        
+        url = "https://solucoes.receita.fazenda.gov.br/Servicos/certidaointernet/PF/Emitir/Emitir?Ni={}".format(self._cnpj.replace('.','').replace('-',''))
 
         payload={}
         headers = {
-        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',
-        'Accept-Language': 'pt-BR,pt;q=0.9,en-US;q=0.8,en;q=0.7',
+        'User-Agent': 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:102.0) Gecko/20100101 Firefox/102.0',
+        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8',
+        'Accept-Language': 'pt-BR,pt;q=0.8,en-US;q=0.5,en;q=0.3',
+        'Accept-Encoding': 'gzip, deflate, br',
         'Connection': 'keep-alive',
-        'Cookie': 'ASP.NET_SessionId=0v2vx102maa4hqaq4i45mxcf; BIGipServerPOOL_SERVICO_RECEITA=1558680737.47873.0000',
-        'Referer': 'https://solucoes.receita.fazenda.gov.br/Servicos/certidaointernet/PF/Emitir/EmProcessamento?Ni=28933622810',
+        'Referer': 'https://solucoes.receita.fazenda.gov.br/Servicos/certidaointernet/PF/Emitir/EmProcessamento?Ni={}'.format(self._cnpj.replace('.','').replace('-','')),
+        'Cookie': 'BIGipServerPOOL_SERVICO_RECEITA=1541903521.47873.0000; ASP.NET_SessionId=faozoqgfai2fsoi1hgxkral1; fileDownload=true',
+        'Upgrade-Insecure-Requests': '1',
         'Sec-Fetch-Dest': 'iframe',
         'Sec-Fetch-Mode': 'navigate',
-        'Sec-Fetch-Site': 'same-origin',
-        'Upgrade-Insecure-Requests': '1',
-        'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Safari/537.36',
-        'sec-ch-ua': '".Not/A)Brand";v="99", "Google Chrome";v="103", "Chromium";v="103"',
-        'sec-ch-ua-mobile': '?0',
-        'sec-ch-ua-platform': '"Linux"'
+        'Sec-Fetch-Site': 'same-origin'
         }
 
         response = requests.request("GET", url, headers=headers, data=payload)
+
+        print(response.text)
 
         return response

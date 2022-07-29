@@ -80,7 +80,7 @@ class Robo:
             pd = Nodistill(data)
             pd._CND_Federal()
             #pd._trf3_jus('TRF')
-            #pd._trf3_jus('SJSP')
+            pd._trf3_jus('SJSP')
 
             #GERA RELATORIO DA EXTRACAO
             

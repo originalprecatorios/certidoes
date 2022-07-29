@@ -1,7 +1,7 @@
 import requests
 from recaptcha.captcha import Solve_Captcha
 from bs4 import BeautifulSoup
-
+import shutil
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
@@ -15,31 +15,65 @@ from recaptcha.captcha import Solve_Captcha
 import undetected_chromedriver as uc
 
 
-sitekey = '4a65992d-58fc-4812-8b87-789f7e7c4c4b'
+sitekey = '6LedIn4UAAAAAFfCJvLiDr8PCH_jgRRLqQmCU41Q'
 captcha = Solve_Captcha()
-r = captcha.resolve_hcaptcha(sitekey,'https://solucoes.receita.fazenda.gov.br/Servicos/certidaointernet/PF/Emitir')
+r = captcha.recaptcha(sitekey,'https://protestosp.com.br/consulta-de-protesto')
 
-url = "https://solucoes.receita.fazenda.gov.br/Servicos/certidaointernet/PF/Emitir/Verificar"
+capt = '/tmp/captcha/'
+if os.path.isdir(f'{capt}'):
+  print("O diretório existe!")
+else:
+  os.makedirs(f'{capt}')
+url = "https://aplicacoes10.trt2.jus.br/certidao_trabalhista_eletronica/public/index.php/index/solicitacao"
 
-payload=f'NI=289.336.228-10&h-captcha-response={r}'
+payload={}
 headers = {
-  'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',
-  'Accept-Language': 'pt-BR,pt;q=0.9,en-US;q=0.8,en;q=0.7',
-  'Cache-Control': 'max-age=0',
+  'User-Agent': 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:102.0) Gecko/20100101 Firefox/102.0',
+  'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8',
+  'Accept-Language': 'pt-BR,pt;q=0.8,en-US;q=0.5,en;q=0.3',
+  'Accept-Encoding': 'gzip, deflate, br',
+  'Referer': 'https://aplicacoes10.trt2.jus.br/certidao_trabalhista_eletronica/public/index.php/index/imprimecertidao',
   'Connection': 'keep-alive',
-  'Content-Type': 'application/x-www-form-urlencoded',
-  'Cookie': 'ASP.NET_SessionId=0v2vx102maa4hqaq4i45mxcf; BIGipServerPOOL_SERVICO_RECEITA=1558680737.47873.0000',
-  'Origin': 'https://solucoes.receita.fazenda.gov.br',
-  'Referer': 'https://solucoes.receita.fazenda.gov.br/Servicos/certidaointernet/PF/Emitir',
+  'Cookie': 'PHPSESSID=kqd6a0n4n43ve8u1m8anu0u5k6; _ga=GA1.3.971099137.1658337294; _gid=GA1.3.1289141189.1658337294; ww2.trtsp.jus.br={%22contraste%22:0%2C%22fontes%22:1%2C%22escalabilidade%22:0}; contraste=0; fontes=1; escalabilidade=0; _gat=1',
+  'Upgrade-Insecure-Requests': '1',
   'Sec-Fetch-Dest': 'document',
   'Sec-Fetch-Mode': 'navigate',
   'Sec-Fetch-Site': 'same-origin',
-  'Sec-Fetch-User': '?1',
+  'Sec-Fetch-User': '?1'
+}
+
+response = requests.request("GET", url, headers=headers, data=payload)
+
+print(response.text)
+
+soup = BeautifulSoup(response.text, 'html.parser')
+captcha_id = soup.find(id="captcha-id").get('value')
+url = 'https://aplicacoes10.trt2.jus.br' + soup.find("table", {"class": "tcaptcha"}).find_all("img")[0].get('src')
+response = requests.get(url, stream=True)
+with open(capt+'captcha.png', 'wb') as out_file:
+  shutil.copyfileobj(response.raw, out_file)
+
+solve_captcha = captcha.resolve_normal(os.path.join(capt,'captcha.png'))
+os.system('rm {}'.format(os.path.join(capt,'captcha.png')))
+
+url = "https://aplicacoes10.trt2.jus.br/certidao_trabalhista_eletronica/public/index.php/index/solicitacao"
+
+payload='tipoDocumentoPesquisado=1&numeroDocumentoPesquisado=071.615.198-70&nomePesquisado=ROGERIO%2BFABIANO%2BFARRATI%2BSINICIO&jurisdicao=0&periodo=1&data_inicial=&data_final=&captcha%5Bid%5D={}&captcha%5Binput%5D={}&submit=&submit='.format(captcha_id,solve_captcha)
+headers = {
+  'User-Agent': 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:102.0) Gecko/20100101 Firefox/102.0',
+  'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8',
+  'Accept-Language': 'pt-BR,pt;q=0.8,en-US;q=0.5,en;q=0.3',
+  'Accept-Encoding': 'gzip, deflate, br',
+  'Content-Type': 'application/x-www-form-urlencoded',
+  'Origin': 'https://aplicacoes10.trt2.jus.br',
+  'Connection': 'keep-alive',
+  'Referer': 'https://aplicacoes10.trt2.jus.br/certidao_trabalhista_eletronica/public/index.php/index/solicitacao',
+  'Cookie': 'PHPSESSID=kqd6a0n4n43ve8u1m8anu0u5k6; _ga=GA1.3.971099137.1658337294; _gid=GA1.3.1289141189.1658337294; ww2.trtsp.jus.br={%22contraste%22:0%2C%22fontes%22:1%2C%22escalabilidade%22:0}; contraste=0; fontes=1; escalabilidade=0; _gat=1',
   'Upgrade-Insecure-Requests': '1',
-  'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Safari/537.36',
-  'sec-ch-ua': '".Not/A)Brand";v="99", "Google Chrome";v="103", "Chromium";v="103"',
-  'sec-ch-ua-mobile': '?0',
-  'sec-ch-ua-platform': '"Linux"'
+  'Sec-Fetch-Dest': 'document',
+  'Sec-Fetch-Mode': 'navigate',
+  'Sec-Fetch-Site': 'same-origin',
+  'Sec-Fetch-User': '?1'
 }
 
 response = requests.request("POST", url, headers=headers, data=payload)
@@ -47,98 +81,27 @@ response = requests.request("POST", url, headers=headers, data=payload)
 print(response.text)
 
 
-url = "https://solucoes.receita.fazenda.gov.br/Servicos/certidaointernet/PF/Emitir/EmProcessamento?Ni=28933622810"
+url = "https://aplicacoes10.trt2.jus.br/certidao_trabalhista_eletronica/public/index.php/index/recuperarcertidao"
 
 payload={}
 headers = {
-  'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',
-  'Accept-Language': 'pt-BR,pt;q=0.9,en-US;q=0.8,en;q=0.7',
+  'User-Agent': 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:102.0) Gecko/20100101 Firefox/102.0',
+  'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8',
+  'Accept-Language': 'pt-BR,pt;q=0.8,en-US;q=0.5,en;q=0.3',
+  'Accept-Encoding': 'gzip, deflate, br',
   'Connection': 'keep-alive',
-  'Cookie': 'ASP.NET_SessionId=0v2vx102maa4hqaq4i45mxcf; BIGipServerPOOL_SERVICO_RECEITA=1558680737.47873.0000',
-  'Referer': 'https://solucoes.receita.fazenda.gov.br/Servicos/certidaointernet/PF/Emitir/Verificar',
+  'Referer': 'https://aplicacoes10.trt2.jus.br/certidao_trabalhista_eletronica/public/index.php/index/imprimecertidao',
+  'Cookie': 'PHPSESSID=kqd6a0n4n43ve8u1m8anu0u5k6; _ga=GA1.3.971099137.1658337294; _gid=GA1.3.1289141189.1658337294; ww2.trtsp.jus.br={%22contraste%22:0%2C%22fontes%22:1%2C%22escalabilidade%22:0}; contraste=0; fontes=1; escalabilidade=0; _gat=1',
+  'Upgrade-Insecure-Requests': '1',
   'Sec-Fetch-Dest': 'document',
   'Sec-Fetch-Mode': 'navigate',
   'Sec-Fetch-Site': 'same-origin',
-  'Sec-Fetch-User': '?1',
-  'Upgrade-Insecure-Requests': '1',
-  'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Safari/537.36',
-  'sec-ch-ua': '".Not/A)Brand";v="99", "Google Chrome";v="103", "Chromium";v="103"',
-  'sec-ch-ua-mobile': '?0',
-  'sec-ch-ua-platform': '"Linux"'
+  'Sec-Fetch-User': '?1'
 }
 
 response = requests.request("GET", url, headers=headers, data=payload)
 
 print(response.text)
 
-
-url = "https://solucoes.receita.fazenda.gov.br/Servicos/certidaointernet/PF/Emitir/Emitir?Ni=28933622810"
-
-payload={}
-headers = {
-  'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',
-  'Accept-Language': 'pt-BR,pt;q=0.9,en-US;q=0.8,en;q=0.7',
-  'Connection': 'keep-alive',
-  'Cookie': 'ASP.NET_SessionId=0v2vx102maa4hqaq4i45mxcf; BIGipServerPOOL_SERVICO_RECEITA=1558680737.47873.0000',
-  'Referer': 'https://solucoes.receita.fazenda.gov.br/Servicos/certidaointernet/PF/Emitir/EmProcessamento?Ni=28933622810',
-  'Sec-Fetch-Dest': 'iframe',
-  'Sec-Fetch-Mode': 'navigate',
-  'Sec-Fetch-Site': 'same-origin',
-  'Upgrade-Insecure-Requests': '1',
-  'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Safari/537.36',
-  'sec-ch-ua': '".Not/A)Brand";v="99", "Google Chrome";v="103", "Chromium";v="103"',
-  'sec-ch-ua-mobile': '?0',
-  'sec-ch-ua-platform': '"Linux"'
-}
-
-response = requests.request("GET", url, headers=headers, data=payload)
-
-print(response.text)
-
-pasta = '/tmp/pdf/'
-if os.path.isdir(f'{pasta}'):
-    print("O diretório existe!")
-else:
-    os.makedirs(f'{pasta}')
-
-headers
-
-fp = webdriver.FirefoxProfile()
-
-fp.set_preference("general.useragent.override", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.45 Safari/537.36")
-fp.set_preference("browser.download.folderList", 2)
-fp.set_preference("browser.download.manager.showWhenStarting", False)
-fp.set_preference("browser.download.dir", pasta)
-fp.set_preference("browser.helperApps.neverAsk.saveToDisk",
-                  "text/plain, application/octet-stream, application/binary, text/csv, application/csv, application/excel, text/comma-separated-values, text/xml, application/xml")
-fp.set_preference("pdfjs.disabled", True)
-options = Options()
-options.add_argument("--headless")
-driver = webdriver.Firefox(firefox_profile=fp)
-driver.get('https://solucoes.receita.fazenda.gov.br/Servicos/certidaointernet/PF/Emitir/EmProcessamento?Ni=28933622810')
-time.sleep(2)
-
-
-
-url = "https://solucoes.receita.fazenda.gov.br/Servicos/certidaointernet/PF/Emitir/ResultadoEmissao/NDUkODk3OCMyMzQ2Nzg5IyojKjAwNjUsbyBDUEYsMjg5LjMzNi4yMjgtMTA="
-
-payload={}
-headers = {
-  'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',
-  'Accept-Language': 'pt-BR,pt;q=0.9,en-US;q=0.8,en;q=0.7',
-  'Connection': 'keep-alive',
-  'Cookie': 'ASP.NET_SessionId=0v2vx102maa4hqaq4i45mxcf; BIGipServerPOOL_SERVICO_RECEITA=1558680737.47873.0000',
-  'Referer': 'https://solucoes.receita.fazenda.gov.br/Servicos/certidaointernet/PF/Emitir/EmProcessamento?Ni=28933622810',
-  'Sec-Fetch-Dest': 'document',
-  'Sec-Fetch-Mode': 'navigate',
-  'Sec-Fetch-Site': 'same-origin',
-  'Upgrade-Insecure-Requests': '1',
-  'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Safari/537.36',
-  'sec-ch-ua': '".Not/A)Brand";v="99", "Google Chrome";v="103", "Chromium";v="103"',
-  'sec-ch-ua-mobile': '?0',
-  'sec-ch-ua-platform': '"Linux"'
-}
-
-response = requests.request("GET", url, headers=headers, data=payload)
-
-print(response.text)
+with open('metadata.pdf', 'wb') as f:
+    f.write(response.content)
