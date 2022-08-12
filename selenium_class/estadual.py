@@ -7,6 +7,8 @@ from selenium.webdriver.common.by import By
 from datetime import datetime
 from pathlib import Path
 import os, time
+import undetected_chromedriver.v2 as uc
+
 
 
 class Estadual:
@@ -42,6 +44,21 @@ class Estadual:
         self._driver = webdriver.Firefox(firefox_profile=fp)
         self._driver.get(self._link)
         time.sleep(2)
+
+
+        options = uc.ChromeOptions()
+        options.add_argument('--no-first-run')
+        options.add_argument("--window-size=2560,1440")
+        options.add_argument('--no-sandbox')
+        self._driver = uc.Chrome(options=options)
+        #MUDAR A PARSTA DE DOWNLOAD
+        params = {
+            "behavior": "allow",
+            "downloadPath": self._pasta
+        }
+
+        self._driver.execute_cdp_cmd("Page.setDownloadBehavior", params)
+        self._driver.get(self._link)
         
         
     

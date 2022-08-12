@@ -8,7 +8,7 @@ from datetime import datetime
 from pathlib import Path
 import time, os
 from recaptcha.captcha import Solve_Captcha
-import undetected_chromedriver as uc
+import undetected_chromedriver.v2 as uc
 
 class Federal:
 
