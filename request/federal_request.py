@@ -16,6 +16,7 @@ import undetected_chromedriver as uc
 
 class Federal_request():
     def __init__(self,pCnpj):
+        print('Federal_request')
         self._sitekey = '4a65992d-58fc-4812-8b87-789f7e7c4c4b'
         self._captcha = Solve_Captcha()
         self._r = self._captcha.resolve_hcaptcha(self._sitekey,'https://solucoes.receita.fazenda.gov.br/Servicos/certidaointernet/PF/Emitir')

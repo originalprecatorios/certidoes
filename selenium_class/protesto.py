@@ -16,6 +16,7 @@ from PIL import Image
 class Protesto:
 
     def __init__(self,pData,pLink,pMongo, pError,pCaptcha):
+        print('Protesto')
         self._data = pData
         self._link = pLink
         self._bdMongo = pMongo
@@ -35,6 +36,7 @@ class Protesto:
         fp.set_preference("browser.download.folderList", 2)
         fp.set_preference("browser.download.manager.showWhenStarting", False)
         fp.set_preference("browser.download.dir", self._pasta)
+        fp.set_preference("browser.helperApps.neverAsk.saveToDisk", "application/pdf")
         fp.set_preference("browser.helperApps.neverAsk.saveToDisk",
                           "text/plain, application/octet-stream, application/binary, text/csv, application/csv, application/excel, text/comma-separated-values, text/xml, application/xml")
         fp.set_preference("pdfjs.disabled", True)
@@ -69,6 +71,7 @@ class Protesto:
             self._driver.close()
 
         except Exception as e:
+            self._driver.close()
             err = {'data':str(datetime.today()).split(' ')[0].replace('-',''),
                     'dado_utilizado': self._data['nome'],
                     'sistema': 'municipal',

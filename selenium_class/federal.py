@@ -13,6 +13,7 @@ import undetected_chromedriver as uc
 class Federal:
 
     def __init__(self,pData,pLink,pMongo, pError,pCnpj):
+        print('Federal')
         self._data = pData
         self._link = pLink
         self._cnpj = pCnpj
@@ -83,6 +84,7 @@ class Federal:
             self._driver.close()
             
         except Exception as e:
+            self._driver.close()
             err = {'data':str(datetime.today()).split(' ')[0].replace('-',''),
                     'dado_utilizado': self._data['nome'],
                     'sistema': 'municipal',

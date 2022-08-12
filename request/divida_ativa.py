@@ -13,6 +13,7 @@ import undetected_chromedriver as uc
 
 class Divida_ativa():
     def __init__(self,pData,pCaptcha):
+        print('Divida_ativa')
         self._data = pData
         self._sitekey = '6Le9EjMUAAAAAPKi-JVCzXgY_ePjRV9FFVLmWKB_'
         self._captcha = pCaptcha

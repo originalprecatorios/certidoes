@@ -12,6 +12,7 @@ import os, time
 class Estadual:
 
     def __init__(self,pData,pLink,pMongo, pError,pCaptcha):
+        print('Estadual')
         self._data = pData
         self._link = pLink
         self._bdMongo = pMongo
@@ -34,6 +35,7 @@ class Estadual:
         fp.set_preference("browser.download.dir", self._pasta)
         fp.set_preference("browser.helperApps.neverAsk.saveToDisk",
                           "text/plain, application/octet-stream, application/binary, text/csv, application/csv, application/excel, text/comma-separated-values, text/xml, application/xml")
+        fp.set_preference("browser.helperApps.neverAsk.saveToDisk", "application/pdf")
         fp.set_preference("pdfjs.disabled", True)
         options = Options()
         options.add_argument("--headless")
@@ -61,6 +63,7 @@ class Estadual:
 
 
         except Exception as e:
+            self._driver.close()
             err = {'data':str(datetime.today()).split(' ')[0].replace('-',''),
                     'dado_utilizado': self._data['nome'],
                     'sistema': 'estadual',

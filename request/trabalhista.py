@@ -5,6 +5,7 @@ import shutil,os
 
 class Trabalhista:
     def __init__(self,pData,pCaptcha):
+        print('Trabalhista')
         self._data = pData
         self._captcha = pCaptcha
         self._cont = 0
