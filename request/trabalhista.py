@@ -16,7 +16,7 @@ class Trabalhista:
         else:
             os.makedirs(f'{self._capt}')
         
-        self._pasta = '/tmp/trabalhista/{}/'.format(self._data['cpf'].replace('.','').replace('-',''))
+        self._pasta = '/tmp/pdf/trabalhista/{}/'.format(self._data['cpf'].replace('.','').replace('-',''))
         if os.path.isdir(f'{self._pasta}'):
             print("O diretório existe!")
         else:

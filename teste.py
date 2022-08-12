@@ -15,60 +15,33 @@ from recaptcha.captcha import Solve_Captcha
 import undetected_chromedriver as uc
 
 
-sitekey = '6LedIn4UAAAAAFfCJvLiDr8PCH_jgRRLqQmCU41Q'
+sitekey = '6Le9EjMUAAAAAPKi-JVCzXgY_ePjRV9FFVLmWKB_'
 captcha = Solve_Captcha()
-r = captcha.recaptcha(sitekey,'https://protestosp.com.br/consulta-de-protesto')
+r = captcha.recaptcha(sitekey,'https://www.dividaativa.pge.sp.gov.br/sc/pages/crda/emitirCrda.jsf')
 
 capt = '/tmp/captcha/'
 if os.path.isdir(f'{capt}'):
   print("O diretório existe!")
 else:
   os.makedirs(f'{capt}')
-url = "https://aplicacoes10.trt2.jus.br/certidao_trabalhista_eletronica/public/index.php/index/solicitacao"
+import requests
 
-payload={}
-headers = {
-  'User-Agent': 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:102.0) Gecko/20100101 Firefox/102.0',
-  'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8',
-  'Accept-Language': 'pt-BR,pt;q=0.8,en-US;q=0.5,en;q=0.3',
-  'Accept-Encoding': 'gzip, deflate, br',
-  'Referer': 'https://aplicacoes10.trt2.jus.br/certidao_trabalhista_eletronica/public/index.php/index/imprimecertidao',
-  'Connection': 'keep-alive',
-  'Cookie': 'PHPSESSID=kqd6a0n4n43ve8u1m8anu0u5k6; _ga=GA1.3.971099137.1658337294; _gid=GA1.3.1289141189.1658337294; ww2.trtsp.jus.br={%22contraste%22:0%2C%22fontes%22:1%2C%22escalabilidade%22:0}; contraste=0; fontes=1; escalabilidade=0; _gat=1',
-  'Upgrade-Insecure-Requests': '1',
-  'Sec-Fetch-Dest': 'document',
-  'Sec-Fetch-Mode': 'navigate',
-  'Sec-Fetch-Site': 'same-origin',
-  'Sec-Fetch-User': '?1'
-}
+import requests
 
-response = requests.request("GET", url, headers=headers, data=payload)
+url = "https://www.dividaativa.pge.sp.gov.br/sc/pages/crda/emitirCrda.jsf"
 
-print(response.text)
-
-soup = BeautifulSoup(response.text, 'html.parser')
-captcha_id = soup.find(id="captcha-id").get('value')
-url = 'https://aplicacoes10.trt2.jus.br' + soup.find("table", {"class": "tcaptcha"}).find_all("img")[0].get('src')
-response = requests.get(url, stream=True)
-with open(capt+'captcha.png', 'wb') as out_file:
-  shutil.copyfileobj(response.raw, out_file)
-
-solve_captcha = captcha.resolve_normal(os.path.join(capt,'captcha.png'))
-os.system('rm {}'.format(os.path.join(capt,'captcha.png')))
-
-url = "https://aplicacoes10.trt2.jus.br/certidao_trabalhista_eletronica/public/index.php/index/solicitacao"
-
-payload='tipoDocumentoPesquisado=1&numeroDocumentoPesquisado=071.615.198-70&nomePesquisado=ROGERIO%2BFABIANO%2BFARRATI%2BSINICIO&jurisdicao=0&periodo=1&data_inicial=&data_final=&captcha%5Bid%5D={}&captcha%5Binput%5D={}&submit=&submit='.format(captcha_id,solve_captcha)
+payload='emitirCrda=emitirCrda&emitirCrda%3AcrdaInputCnpjBase=&emitirCrda%3AcrdaInputCpf=403.154.468-54&g-recaptcha-response=03ANYolqstdCweRJQ4b_yMreUz3PFkDrCnY4KU_jrO7cfi73YebFa3QQI7gPbMnjgy0Vr-DUWL35oSR8vu_qZ4cbY5lf_DtEZj38rfbFjf_AiF8py29A9TFQaiJZe0s460a-HyEVpm-8I21UMDqhFLeNM7hluK4Z4a_C-ydBAqk8icuaoEPQcpRJJ9e55J5NJ54D6v3zmjV5PUlzjE1FJpn4nm6K9coZXWyuaM_dPXo9s6cByC3ckvp6Lqc68UDGVUX7MKVyoYDiGXII7B-8yNRvaBMcfJmbXhvRSRZrUFAdxVkwk0qE4lhD_6lpqLnRzhJvUMJ0mwMpyUCdWk6m6n-tQR4QSJEzPATnNumtTkbxTBMoNapP7SaNw&emitirCrda%3Aj_id95=Emitir&javax.faces.ViewState=j_id2'
 headers = {
   'User-Agent': 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:102.0) Gecko/20100101 Firefox/102.0',
   'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8',
   'Accept-Language': 'pt-BR,pt;q=0.8,en-US;q=0.5,en;q=0.3',
   'Accept-Encoding': 'gzip, deflate, br',
   'Content-Type': 'application/x-www-form-urlencoded',
-  'Origin': 'https://aplicacoes10.trt2.jus.br',
+  'Origin': 'https://www.dividaativa.pge.sp.gov.br',
+  'DNT': '1',
   'Connection': 'keep-alive',
-  'Referer': 'https://aplicacoes10.trt2.jus.br/certidao_trabalhista_eletronica/public/index.php/index/solicitacao',
-  'Cookie': 'PHPSESSID=kqd6a0n4n43ve8u1m8anu0u5k6; _ga=GA1.3.971099137.1658337294; _gid=GA1.3.1289141189.1658337294; ww2.trtsp.jus.br={%22contraste%22:0%2C%22fontes%22:1%2C%22escalabilidade%22:0}; contraste=0; fontes=1; escalabilidade=0; _gat=1',
+  'Referer': 'https://www.dividaativa.pge.sp.gov.br/sc/pages/crda/emitirCrda.jsf;jsessionid=524AA237088F50590D560C87068D972F.395016-sc-01',
+  'Cookie': 'JSESSIONID=524AA237088F50590D560C87068D972F.395016-sc-01',
   'Upgrade-Insecure-Requests': '1',
   'Sec-Fetch-Dest': 'document',
   'Sec-Fetch-Mode': 'navigate',
@@ -79,29 +52,3 @@ headers = {
 response = requests.request("POST", url, headers=headers, data=payload)
 
 print(response.text)
-
-
-url = "https://aplicacoes10.trt2.jus.br/certidao_trabalhista_eletronica/public/index.php/index/recuperarcertidao"
-
-payload={}
-headers = {
-  'User-Agent': 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:102.0) Gecko/20100101 Firefox/102.0',
-  'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8',
-  'Accept-Language': 'pt-BR,pt;q=0.8,en-US;q=0.5,en;q=0.3',
-  'Accept-Encoding': 'gzip, deflate, br',
-  'Connection': 'keep-alive',
-  'Referer': 'https://aplicacoes10.trt2.jus.br/certidao_trabalhista_eletronica/public/index.php/index/imprimecertidao',
-  'Cookie': 'PHPSESSID=kqd6a0n4n43ve8u1m8anu0u5k6; _ga=GA1.3.971099137.1658337294; _gid=GA1.3.1289141189.1658337294; ww2.trtsp.jus.br={%22contraste%22:0%2C%22fontes%22:1%2C%22escalabilidade%22:0}; contraste=0; fontes=1; escalabilidade=0; _gat=1',
-  'Upgrade-Insecure-Requests': '1',
-  'Sec-Fetch-Dest': 'document',
-  'Sec-Fetch-Mode': 'navigate',
-  'Sec-Fetch-Site': 'same-origin',
-  'Sec-Fetch-User': '?1'
-}
-
-response = requests.request("GET", url, headers=headers, data=payload)
-
-print(response.text)
-
-with open('metadata.pdf', 'wb') as f:
-    f.write(response.content)

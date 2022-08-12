@@ -26,8 +26,8 @@ class Federal:
         else:
             os.makedirs(f'{self._pasta}')
 
-        
-        '''fp = webdriver.FirefoxProfile()
+        '''
+        fp = webdriver.FirefoxProfile()
         fp.set_preference("general.useragent.override", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.45 Safari/537.36")
         fp.set_preference("browser.download.folderList", 2)
         fp.set_preference("browser.download.manager.showWhenStarting", False)
@@ -49,7 +49,8 @@ class Federal:
         link = 'https://solucoes.receita.fazenda.gov.br/Servicos/certidaointernet/PF/Emitir/EmProcessamento?Ni={}'.format(self._cnpj.replace('.','').replace('-',''))
         time.sleep(1)
         self._driver.get(link)
-        time.sleep(5)'''
+        time.sleep(5)
+        '''
         
         options = uc.ChromeOptions()
         options.add_argument('--no-first-run')
@@ -135,3 +136,4 @@ class Federal:
                     cont += 1
                 else:
                     return  
+                    
