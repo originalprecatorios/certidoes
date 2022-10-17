@@ -6,9 +6,9 @@ from selenium.webdriver.firefox.options import Options
 from selenium.webdriver.common.by import By
 from datetime import datetime
 from pathlib import Path
-import time, os
+import time, os, shutil
 from recaptcha.captcha import Solve_Captcha
-import undetected_chromedriver.v2 as uc
+import undetected_chromedriver as uc
 
 class Federal:
 
@@ -20,12 +20,13 @@ class Federal:
         self._bdMongo = pMongo
         self._error = pError
         self._error._getcoll('error')
-
-        self._pasta = '/tmp/pdf/federal/{}'.format(self._data['cpf'].replace('.','').replace('-',''))
+        self._save = '/opt/certidao/download/'
+        self._pasta = '/opt/certidao/{}/'.format(self._data['cpf'].replace('.','').replace('-',''))
         if os.path.isdir(f'{self._pasta}'):
             print("O diretório existe!")
         else:
             os.makedirs(f'{self._pasta}')
+            os.makedirs(f'{self._save}')
 
         '''
         fp = webdriver.FirefoxProfile()
@@ -57,11 +58,12 @@ class Federal:
         options.add_argument('--no-first-run')
         options.add_argument("--window-size=2560,1440")
         options.add_argument('--no-sandbox')
-        self._driver = uc.Chrome(options=options)
+        #self._driver = uc.Chrome(options=options,version_main=105)
+        self._driver = uc.Chrome(options=options,version_main=89)
         #MUDAR A PARSTA DE DOWNLOAD
         params = {
             "behavior": "allow",
-            "downloadPath": self._pasta
+            "downloadPath": self._save
         }
 
         self._driver.execute_cdp_cmd("Page.setDownloadBehavior", params)
@@ -70,17 +72,34 @@ class Federal:
         
     
     def login(self):
+        
         try:
             WebDriverWait(self._driver, 3).until(EC.presence_of_element_located((By.ID, "NI"))).send_keys(self._cnpj)
             WebDriverWait(self._driver, 3).until(EC.presence_of_element_located((By.ID, "validar"))).click()
             time.sleep(2)
-            self._driver.execute_script("window.stop();")
+            #self._driver.execute_script("window.stop();")
             WebDriverWait(self._driver, 3).until(EC.presence_of_element_located((By.ID, "FrmSelecao")))
             self._driver.find_element(By.ID,"FrmSelecao").find_elements(By.TAG_NAME,"a")[1].click()
-            time.sleep(2)
-            self._driver.execute_script("window.stop();")
-            self._download()
-            print('Download concluido para o cpf {}'.format(self._cnpj))
+            time.sleep(10)
+            WebDriverWait(self._driver, 10).until(EC.presence_of_element_located((By.ID, "main")))
+            if self._driver.find_element(By.ID,'main').text.find('A certidão foi emitida com sucesso') >= 0:
+                self._download()
+                archive_name = os.listdir(self._save)[0]
+                shutil.move(f"{self._save}/{archive_name}", f"{self._pasta}_CND_FEDERAL.pdf")
+                print('Download concluido para o cpf {}'.format(self._cnpj))
+            else:
+                WebDriverWait(self._driver, 10).until(EC.presence_of_element_located((By.ID, "rfb-main-container")))
+                self._driver.find_element(By.ID,"rfb-main-container").find_element(By.TAG_NAME,"a").click()
+                time.sleep(2)
+                WebDriverWait(self._driver, 3).until(EC.presence_of_element_located((By.ID, "NI"))).send_keys(self._cnpj)
+                WebDriverWait(self._driver, 3).until(EC.presence_of_element_located((By.ID, "validar"))).click()
+                time.sleep(2)
+                self._download()
+                archive_name = os.listdir(self._save)[0]
+                shutil.move(f"{self._save}/{archive_name}", f"{self._pasta}_CND_FEDERAL.pdf")
+                print('Download concluido para o cpf {}'.format(self._cnpj))
+                    
+            
             self._driver.close()
             
         except Exception as e:
@@ -128,7 +147,7 @@ class Federal:
         
         while True:
             cont = 0
-            path = Path(self._pasta)
+            path = Path(self._save)
 
             for conteudo in path.glob('*'):
                 print ("Aguardando termino do download!")

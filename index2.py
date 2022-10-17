@@ -72,9 +72,9 @@ def _process():
 
         #PARTE DE DESTILL
         pd = Nodistill(data)
-        #pd._CND_Federal()
-        #pd._trf3_jus('TRF')
-        #pd._trf3_jus('SJSP')
+        pd._CND_Federal()
+        pd._trf3_jus('TRF')
+        pd._trf3_jus('SJSP')
 
 
         #GERAR UM RELATORIO DO QUE ACONTECEU COM A EXTRACAO

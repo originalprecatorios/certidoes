@@ -21,18 +21,20 @@ class Trabalhista:
         self._instancia = pInstancia
         self._error._getcoll('error')
 
-        self._pasta = '/tmp/pdf/trabalhista/{}'.format(self._data['cpf'].replace('.','').replace('-',''))
+        self._save = '/opt/certidao/download/'
+        self._pasta = '/opt/certidao/{}/'.format(self._data['cpf'].replace('.','').replace('-',''))
         if os.path.isdir(f'{self._pasta}'):
             print("O diretório existe!")
         else:
             os.makedirs(f'{self._pasta}')
+            os.makedirs(f'{self._save}')
 
         
         fp = webdriver.FirefoxProfile()
         fp.set_preference("general.useragent.override", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.45 Safari/537.36")
         fp.set_preference("browser.download.folderList", 2)
         fp.set_preference("browser.download.manager.showWhenStarting", False)
-        fp.set_preference("browser.download.dir", self._pasta)
+        fp.set_preference("browser.download.dir", self._save)
         fp.set_preference("browser.helperApps.neverAsk.saveToDisk",
                           "text/plain, application/octet-stream, application/binary, text/csv, application/csv, application/excel, text/comma-separated-values, text/xml, application/xml")
         fp.set_preference("pdfjs.disabled", True)

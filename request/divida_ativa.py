@@ -8,7 +8,7 @@ from selenium.webdriver.firefox.options import Options
 from selenium.webdriver.common.by import By
 from datetime import datetime
 from pathlib import Path
-import time, os
+import time, os, shutil
 import undetected_chromedriver as uc
 
 class Divida_ativa():
@@ -18,11 +18,13 @@ class Divida_ativa():
         self._sitekey = '6Le9EjMUAAAAAPKi-JVCzXgY_ePjRV9FFVLmWKB_'
         self._captcha = pCaptcha
         self._r = self._captcha.recaptcha(self._sitekey,'https://www.dividaativa.pge.sp.gov.br/sc/pages/crda/emitirCrda.jsf')
-        self._pasta = '/tmp/pdf/divida_ativa/{}/'.format(self._data['cpf'].replace('.','').replace('-',''))
+        self._save = '/opt/certidao/download/'
+        self._pasta = '/opt/certidao/{}/'.format(self._data['cpf'].replace('.','').replace('-',''))
         if os.path.isdir(f'{self._pasta}'):
             print("O diretório existe!")
         else:
             os.makedirs(f'{self._pasta}')
+            os.makedirs(f'{self._save}')
 
     def get_download(self):
         url = "https://www.dividaativa.pge.sp.gov.br/sc/pages/crda/emitirCrda.jsf"
@@ -49,7 +51,7 @@ class Divida_ativa():
         response = requests.request("POST", url, headers=headers, data=payload)
 
 
-        with open(self._pasta+'{}.pdf'.format(self._data['cpf'].replace('.','').replace('-','')), 'wb') as f:
+        with open(self._pasta+'_CND_CONTRIBUINTE.pdf', 'wb') as f:
             f.write(response.content)
         
         print('Download concluido')

@@ -7,8 +7,9 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import Select
 from datetime import datetime
 from pathlib import Path
-import time, os
+import time, os, shutil
 import undetected_chromedriver.v2 as uc
+from pyshadow.main import Shadow
 
 
 class Municipal:
@@ -21,12 +22,14 @@ class Municipal:
         self._error = pError
         self._captcha = pCaptcha
         self._error._getcoll('error')
-
-        self._pasta = '/tmp/pdf/municipal/{}'.format(self._data['cpf'].replace('.','').replace('-',''))
+        self._pasta = '/opt/certidao/{}/'.format(self._data['cpf'].replace('.','').replace('-',''))
+        self._save = '/opt/certidao/download/'
         if os.path.isdir(f'{self._pasta}'):
             print("O diretório existe!")
         else:
             os.makedirs(f'{self._pasta}')
+            os.makedirs(f'{self._save}')
+            
 
         self._capt = '/tmp/captcha/'
         if os.path.isdir(f'{self._capt}'):
@@ -40,7 +43,7 @@ class Municipal:
         fp.set_preference("general.useragent.override", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.45 Safari/537.36")
         fp.set_preference("browser.download.folderList", 2)
         fp.set_preference("browser.download.manager.showWhenStarting", False)
-        fp.set_preference("browser.download.dir", self._pasta)
+        fp.set_preference("browser.download.dir", self._save)
         fp.set_preference("browser.helperApps.neverAsk.saveToDisk", "application/pdf")
         fp.set_preference("browser.helperApps.neverAsk.saveToDisk",
                           "text/plain, application/octet-stream, application/binary,application/pdf, text/csv, application/csv, application/excel, text/comma-separated-values, text/xml, application/xml")
@@ -56,6 +59,10 @@ class Municipal:
     
     def login(self):
         try:
+            time.sleep(1)
+            shadow = Shadow(self._driver)
+            shadow.find_element("main div#modalPanelAtencao.cc__modal div.cc__content__wrapper div.cc__panel div.cc__panel__body__container div.cc__panel__body div.cc__panel__aut__buttons input.cc__button__autorizacao--all").click()
+            time.sleep(1)
             WebDriverWait(self._driver, 3).until(EC.presence_of_element_located((By.ID, "ctl00_ConteudoPrincipal_ddlTipoCertidao")))
             select = Select(self._driver.find_element(By.ID, 'ctl00_ConteudoPrincipal_ddlTipoCertidao'))
             select.select_by_visible_text('Certidão Tributária Mobiliária')
@@ -72,6 +79,8 @@ class Municipal:
                         self.solve_cap()
                         WebDriverWait(self._driver, 3).until(EC.presence_of_element_located((By.ID, "btnFecharModalCertidoes")))
                         self._download()
+                        archive_name = os.listdir(self._save)[0]
+                        shutil.move(f"{self._save}/{archive_name}", f"{self._pasta}_CND_MUNICIPAL.pdf")
                         self._driver.close()
                         print('Download do arquivo gerado para o cliente {}'.format(self._data['nome']))
                         break
@@ -137,7 +146,7 @@ class Municipal:
         
         while True:
             cont = 0
-            path = Path(self._pasta)
+            path = Path(self._save)
 
             for conteudo in path.glob('*'):
                 print ("Aguardando termino do download!")
