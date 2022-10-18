@@ -65,6 +65,7 @@ def certidao_initial():
                             except:
                                 cont += 1
                         else:
+                            modifica['$set']['extracted']['_CND_ESTADUAL'] = False
                             break
                     
                 elif ext == '_CND_MUNICIPAL':
@@ -80,6 +81,7 @@ def certidao_initial():
                             except:
                                 cont += 1
                         else:
+                            modifica['$set']['extracted']['_CND_MUNICIPAL'] = False
                             break
                     
 
@@ -97,6 +99,7 @@ def certidao_initial():
                             except:
                                 cont += 1
                         else:
+                            modifica['$set']['extracted']['_CND_FEDERAL'] = False
                             break
                     
                 
@@ -113,6 +116,7 @@ def certidao_initial():
                             except:
                                 cont += 1
                         else:
+                            modifica['$set']['extracted']['_TRF3_JUS_SJSP'] = False
                             break
                     
 
@@ -129,6 +133,7 @@ def certidao_initial():
                             except:
                                 cont += 1
                         else:
+                            modifica['$set']['extracted']['_TRF3_JUS_TRF'] = False
                             break
                     
                 
@@ -145,6 +150,7 @@ def certidao_initial():
                             except:
                                 cont += 1
                         else:
+                            modifica['$set']['extracted']['_TRTSP'] = False
                             break
                     
 
@@ -161,6 +167,7 @@ def certidao_initial():
                             except:
                                 cont += 1
                         else:
+                            modifica['$set']['extracted']['_DEBITO_TRABALHISTA'] = False
                             break
                     
 
@@ -177,6 +184,7 @@ def certidao_initial():
                             except:
                                 cont += 1
                         else:
+                            modifica['$set']['extracted']['_PROTESTO'] = False
                             break
                     
                 elif ext == '_TRT15':
@@ -192,6 +200,7 @@ def certidao_initial():
                             except:
                                 cont += 1
                         else:
+                            modifica['$set']['extracted']['_TRT15'] = False
                             break
                     
                 
@@ -208,6 +217,7 @@ def certidao_initial():
                             except:
                                 cont += 1
                         else:
+                            modifica['$set']['extracted']['_CND_CONTRIBUINTE'] = False
                             break
                     
 
@@ -224,6 +234,7 @@ def certidao_initial():
                             except:
                                 cont += 1
                         else:
+                            modifica['$set']['extracted']['_TJ'] = False
                             break
                     
                 elif ext == '_PJE_TRF3':
@@ -239,6 +250,7 @@ def certidao_initial():
                             except:
                                 cont += 1
                         else:
+                            modifica['$set']['extracted']['_PJE_TRF3'] = False
                             break
                 
                 elif ext == '_TST_TRABALHISTA':
@@ -254,6 +266,7 @@ def certidao_initial():
                             except:
                                 cont += 1
                         else:
+                            modifica['$set']['extracted']['_TST_TRABALHISTA'] = False
                             break
                 
                 elif ext == '_ESAJ_CERTIDAO_6':
@@ -271,6 +284,7 @@ def certidao_initial():
                             except:
                                 cont += 1
                         else:
+                            modifica['$set']['extracted']['_ESAJ_CERTIDAO_6'] = False
                             break
                 
 
@@ -289,6 +303,7 @@ def certidao_initial():
                             except:
                                 cont += 1
                         else:
+                            modifica['$set']['extracted']['_ESAJ_CERTIDAO_52'] = False
                             break
                 
 
@@ -306,6 +321,7 @@ def certidao_initial():
                             except:
                                 cont += 1
                         else:
+                            modifica['$set']['extracted']['_ESAJ_BUSCA_CPF'] = False
                             break
                 
                 elif ext == '_ESAJ_BUSCA_NOME':
@@ -322,6 +338,7 @@ def certidao_initial():
                             except:
                                 cont += 1
                         else:
+                            modifica['$set']['extracted']['_ESAJ_BUSCA_NOME'] = False
                             break
                     
 
