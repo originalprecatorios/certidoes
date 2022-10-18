@@ -97,6 +97,7 @@ class Federal:
                 self._download()
                 archive_name = os.listdir(self._save)[0]
                 shutil.move(f"{self._save}/{archive_name}", f"{self._pasta}_CND_FEDERAL.pdf")
+                shutil.rmtree(self._save)
                 print('Download concluido para o cpf {}'.format(self._cnpj))
                     
             

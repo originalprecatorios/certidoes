@@ -19,10 +19,14 @@ from bd.class_mongo import Mongo
 from decouple import config
 from recaptcha.solve_captcha import hCaptcha
 from recaptcha.captcha import Solve_Captcha
-import os
+from apscheduler.events import EVENT_JOB_ERROR
+from apscheduler.executors.pool import ProcessPoolExecutor, ThreadPoolExecutor
+from apscheduler.schedulers.background import BackgroundScheduler
+from apscheduler.triggers.interval import IntervalTrigger
+from apscheduler.triggers.combining import AndTrigger
+import pytz, time, os
 
-
-if __name__ == '__main__':
+def certidao_initial():
     #bd = Mongo(config('MONGO_USER'), config('MONGO_PASS'), config('MONGO_HOST'), config('MONGO_PORT'), config('MONGO_DB'), config('AMBIENTE'))
     #mongo = Mongo(config('MONGO_USER'), config('MONGO_PASS'), config('MONGO_HOST'), config('MONGO_PORT'), config('MONGO_DB'), config('AMBIENTE'))
     mongo = Mongo(os.environ['MONGO_USER_PROD'], os.environ['MONGO_PASS_PROD'], os.environ['MONGO_HOST_PROD'], os.environ['MONGO_PORT_PROD'], os.environ['MONGO_DB_PROD'], os.environ['MONGO_AUTH_DB_PROD'])
@@ -324,3 +328,31 @@ if __name__ == '__main__':
         modifica['$set']['status_process'] = True
         mongo.updateOne_Query(busca, modifica)
     print('Finalizando programa')
+
+
+executors = {
+    'default': ThreadPoolExecutor(20),      
+    'processpool': ProcessPoolExecutor(5)
+}
+job_defaults = {
+    'coalesce': False,
+    'max_instances': 1
+}
+    
+scheduler = BackgroundScheduler(
+    executors=executors, job_defaults=job_defaults,
+    timezone=pytz.timezone('America/Sao_Paulo')
+)
+
+trigger = AndTrigger([IntervalTrigger(minutes=5)])
+
+scheduler.add_job(certidao_initial, trigger)
+
+if __name__ == '__main__':  
+    print('Start')
+    scheduler.start()
+    try:
+        while True:
+            time.sleep(1)
+    except (KeyboardInterrupt, SystemExit):
+        scheduler.shutdown()
