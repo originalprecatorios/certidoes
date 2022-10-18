@@ -329,7 +329,7 @@ def certidao_initial():
         mongo.updateOne_Query(busca, modifica)
     print('Finalizando programa')
 
-certidao_initial()
+
 executors = {
     'default': ThreadPoolExecutor(20),      
     'processpool': ProcessPoolExecutor(5)
