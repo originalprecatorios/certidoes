@@ -20,12 +20,17 @@ class Debito_trabalhista:
         self._captcha = pCaptcha
         self._error._getcoll('error')
         self._save = '/opt/certidao/download/'
+        try:
+            shutil.rmtree(self._save)
+            os.makedirs(f'{self._save}')
+        except:
+            pass
         self._pasta = '/opt/certidao/{}/'.format(self._data['cpf'].replace('.','').replace('-',''))
         if os.path.isdir(f'{self._pasta}'):
             print("O diretório existe!")
         else:
             os.makedirs(f'{self._pasta}')
-            os.makedirs(f'{self._save}')
+            
         
         self._capt = '/tmp/captcha/'
         if os.path.isdir(f'{self._capt}'):

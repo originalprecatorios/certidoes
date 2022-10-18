@@ -8,7 +8,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import Select
 from datetime import datetime
 from pathlib import Path
-import time, os
+import time, os, shutil
 import img2pdf
 from PIL import Image
 
@@ -24,12 +24,17 @@ class Protesto:
         self._captcha = pCaptcha
         self._error._getcoll('error')
         self._save = '/opt/certidao/download/'
+        try:
+            shutil.rmtree(self._save)
+            os.makedirs(f'{self._save}')
+        except:
+            pass
         self._pasta = '/opt/certidao/{}/'.format(self._data['cpf'].replace('.','').replace('-',''))
         if os.path.isdir(f'{self._pasta}'):
             print("O diretório existe!")
         else:
             os.makedirs(f'{self._pasta}')
-            os.makedirs(f'{self._save}')
+            
 
         
         fp = webdriver.FirefoxProfile()

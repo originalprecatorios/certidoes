@@ -8,7 +8,7 @@ from selenium.webdriver.support.ui import Select
 from datetime import datetime
 from pathlib import Path
 from decouple import config
-import time, os
+import time, os,shutil
 from PIL import Image
 import img2pdf
 
@@ -23,12 +23,17 @@ class Esaj_busca:
         self._definicao = pName
         self._error._getcoll('error')
         self._save = '/opt/certidao/download/'
+        try:
+            shutil.rmtree(self._save)
+            os.makedirs(f'{self._save}')
+        except:
+            pass
         self._pasta = '/opt/certidao/{}/'.format(self._data['cpf'].replace('.','').replace('-',''))
         if os.path.isdir(f'{self._pasta}'):
             print("O diretório existe!")
         else:
             os.makedirs(f'{self._pasta}')
-            os.makedirs(f'{self._save}')
+            
     
         fp = webdriver.FirefoxProfile()
         fp.set_preference("general.useragent.override", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.45 Safari/537.36")
