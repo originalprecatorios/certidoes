@@ -22,7 +22,7 @@ class Nodistill:
             options.add_argument('--no-first-run')
             options.add_argument("--window-size=2560,1440")
             options.add_argument('--no-sandbox')
-            self.driver = uc.Chrome(options=options, version_main=89)
+            self.driver = uc.Chrome(options=options, version_main=105)
             #MUDAR A PARSTA DE DOWNLOAD
             params = {
                 "behavior": "allow",
@@ -32,7 +32,7 @@ class Nodistill:
             self.driver.execute_cdp_cmd("Page.setDownloadBehavior", params)
 
             if not os.path.isdir(f"{config('PATH_FILES')}{self.dados.get('cpf')}"):
-                os.mkdir(f"{config('PATH_FILES')}{self.dados.get('cpf')}")
+                os.mkdir(f"{config('PATH_FILES')}{self.dados.get('cpf').replace('.','').replace('-','')}")
 
             self.OpenBrowser = 1
         else:
