@@ -97,3 +97,29 @@ class Solve_Captcha:
             if r.text.find('OK') > -1:
 
                 return r.text.split('|')[1]
+    
+    def _resolve_img(self,data_site_key):
+        
+        payload = {'key': self._key, 'method': 'base64', 'json' : 1, 'body' : data_site_key}
+        resposta = requests.post("https://2captcha.com/in.php", data=payload)
+        
+        #print(resposta.json())
+        id = resposta.json().get("request")
+
+        return self._resposta(id)
+    
+    def _resposta(self,id):
+        u2 = f"https://2captcha.com/res.php?key={self._key}&action=get&id={int(id)}&json=1"
+        time.sleep(5)
+        i = 1
+        while True:
+            r2 = requests.get(u2)
+            print(f"\033[33m\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b[{i}] Tentativas\033[0;0m ", end="", flush=True)
+
+            if r2.json().get("status") == 1:
+                form_tokon = r2.json().get("request")
+                print(f"\033[32m\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b[{i}] Resolvido\033[0;0m ", end="", flush=True)
+                break
+            i += 1
+            time.sleep(5)
+        return form_tokon

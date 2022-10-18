@@ -107,16 +107,18 @@ class Tst_trabalhista:
     def solve_cap(self):
         try:
             WebDriverWait(self._driver, 2).until(EC.presence_of_element_located((By.ID, "idImgBase64")))
-            with open(f'{self._capt}captcha.png', 'wb') as file:
-                l = self._driver.find_element(By.ID,'idImgBase64')
-                file.write(l.screenshot_as_png)
+            image_cap = self._driver.find_element(By.ID,"idImgBase64").get_attribute("src")
+            response = self._captcha._resolve_img(image_cap)
+            #with open(f'{self._capt}captcha.png', 'wb') as file:
+            #    l = self._driver.find_element(By.ID,'idImgBase64')
+            #    file.write(l.screenshot_as_png)
 
-            response = self._captcha.resolve_normal(os.path.join(self._capt,'captcha.png'))
+            #response = self._captcha.resolve_normal(os.path.join(self._capt,'captcha.png'))
             #response = ''
-            if response is None:
-                response = self._captcha.resolve_normal(os.path.join(self._capt,'captcha.png'))
+            #if response is None:
+            #    response = self._captcha.resolve_normal(os.path.join(self._capt,'captcha.png'))
             #response = ''
-            os.system('rm {}'.format(os.path.join(self._capt,'captcha.png')))
+            #os.system('rm {}'.format(os.path.join(self._capt,'captcha.png')))
             WebDriverWait(self._driver, 2).until(EC.presence_of_element_located((By.ID, "idCampoResposta")))
             self._driver.find_element(By.ID, 'idCampoResposta').send_keys(response)
             time.sleep(2)
@@ -150,3 +152,5 @@ class Tst_trabalhista:
                     cont += 1
                 else:
                     return  
+    
+    
