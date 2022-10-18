@@ -107,8 +107,12 @@ class Tst_trabalhista:
     def solve_cap(self):
         try:
             WebDriverWait(self._driver, 2).until(EC.presence_of_element_located((By.ID, "idImgBase64")))
+            time.sleep(2)
             image_cap = self._driver.find_element(By.ID,"idImgBase64").get_attribute("src")
+            time.sleep(2)
             response = self._captcha._resolve_img(image_cap)
+            print(response)
+            time.sleep(2)
             #with open(f'{self._capt}captcha.png', 'wb') as file:
             #    l = self._driver.find_element(By.ID,'idImgBase64')
             #    file.write(l.screenshot_as_png)
