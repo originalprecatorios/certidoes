@@ -10,6 +10,7 @@ import time, os, shutil
 from recaptcha.captcha import Solve_Captcha
 import undetected_chromedriver as uc
 
+
 class Federal:
 
     def __init__(self,pData,pLink,pMongo, pError,pCnpj):
@@ -47,18 +48,19 @@ class Federal:
         options.add_argument("--headless")
         self._driver = webdriver.Firefox(firefox_profile=fp)
         self._driver.get(self._link)
-        self._driver.delete_all_cookies()
-        set_cookie = str(self._request.headers).split('Set-Cookie')[1].split(';')[0].replace(':','').replace("'",'').strip()
-        expiret = str(self._request.headers).split('expires')[1].split(';')[0].replace(':','').replace("'",'').replace('=','').strip()
-        self._driver.add_cookie({'name': 'ASP.NET_SessionId', 'value': 'faozoqgfai2fsoi1hgxkral1', 'path': '/', 'domain': 'solucoes.receita.fazenda.gov.br', 'secure': False, 'httpOnly': True, 'sameSite': 'Lax'})
-        self._driver.add_cookie({'name': 'BIGipServerPOOL_SERVICO_RECEITA', 'value': '1541903521.47873.0000', 'path': '/', 'domain': 'solucoes.receita.fazenda.gov.br', 'secure': True, 'httpOnly': True, 'sameSite': 'None'})
-        self._driver.add_cookie({'name': 'fileDownload', 'value': 'true', 'path': '/', 'domain': 'solucoes.receita.fazenda.gov.br', 'secure': False, 'httpOnly': True, 'sameSite': 'None'})
-        self._driver.add_cookie({'name': 'Set-Cookie', 'value': '{}'.format(set_cookie), 'expires':'{}'.format(expiret), 'path': '/', 'domain': 'solucoes.receita.fazenda.gov.br', 'secure': False, 'httpOnly': True, 'sameSite': 'None'})
-        link = 'https://solucoes.receita.fazenda.gov.br/Servicos/certidaointernet/PF/Emitir/EmProcessamento?Ni={}'.format(self._cnpj.replace('.','').replace('-',''))
-        time.sleep(1)
-        self._driver.get(link)
+        #self._driver.delete_all_cookies()
+        #set_cookie = str(self._request.headers).split('Set-Cookie')[1].split(';')[0].replace(':','').replace("'",'').strip()
+        #expiret = str(self._request.headers).split('expires')[1].split(';')[0].replace(':','').replace("'",'').replace('=','').strip()
+        #self._driver.add_cookie({'name': 'ASP.NET_SessionId', 'value': 'faozoqgfai2fsoi1hgxkral1', 'path': '/', 'domain': 'solucoes.receita.fazenda.gov.br', 'secure': False, 'httpOnly': True, 'sameSite': 'Lax'})
+        #self._driver.add_cookie({'name': 'BIGipServerPOOL_SERVICO_RECEITA', 'value': '1541903521.47873.0000', 'path': '/', 'domain': 'solucoes.receita.fazenda.gov.br', 'secure': True, 'httpOnly': True, 'sameSite': 'None'})
+        #self._driver.add_cookie({'name': 'fileDownload', 'value': 'true', 'path': '/', 'domain': 'solucoes.receita.fazenda.gov.br', 'secure': False, 'httpOnly': True, 'sameSite': 'None'})
+        #self._driver.add_cookie({'name': 'Set-Cookie', 'value': '{}'.format(set_cookie), 'expires':'{}'.format(expiret), 'path': '/', 'domain': 'solucoes.receita.fazenda.gov.br', 'secure': False, 'httpOnly': True, 'sameSite': 'None'})
+        #link = 'https://solucoes.receita.fazenda.gov.br/Servicos/certidaointernet/PF/Emitir/EmProcessamento?Ni={}'.format(self._cnpj.replace('.','').replace('-',''))
+        #time.sleep(1)
+        #self._driver.get(link)
         time.sleep(5)
         '''
+        
         
         options = uc.ChromeOptions()
         options.add_argument('--no-first-run')
@@ -80,10 +82,12 @@ class Federal:
     def login(self):
         
         try:
+            
             WebDriverWait(self._driver, 3).until(EC.presence_of_element_located((By.ID, "NI"))).send_keys(self._cnpj)
             WebDriverWait(self._driver, 3).until(EC.presence_of_element_located((By.ID, "validar"))).click()
             time.sleep(2)
             #self._driver.execute_script("window.stop();")
+            
             WebDriverWait(self._driver, 3).until(EC.presence_of_element_located((By.ID, "FrmSelecao")))
             self._driver.find_element(By.ID,"FrmSelecao").find_elements(By.TAG_NAME,"a")[1].click()
             time.sleep(10)

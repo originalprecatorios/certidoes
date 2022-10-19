@@ -68,7 +68,7 @@ class Municipal:
             time.sleep(1)
             shadow = Shadow(self._driver)
             shadow.find_element("main div#modalPanelAtencao.cc__modal div.cc__content__wrapper div.cc__panel div.cc__panel__body__container div.cc__panel__body div.cc__panel__aut__buttons input.cc__button__autorizacao--all").click()
-            time.sleep(1)
+            time.sleep(2)
             WebDriverWait(self._driver, 3).until(EC.presence_of_element_located((By.ID, "ctl00_ConteudoPrincipal_ddlTipoCertidao")))
             select = Select(self._driver.find_element(By.ID, 'ctl00_ConteudoPrincipal_ddlTipoCertidao'))
             select.select_by_visible_text('Certidão Tributária Mobiliária')
@@ -77,7 +77,7 @@ class Municipal:
             select.select_by_visible_text('CPF')
             WebDriverWait(self._driver, 3).until(EC.presence_of_element_located((By.ID, "ctl00_ConteudoPrincipal_txtCPF"))).send_keys(self._data['cpf'])
             WebDriverWait(self._driver, 3).until(EC.presence_of_element_located((By.ID, "ctl00_ConteudoPrincipal_imgCaptcha")))
-           
+            time.sleep(1)
             cont = 0
             while True:
                 if cont <= 5:
@@ -120,6 +120,7 @@ class Municipal:
     def solve_cap(self):
         try:
             WebDriverWait(self._driver, 2).until(EC.presence_of_element_located((By.ID, "ctl00_ConteudoPrincipal_imgCaptcha")))
+            time.sleep(2)
             with open(f'{self._capt}captcha.png', 'wb') as file:
                 l = self._driver.find_element(By.ID,'ctl00_ConteudoPrincipal_imgCaptcha')
                 file.write(l.screenshot_as_png)
