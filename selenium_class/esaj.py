@@ -85,6 +85,12 @@ class Esaj:
             WebDriverWait(self._driver, 3).until(EC.presence_of_element_located((By.ID, "pbEnviar")))
             self._driver.find_element(By.ID,"pbEnviar").click()
 
+            try:
+                WebDriverWait(self._driver, 3).until(EC.presence_of_element_located((By.ID, "btnSim")))
+                self._driver.find_element(By.ID,'btnSim').click()
+            except:
+                pass
+
             time.sleep(3)
             print('Download enviado por email')
             self._driver.close()

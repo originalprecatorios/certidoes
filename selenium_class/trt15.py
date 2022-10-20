@@ -61,6 +61,7 @@ class Trt15:
                 iframe = self._driver.find_element(By.XPATH,'/html/body/div[1]/div[3]/div[1]/div[2]/div[1]/div/div/div/article/div/div/p[6]/iframe')
                 self._driver.switch_to.frame(iframe)
                 WebDriverWait(self._driver, 5).until(EC.presence_of_element_located((By.ID, "certidaoActionForm:j_id23:doctoPesquisa"))).send_keys(self._data['cpf'])
+                time.sleep(1)
                 img = self._driver.find_elements(By.TAG_NAME,'img')[0]
                 src = img.get_attribute('src')
                 time.sleep(2)
@@ -69,6 +70,7 @@ class Trt15:
                 with open(os.path.join(self._pasta,'captcha.png'), 'wb') as file:
                     file.write(self._driver.find_element(By.XPATH,'//*[@id="certidaoActionForm:j_id51"]/div/span[1]/img').screenshot_as_png)
                 response = self._captcha.resolve_normal(os.path.join(self._pasta,'captcha.png'))
+                time.sleep(1)
                 #response = ''
                 if response is None:
                     response = self._captcha.resolve_normal(os.path.join(self._pasta,'captcha.png'))
@@ -86,6 +88,7 @@ class Trt15:
                 element=self._driver.find_element(By.ID,'menuCertidaoActionId')
                 element.location_once_scrolled_into_view
                 self._driver.find_elements(By.TAG_NAME,'input')[6].send_keys(str(soma))
+                time.sleep(1)
                 self._driver.find_elements(By.TAG_NAME,'input')[7].click()
                 time.sleep(5)
                 try:
@@ -99,6 +102,10 @@ class Trt15:
                     break
             self._driver.find_elements(By.TAG_NAME,'input')[1].click()
             time.sleep(5)
+            try:
+                self._driver.find_elements(By.TAG_NAME,'input')[1].click()
+            except:
+                pass
             self._download()
             archive_name = os.listdir(self._save)[0]
             shutil.move(f"{self._save}/{archive_name}", f"{self._pasta}_TRT15.pdf")
@@ -119,7 +126,7 @@ class Trt15:
     
     ########## looping até o download concluir 
     def _download(self):
-        
+    
         while True:
             cont = 0
             path = Path(self._save)
@@ -132,3 +139,4 @@ class Trt15:
                     cont += 1
                 else:
                     return  
+            return

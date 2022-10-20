@@ -73,6 +73,7 @@ class Municipal:
             WebDriverWait(self._driver, 3).until(EC.presence_of_element_located((By.ID, "ctl00_ConteudoPrincipal_ddlTipoCertidao")))
             select = Select(self._driver.find_element(By.ID, 'ctl00_ConteudoPrincipal_ddlTipoCertidao'))
             select.select_by_visible_text('Certidão Tributária Mobiliária')
+            time.sleep(2)
             WebDriverWait(self._driver, 3).until(EC.presence_of_element_located((By.ID, "ctl00_ConteudoPrincipal_ddlTipoDocumento")))
             select = Select(self._driver.find_element(By.ID, 'ctl00_ConteudoPrincipal_ddlTipoDocumento'))
             select.select_by_visible_text('CPF')
@@ -129,6 +130,9 @@ class Municipal:
             response = self._captcha.resolve_normal(os.path.join(self._capt,'captcha.png'))
             if response is None:
                 response = self._captcha.resolve_normal(os.path.join(self._capt,'captcha.png'))
+            if response == 'Imagem Captcha':
+                WebDriverWait(self._driver, 2).until(EC.presence_of_element_located((By.ID, "ctl00_ConteudoPrincipal_btnLimpar")))
+                self._driver.find_element(By.ID,'ctl00_ConteudoPrincipal_btnLimpar').click()
             #response = ''
             os.system('rm {}'.format(os.path.join(self._capt,'captcha.png')))
             WebDriverWait(self._driver, 2).until(EC.presence_of_element_located((By.ID, "ctl00_ConteudoPrincipal_txtValorCaptcha")))
