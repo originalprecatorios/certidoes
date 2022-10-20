@@ -67,7 +67,8 @@ class Municipal:
         try:
             time.sleep(1)
             shadow = Shadow(self._driver)
-            shadow.find_element("main div#modalPanelAtencao.cc__modal div.cc__content__wrapper div.cc__panel div.cc__panel__body__container div.cc__panel__body div.cc__panel__aut__buttons input.cc__button__autorizacao--all").click()
+            #shadow.find_element("main div#modalPanelAtencao.cc__modal div.cc__content__wrapper div.cc__panel div.cc__panel__body__container div.cc__panel__body div.cc__panel__aut__buttons input.cc__button__autorizacao--all").click()
+            shadow.find_element("main div#modalPanelAtencao.cc__modal div.cc__content__wrapper div.cc__panel div.cc__panel__body__container div.cc__panel__body div.cc__panel__aut__buttons input.cc__button__autorizacao").click()
             time.sleep(2)
             WebDriverWait(self._driver, 3).until(EC.presence_of_element_located((By.ID, "ctl00_ConteudoPrincipal_ddlTipoCertidao")))
             select = Select(self._driver.find_element(By.ID, 'ctl00_ConteudoPrincipal_ddlTipoCertidao'))

@@ -49,7 +49,7 @@ def certidao_initial():
             busca = {'_id': u['_id']}
             modifica = {'$set' :{"extracted": {}}}
             modifica['$set']['extracted'] = u['extracted']
-            if u['extracted'][ext] is False:
+            if u['extracted'][ext] == 0:
                 if ext == '_CND_ESTADUAL':
                     cont = 0
                     while True:
@@ -60,12 +60,12 @@ def certidao_initial():
                                 if logged is True:
                                     e.download_document()
                                 del e
-                                modifica['$set']['extracted']['_CND_ESTADUAL'] = True
+                                modifica['$set']['extracted']['_CND_ESTADUAL'] = 1
                                 break
                             except:
                                 cont += 1
                         else:
-                            modifica['$set']['extracted']['_CND_ESTADUAL'] = False
+                            modifica['$set']['extracted']['_CND_ESTADUAL'] = 2
                             break
                     
                 elif ext == '_CND_MUNICIPAL':
@@ -76,12 +76,12 @@ def certidao_initial():
                                 m = Municipal(u,config('PAGE_URL_MUN'),mongo,erro,cap)
                                 m.login()
                                 del m
-                                modifica['$set']['extracted']['_CND_MUNICIPAL'] = True
+                                modifica['$set']['extracted']['_CND_MUNICIPAL'] = 1
                                 break
                             except:
                                 cont += 1
                         else:
-                            modifica['$set']['extracted']['_CND_MUNICIPAL'] = False
+                            modifica['$set']['extracted']['_CND_MUNICIPAL'] = 2
                             break
                     
 
@@ -94,12 +94,12 @@ def certidao_initial():
                                 f = Federal(u,config('PAGE_URL_FEDERAL'),mongo,erro,u['cpf'])
                                 f.login()
                                 del f
-                                modifica['$set']['extracted']['_CND_FEDERAL'] = True
+                                modifica['$set']['extracted']['_CND_FEDERAL'] = 1
                                 break
                             except:
                                 cont += 1
                         else:
-                            modifica['$set']['extracted']['_CND_FEDERAL'] = False
+                            modifica['$set']['extracted']['_CND_FEDERAL'] = 2
                             break
                     
                 
@@ -111,12 +111,12 @@ def certidao_initial():
                                 df1 = Distribuicao_federal(u,config('PAGE_URL_TRF3_JUS'),mongo,erro,cap,u,'1','_TRF3_JUS_SJSP')
                                 df1.login()
                                 del df1
-                                modifica['$set']['extracted']['_TRF3_JUS_SJSP'] = True
+                                modifica['$set']['extracted']['_TRF3_JUS_SJSP'] = 1
                                 break
                             except:
                                 cont += 1
                         else:
-                            modifica['$set']['extracted']['_TRF3_JUS_SJSP'] = False
+                            modifica['$set']['extracted']['_TRF3_JUS_SJSP'] = 2
                             break
                     
 
@@ -128,12 +128,12 @@ def certidao_initial():
                                 df2 = Distribuicao_federal(u,config('PAGE_URL_TRF3_JUS'),mongo,erro,cap,u,'2','_TRF3_JUS_TRF')
                                 df2.login()
                                 del df2
-                                modifica['$set']['extracted']['_TRF3_JUS_TRF'] = True
+                                modifica['$set']['extracted']['_TRF3_JUS_TRF'] = 1
                                 break
                             except:
                                 cont += 1
                         else:
-                            modifica['$set']['extracted']['_TRF3_JUS_TRF'] = False
+                            modifica['$set']['extracted']['_TRF3_JUS_TRF'] = 2
                             break
                     
                 
@@ -145,12 +145,12 @@ def certidao_initial():
                                 t = Trabalhista(u,cap)
                                 t.login()
                                 del t
-                                modifica['$set']['extracted']['_TRTSP'] = True
+                                modifica['$set']['extracted']['_TRTSP'] = 1
                                 break
                             except:
                                 cont += 1
                         else:
-                            modifica['$set']['extracted']['_TRTSP'] = False
+                            modifica['$set']['extracted']['_TRTSP'] = 2
                             break
                     
 
@@ -162,12 +162,12 @@ def certidao_initial():
                                 dt = Debito_trabalhista(u,config('PAGE_URL_DEBITO_TRABALHISTA'),mongo,erro,cap)
                                 dt.login()
                                 del dt
-                                modifica['$set']['extracted']['_DEBITO_TRABALHISTA'] = True
+                                modifica['$set']['extracted']['_DEBITO_TRABALHISTA'] = 1
                                 break
                             except:
                                 cont += 1
                         else:
-                            modifica['$set']['extracted']['_DEBITO_TRABALHISTA'] = False
+                            modifica['$set']['extracted']['_DEBITO_TRABALHISTA'] = 2
                             break
                     
 
@@ -179,12 +179,12 @@ def certidao_initial():
                                 p = Protesto(u,config('PAGE_URL_PROTESTO'),mongo,erro,cap)
                                 p.login()
                                 del p
-                                modifica['$set']['extracted']['_PROTESTO'] = True
+                                modifica['$set']['extracted']['_PROTESTO'] = 1
                                 break
                             except:
                                 cont += 1
                         else:
-                            modifica['$set']['extracted']['_PROTESTO'] = False
+                            modifica['$set']['extracted']['_PROTESTO'] = 2
                             break
                     
                 elif ext == '_TRT15':
@@ -195,12 +195,12 @@ def certidao_initial():
                                 t15 = Trt15(u,config('PAGE_URL_TRT15'),mongo,erro,cap)
                                 t15.login()
                                 del t15
-                                modifica['$set']['extracted']['_TRT15'] = True
+                                modifica['$set']['extracted']['_TRT15'] = 1
                                 break
                             except:
                                 cont += 1
                         else:
-                            modifica['$set']['extracted']['_TRT15'] = False
+                            modifica['$set']['extracted']['_TRT15'] = 2
                             break
                     
                 
@@ -212,12 +212,12 @@ def certidao_initial():
                                 da = Divida_ativa(u,config('PAGE_URL_CONTRIBUINTE'),mongo,erro,cap)
                                 da.login()
                                 del da
-                                modifica['$set']['extracted']['_CND_CONTRIBUINTE'] = True
+                                modifica['$set']['extracted']['_CND_CONTRIBUINTE'] = 1
                                 break
                             except:
                                 cont += 1
                         else:
-                            modifica['$set']['extracted']['_CND_CONTRIBUINTE'] = False
+                            modifica['$set']['extracted']['_CND_CONTRIBUINTE'] = 2
                             break
                     
 
@@ -229,12 +229,12 @@ def certidao_initial():
                                 tj = Tj(u,config('PAGE_URL_TJ'),mongo,erro,cap)
                                 tj.login()
                                 del tj
-                                modifica['$set']['extracted']['_TJ'] = True
+                                modifica['$set']['extracted']['_TJ'] = 1
                                 break
                             except:
                                 cont += 1
                         else:
-                            modifica['$set']['extracted']['_TJ'] = False
+                            modifica['$set']['extracted']['_TJ'] = 2
                             break
                     
                 elif ext == '_PJE_TRF3':
@@ -245,12 +245,12 @@ def certidao_initial():
                                 trf = Trf(u,config('PAGE_URL_PJE_TRF3'),mongo,erro,cap)
                                 trf.login()
                                 del trf
-                                modifica['$set']['extracted']['_PJE_TRF3'] = True
+                                modifica['$set']['extracted']['_PJE_TRF3'] = 1
                                 break
                             except:
                                 cont += 1
                         else:
-                            modifica['$set']['extracted']['_PJE_TRF3'] = False
+                            modifica['$set']['extracted']['_PJE_TRF3'] = 2
                             break
                 
                 elif ext == '_TST_TRABALHISTA':
@@ -261,12 +261,12 @@ def certidao_initial():
                                 tstt = Tst_trabalhista(u,config('PAGE_URL_TST'),mongo,erro,cap)
                                 tstt.login()
                                 del tstt
-                                modifica['$set']['extracted']['_TST_TRABALHISTA'] = True
+                                modifica['$set']['extracted']['_TST_TRABALHISTA'] = 1
                                 break
                             except:
                                 cont += 1
                         else:
-                            modifica['$set']['extracted']['_TST_TRABALHISTA'] = False
+                            modifica['$set']['extracted']['_TST_TRABALHISTA'] = 2
                             break
                 
                 elif ext == '_ESAJ_CERTIDAO_6':
@@ -279,12 +279,12 @@ def certidao_initial():
                                 e.login()
                                 e.get_data('6')
                                 del e
-                                modifica['$set']['extracted']['_ESAJ_CERTIDAO_6'] = True
+                                modifica['$set']['extracted']['_ESAJ_CERTIDAO_6'] = 1
                                 break
                             except:
                                 cont += 1
                         else:
-                            modifica['$set']['extracted']['_ESAJ_CERTIDAO_6'] = False
+                            modifica['$set']['extracted']['_ESAJ_CERTIDAO_6'] = 2
                             break
                 
 
@@ -298,12 +298,12 @@ def certidao_initial():
                                 e.login()
                                 e.get_data('52')
                                 del e
-                                modifica['$set']['extracted']['_ESAJ_CERTIDAO_52'] = True
+                                modifica['$set']['extracted']['_ESAJ_CERTIDAO_52'] = 1
                                 break
                             except:
                                 cont += 1
                         else:
-                            modifica['$set']['extracted']['_ESAJ_CERTIDAO_52'] = False
+                            modifica['$set']['extracted']['_ESAJ_CERTIDAO_52'] = 2
                             break
                 
 
@@ -316,12 +316,12 @@ def certidao_initial():
                                 e.login()
                                 e.get_data('CPF')
                                 del e
-                                modifica['$set']['extracted']['_ESAJ_BUSCA_CPF'] = True
+                                modifica['$set']['extracted']['_ESAJ_BUSCA_CPF'] = 1
                                 break
                             except:
                                 cont += 1
                         else:
-                            modifica['$set']['extracted']['_ESAJ_BUSCA_CPF'] = False
+                            modifica['$set']['extracted']['_ESAJ_BUSCA_CPF'] = 2
                             break
                 
                 elif ext == '_ESAJ_BUSCA_NOME':
@@ -333,12 +333,12 @@ def certidao_initial():
                                 e.login()
                                 e.get_data('NOME')
                                 del e
-                                modifica['$set']['extracted']['_ESAJ_BUSCA_NOME'] = True
+                                modifica['$set']['extracted']['_ESAJ_BUSCA_NOME'] = 1
                                 break
                             except:
                                 cont += 1
                         else:
-                            modifica['$set']['extracted']['_ESAJ_BUSCA_NOME'] = False
+                            modifica['$set']['extracted']['_ESAJ_BUSCA_NOME'] = 2
                             break
                     
 
