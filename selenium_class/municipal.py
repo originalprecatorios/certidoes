@@ -144,6 +144,7 @@ class Municipal:
      
             time.sleep(3)
         except Exception as e:
+            self._driver.close()
             err = {'data':str(datetime.today()).split(' ')[0].replace('-',''),
                     'dado_utilizado': self._data['nome'],
                     'sistema': 'municipal',
