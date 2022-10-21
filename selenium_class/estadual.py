@@ -14,7 +14,7 @@ import shutil
 class Estadual:
 
     def __init__(self,pData,pLink,pMongo, pError,pCaptcha):
-        print('Estadual')
+        print('Robo Estadual')
         self._data = pData
         self._link = pLink
         self._bdMongo = pMongo

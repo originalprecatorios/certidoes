@@ -15,7 +15,7 @@ import pdfkit
 class Distribuicao_federal:
 
     def __init__(self,pData,pLink,pMongo, pError,pCaptcha,pInfo,pInstancia,pName):
-        print('Distribuicao_federal')
+        print('Robo Distribuicao_federal')
         self._data = pData
         self._link = pLink
         self._bdMongo = pMongo

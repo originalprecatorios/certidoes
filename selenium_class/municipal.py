@@ -15,7 +15,7 @@ from pyshadow.main import Shadow
 class Municipal:
 
     def __init__(self,pData,pLink,pMongo, pError,pCaptcha):
-        print('Municipal')
+        print('Robo Municipal')
         self._data = pData
         self._link = pLink
         self._bdMongo = pMongo

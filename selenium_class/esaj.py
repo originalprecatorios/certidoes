@@ -13,6 +13,7 @@ import time, os
 class Esaj:
 
     def __init__(self,pData,pLink,pMongo, pError,pCaptcha):
+        print('Robo Esaj')
         self._data = pData
         self._link = pLink
         self._bdMongo = pMongo

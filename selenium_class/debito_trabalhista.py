@@ -12,7 +12,7 @@ import time, os, shutil
 class Debito_trabalhista:
 
     def __init__(self,pData,pLink,pMongo, pError,pCaptcha):
-        print('Debito_trabalhista')
+        print('Robo Debito_trabalhista')
         self._data = pData
         self._link = pLink
         self._bdMongo = pMongo

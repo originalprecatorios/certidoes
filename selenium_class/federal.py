@@ -14,7 +14,7 @@ import undetected_chromedriver as uc
 class Federal:
 
     def __init__(self,pData,pLink,pMongo, pError,pCnpj):
-        print('Federal')
+        print('Robo Federal')
         self._data = pData
         self._link = pLink
         self._cnpj = pCnpj

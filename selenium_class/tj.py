@@ -16,7 +16,7 @@ from PIL import Image
 class Tj:
 
     def __init__(self,pData,pLink,pMongo, pError,pCaptcha):
-        print('Tj')
+        print('Robo Tj')
         self._data = pData
         self._link = pLink
         self._bdMongo = pMongo

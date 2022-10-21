@@ -27,6 +27,7 @@ from apscheduler.triggers.combining import AndTrigger
 import pytz, time, os
 
 def certidao_initial():
+    print('Iniciando...')
     #bd = Mongo(config('MONGO_USER'), config('MONGO_PASS'), config('MONGO_HOST'), config('MONGO_PORT'), config('MONGO_DB'), config('AMBIENTE'))
     #mongo = Mongo(config('MONGO_USER'), config('MONGO_PASS'), config('MONGO_HOST'), config('MONGO_PORT'), config('MONGO_DB'), config('AMBIENTE'))
     mongo = Mongo(os.environ['MONGO_USER_PROD'], os.environ['MONGO_PASS_PROD'], os.environ['MONGO_HOST_PROD'], os.environ['MONGO_PORT_PROD'], os.environ['MONGO_DB_PROD'], os.environ['MONGO_AUTH_DB_PROD'])
@@ -66,6 +67,7 @@ def certidao_initial():
                                 cont += 1
                         else:
                             modifica['$set']['extracted']['_CND_ESTADUAL'] = 2
+                            print('Erro ao acessar o site, para gerar a certidão _CND_ESTADUAL')
                             break
                     
                 elif ext == '_CND_MUNICIPAL':
@@ -82,6 +84,7 @@ def certidao_initial():
                                 cont += 1
                         else:
                             modifica['$set']['extracted']['_CND_MUNICIPAL'] = 2
+                            print('Erro ao acessar o site, para gerar a certidão _CND_MUNICIPAL')
                             break
                     
 
@@ -100,6 +103,7 @@ def certidao_initial():
                                 cont += 1
                         else:
                             modifica['$set']['extracted']['_CND_FEDERAL'] = 2
+                            print('Erro ao acessar o site, para gerar a certidão _CND_FEDERAL')
                             break
                     
                 
@@ -117,6 +121,7 @@ def certidao_initial():
                                 cont += 1
                         else:
                             modifica['$set']['extracted']['_TRF3_JUS_SJSP'] = 2
+                            print('Erro ao acessar o site, para gerar a certidão _TRF3_JUS_SJSP')
                             break
                     
 
@@ -134,6 +139,7 @@ def certidao_initial():
                                 cont += 1
                         else:
                             modifica['$set']['extracted']['_TRF3_JUS_TRF'] = 2
+                            print('Erro ao acessar o site, para gerar a certidão _TRF3_JUS_TRF')
                             break
                     
                 
@@ -151,6 +157,7 @@ def certidao_initial():
                                 cont += 1
                         else:
                             modifica['$set']['extracted']['_TRTSP'] = 2
+                            print('Erro ao acessar o site, para gerar a certidão _TRTSP')
                             break
                     
 
@@ -168,6 +175,7 @@ def certidao_initial():
                                 cont += 1
                         else:
                             modifica['$set']['extracted']['_DEBITO_TRABALHISTA'] = 2
+                            print('Erro ao acessar o site, para gerar a certidão _DEBITO_TRABALHISTA')
                             break
                     
 
@@ -185,6 +193,7 @@ def certidao_initial():
                                 cont += 1
                         else:
                             modifica['$set']['extracted']['_PROTESTO'] = 2
+                            print('Erro ao acessar o site, para gerar a certidão _PROTESTO')
                             break
                     
                 elif ext == '_TRT15':
@@ -201,6 +210,7 @@ def certidao_initial():
                                 cont += 1
                         else:
                             modifica['$set']['extracted']['_TRT15'] = 2
+                            print('Erro ao acessar o site, para gerar a certidão _TRT15')
                             break
                     
                 
@@ -218,6 +228,7 @@ def certidao_initial():
                                 cont += 1
                         else:
                             modifica['$set']['extracted']['_CND_CONTRIBUINTE'] = 2
+                            print('Erro ao acessar o site, para gerar a certidão _CND_CONTRIBUINTE')
                             break
                     
 
@@ -235,6 +246,7 @@ def certidao_initial():
                                 cont += 1
                         else:
                             modifica['$set']['extracted']['_TJ'] = 2
+                            print('Erro ao acessar o site, para gerar a certidão _TJ')
                             break
                     
                 elif ext == '_PJE_TRF3':
@@ -251,6 +263,7 @@ def certidao_initial():
                                 cont += 1
                         else:
                             modifica['$set']['extracted']['_PJE_TRF3'] = 2
+                            print('Erro ao acessar o site, para gerar a certidão _PJE_TRF3')
                             break
                 
                 elif ext == '_TST_TRABALHISTA':
@@ -267,6 +280,7 @@ def certidao_initial():
                                 cont += 1
                         else:
                             modifica['$set']['extracted']['_TST_TRABALHISTA'] = 2
+                            print('Erro ao acessar o site, para gerar a certidão _TST_TRABALHISTA')
                             break
                 
                 elif ext == '_ESAJ_CERTIDAO_6':
@@ -285,6 +299,7 @@ def certidao_initial():
                                 cont += 1
                         else:
                             modifica['$set']['extracted']['_ESAJ_CERTIDAO_6'] = 2
+                            print('Erro ao acessar o site, para gerar a certidão _ESAJ_CERTIDAO_6')
                             break
                 
 
@@ -304,6 +319,7 @@ def certidao_initial():
                                 cont += 1
                         else:
                             modifica['$set']['extracted']['_ESAJ_CERTIDAO_52'] = 2
+                            print('Erro ao acessar o site, para gerar a certidão _ESAJ_CERTIDAO_52')
                             break
                 
 
@@ -322,6 +338,7 @@ def certidao_initial():
                                 cont += 1
                         else:
                             modifica['$set']['extracted']['_ESAJ_BUSCA_CPF'] = 2
+                            print('Erro ao acessar o site, para gerar a certidão _ESAJ_BUSCA_CPF')
                             break
                 
                 elif ext == '_ESAJ_BUSCA_NOME':
@@ -339,14 +356,18 @@ def certidao_initial():
                                 cont += 1
                         else:
                             modifica['$set']['extracted']['_ESAJ_BUSCA_NOME'] = 2
+                            print('Erro ao acessar o site, para gerar a certidão _ESAJ_BUSCA_NOME')
                             break
                     
 
         modifica['$set']['status_process'] = True
         mongo.updateOne_Query(busca, modifica)
-    print('Finalizando programa')
+        del mongo
+        del erro
 
+    print('Programa finalizado...')
 
+certidao_initial()
 executors = {
     'default': ThreadPoolExecutor(20),      
     'processpool': ProcessPoolExecutor(5)
@@ -366,7 +387,7 @@ trigger = AndTrigger([IntervalTrigger(minutes=5)])
 scheduler.add_job(certidao_initial, trigger)
 
 if __name__ == '__main__':  
-    print('Start')
+    print('Aguardando novas solicitações')
     scheduler.start()
     try:
         while True:

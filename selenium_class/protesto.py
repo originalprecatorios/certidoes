@@ -16,7 +16,7 @@ from PIL import Image
 class Protesto:
 
     def __init__(self,pData,pLink,pMongo, pError,pCaptcha):
-        print('Protesto')
+        print('Robo Protesto')
         self._data = pData
         self._link = pLink
         self._bdMongo = pMongo

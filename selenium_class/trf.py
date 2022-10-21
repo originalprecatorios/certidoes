@@ -17,7 +17,7 @@ from PIL import Image
 class Trf:
 
     def __init__(self,pData,pLink,pMongo, pError,pCaptcha):
-        print('Trf')
+        print('Robo Trf')
         self._data = pData
         self._link = pLink
         self._bdMongo = pMongo

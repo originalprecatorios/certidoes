@@ -14,6 +14,7 @@ import shutil
 class Divida_ativa:
 
     def __init__(self,pData,pLink,pMongo, pError,pCaptcha):
+        print('Robo Divida_ativa')
         self._data = pData
         self._link = pLink
         self._bdMongo = pMongo

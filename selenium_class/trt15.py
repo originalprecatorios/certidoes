@@ -12,7 +12,7 @@ import time, os, shutil
 class Trt15:
 
     def __init__(self,pData,pLink,pMongo, pError,pCaptcha):
-        print('Trt15')
+        print('Robo Trt15')
         self._data = pData
         self._link = pLink
         self._bdMongo = pMongo

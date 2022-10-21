@@ -15,6 +15,7 @@ import img2pdf
 class Esaj_busca:
 
     def __init__(self,pData,pLink,pMongo, pError,pCaptcha,pName):
+        print('Robo Esaj_busca')
         self._data = pData
         self._link = pLink
         self._bdMongo = pMongo
