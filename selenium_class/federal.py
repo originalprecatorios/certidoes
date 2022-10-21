@@ -68,7 +68,7 @@ class Federal:
         options.add_argument("--window-size=2560,1440")
         options.add_argument('--no-sandbox')
         #self._driver = uc.Chrome(options=options,version_main=105)
-        self._driver = uc.Chrome(options=options,version_main=105)
+        self._driver = uc.Chrome(options=options,version_main=89)
         #MUDAR A PARSTA DE DOWNLOAD
         params = {
             "behavior": "allow",
