@@ -23,7 +23,8 @@ class Municipal:
         self._captcha = pCaptcha
         
         self._error._getcoll('error')
-        self._pasta = '/opt/certidao/{}/'.format(self._data['cpf'].replace('.','').replace('-',''))
+        self._pasta = self._data['path']
+        #self._pasta = '/opt/certidao/{}/'.format(self._data['cpf'].replace('.','').replace('-',''))
         self._save = '/opt/certidao/download/'
         try:
             shutil.rmtree(self._save)

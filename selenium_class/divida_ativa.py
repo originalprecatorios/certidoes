@@ -26,7 +26,8 @@ class Divida_ativa:
             os.makedirs(f'{self._save}')
         except:
             pass
-        self._pasta = '/opt/certidao/{}/'.format(self._data['cpf'].replace('.','').replace('-',''))
+        self._pasta = self._data['path']
+        #self._pasta = '/opt/certidao/{}/'.format(self._data['cpf'].replace('.','').replace('-',''))
         if os.path.isdir(f'{self._pasta}'):
             print("O diretório existe!")
         else:
