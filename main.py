@@ -56,7 +56,7 @@ def certidao_initial():
                     while True:
                         if cont <=2:
                             try:
-                                e = Estadual(u,config('PAGE_URL'),mongo,erro,cap)
+                                e = Estadual(u,os.environ['PAGE_URL'],mongo,erro,cap)
                                 logged = e.login()
                                 if logged is True:
                                     e.download_document()
@@ -75,7 +75,7 @@ def certidao_initial():
                     while True:
                         if cont <=2:
                             try:
-                                m = Municipal(u,config('PAGE_URL_MUN'),mongo,erro,cap)
+                                m = Municipal(u,os.environ['PAGE_URL_MUN'],mongo,erro,cap)
                                 m.login()
                                 del m
                                 modifica['$set']['extracted']['_CND_MUNICIPAL'] = 1
@@ -94,7 +94,7 @@ def certidao_initial():
                         if cont <=2:
                             try:
                                 # USO COM O CHROME
-                                f = Federal(u,config('PAGE_URL_FEDERAL'),mongo,erro,u['cpf'])
+                                f = Federal(u,os.environ['PAGE_URL_FEDERAL'],mongo,erro,u['cpf'])
                                 f.login()
                                 del f
                                 modifica['$set']['extracted']['_CND_FEDERAL'] = 1
@@ -112,7 +112,7 @@ def certidao_initial():
                     while True:
                         if cont <=2:
                             try:
-                                df1 = Distribuicao_federal(u,config('PAGE_URL_TRF3_JUS'),mongo,erro,cap,u,'1','_TRF3_JUS_SJSP')
+                                df1 = Distribuicao_federal(u,os.environ['PAGE_URL_TRF3_JUS'],mongo,erro,cap,u,'1','_TRF3_JUS_SJSP')
                                 df1.login()
                                 del df1
                                 modifica['$set']['extracted']['_TRF3_JUS_SJSP'] = 1
@@ -130,7 +130,7 @@ def certidao_initial():
                     while True:
                         if cont <=2:
                             try:
-                                df2 = Distribuicao_federal(u,config('PAGE_URL_TRF3_JUS'),mongo,erro,cap,u,'2','_TRF3_JUS_TRF')
+                                df2 = Distribuicao_federal(u,os.environ['PAGE_URL_TRF3_JUS'],mongo,erro,cap,u,'2','_TRF3_JUS_TRF')
                                 df2.login()
                                 del df2
                                 modifica['$set']['extracted']['_TRF3_JUS_TRF'] = 1
@@ -166,7 +166,7 @@ def certidao_initial():
                     while True:
                         if cont <=2:
                             try:
-                                dt = Debito_trabalhista(u,config('PAGE_URL_DEBITO_TRABALHISTA'),mongo,erro,cap)
+                                dt = Debito_trabalhista(u,os.environ['PAGE_URL_DEBITO_TRABALHISTA'],mongo,erro,cap)
                                 dt.login()
                                 del dt
                                 modifica['$set']['extracted']['_DEBITO_TRABALHISTA'] = 1
@@ -184,7 +184,7 @@ def certidao_initial():
                     while True:
                         if cont <=2:
                             try:
-                                p = Protesto(u,config('PAGE_URL_PROTESTO'),mongo,erro,cap)
+                                p = Protesto(u,os.environ['PAGE_URL_PROTESTO'],mongo,erro,cap)
                                 p.login()
                                 del p
                                 modifica['$set']['extracted']['_PROTESTO'] = 1
@@ -201,7 +201,7 @@ def certidao_initial():
                     while True:
                         if cont <=2:
                             try:
-                                t15 = Trt15(u,config('PAGE_URL_TRT15'),mongo,erro,cap)
+                                t15 = Trt15(u,os.environ['PAGE_URL_TRT15'],mongo,erro,cap)
                                 t15.login()
                                 del t15
                                 modifica['$set']['extracted']['_TRT15'] = 1
@@ -219,7 +219,7 @@ def certidao_initial():
                     while True:
                         if cont <=2:
                             try:
-                                da = Divida_ativa(u,config('PAGE_URL_CONTRIBUINTE'),mongo,erro,cap)
+                                da = Divida_ativa(u,os.environ['PAGE_URL_CONTRIBUINTE'],mongo,erro,cap)
                                 da.login()
                                 del da
                                 modifica['$set']['extracted']['_CND_CONTRIBUINTE'] = 1
@@ -237,7 +237,7 @@ def certidao_initial():
                     while True:
                         if cont <=2:
                             try:
-                                tj = Tj(u,config('PAGE_URL_TJ'),mongo,erro,cap)
+                                tj = Tj(u,os.environ['PAGE_URL_TJ'],mongo,erro,cap)
                                 tj.login()
                                 del tj
                                 modifica['$set']['extracted']['_TJ'] = 1
@@ -254,7 +254,7 @@ def certidao_initial():
                     while True:
                         if cont <=2:
                             try:
-                                trf = Trf(u,config('PAGE_URL_PJE_TRF3'),mongo,erro,cap)
+                                trf = Trf(u,os.environ['PAGE_URL_PJE_TRF3'],mongo,erro,cap)
                                 trf.login()
                                 del trf
                                 modifica['$set']['extracted']['_PJE_TRF3'] = 1
@@ -271,7 +271,7 @@ def certidao_initial():
                     while True:
                         if cont <=2:
                             try:
-                                tstt = Tst_trabalhista(u,config('PAGE_URL_TST'),mongo,erro,cap)
+                                tstt = Tst_trabalhista(u,os.environ['PAGE_URL_TST'],mongo,erro,cap)
                                 tstt.login()
                                 del tstt
                                 modifica['$set']['extracted']['_TST_TRABALHISTA'] = 1
@@ -289,7 +289,7 @@ def certidao_initial():
                         if cont <=2:
                             try:
                                 # email
-                                e = Esaj(u,config('PAGE_URL_CRIMINAL_1'),mongo,erro,cap)
+                                e = Esaj(u,os.environ['PAGE_URL_CRIMINAL_1'],mongo,erro,cap)
                                 e.login()
                                 e.get_data('6')
                                 del e
@@ -309,7 +309,7 @@ def certidao_initial():
                         if cont <=2:
                             try:
                                 # email
-                                e = Esaj(u,config('PAGE_URL_CRIMINAL_1'),mongo,erro,cap)
+                                e = Esaj(u,os.environ['PAGE_URL_CRIMINAL_1'],mongo,erro,cap)
                                 e.login()
                                 e.get_data('52')
                                 del e
@@ -328,7 +328,7 @@ def certidao_initial():
                     while True:
                         if cont <=2:
                             try:
-                                e = Esaj_busca(u,config('PAGE_URL_ESAJ_B_NOME_CPF'),mongo,erro,cap,'_ESAJ_BUSCA_CPF')
+                                e = Esaj_busca(u,os.environ['PAGE_URL_ESAJ_B_NOME_CPF'],mongo,erro,cap,'_ESAJ_BUSCA_CPF')
                                 e.login()
                                 e.get_data('CPF')
                                 del e
@@ -346,7 +346,7 @@ def certidao_initial():
                     while True:
                         if cont <=2:
                             try:
-                                e = Esaj_busca(u,config('PAGE_URL_ESAJ_B_NOME_CPF'),mongo,erro,cap,'_ESAJ_BUSCA_NOME')
+                                e = Esaj_busca(u,os.environ['PAGE_URL_ESAJ_B_NOME_CPF'],mongo,erro,cap,'_ESAJ_BUSCA_NOME')
                                 e.login()
                                 e.get_data('NOME')
                                 del e
