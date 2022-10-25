@@ -80,6 +80,10 @@ class Distribuicao_federal:
         #self._driver = uc.Chrome(options=options)
         #self._driver = uc.Chrome(options=options,version_main=105)
         self._driver = uc.Chrome(options=options,version_main=89)
+        try:
+            self._driver.set_page_load_timeout(60)
+        except:
+            pass
         #MUDAR A PARSTA DE DOWNLOAD
         params = {
             "behavior": "allow",
