@@ -107,6 +107,7 @@ class Trt15:
                 self._driver.find_elements(By.TAG_NAME,'input')[1].click()
             except:
                 pass
+            time.sleep(2)
             self._download()
             archive_name = os.listdir(self._save)[0]
             shutil.move(f"{self._save}/{archive_name}", f"{self._pasta}_TRT15.pdf")

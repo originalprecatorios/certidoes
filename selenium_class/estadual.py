@@ -84,6 +84,7 @@ class Estadual:
     def download_document(self):
         try:
             WebDriverWait(self._driver, 3).until(EC.presence_of_element_located((By.ID, "MainContent_btnImpressao"))).click()
+            time.sleep(2)
             self._download()
             archive_name = os.listdir(self._save)[0]
             shutil.move(f"{self._save}/{archive_name}", f"{self._pasta}_CND_ESTADUAL.pdf")
@@ -112,4 +113,5 @@ class Estadual:
                     time.sleep(5)
                     cont += 1
                 else:
-                    return  
+                    return
+            return  

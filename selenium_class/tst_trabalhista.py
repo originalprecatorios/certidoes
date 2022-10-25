@@ -158,5 +158,6 @@ class Tst_trabalhista:
                     cont += 1
                 else:
                     return  
+            return
     
     

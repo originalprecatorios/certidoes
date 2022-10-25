@@ -76,6 +76,7 @@ class Trabalhista:
             WebDriverWait(self._driver, 20).until(EC.presence_of_element_located((By.ID, "frm"))).find_elements(By.TAG_NAME,'a')[0].click()
             #self._driver.delete_all_cookies()
             #self._driver.get(self._link_download)
+            time.sleep(2)
             self._download()
             print('Download concluido para o cpf {}'.format(self._info['cpf']))
             self._driver.close()

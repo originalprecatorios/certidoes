@@ -77,6 +77,7 @@ class Debito_trabalhista:
                     try:
                         self.solve_cap()
                         if WebDriverWait(self._driver, 5).until(EC.presence_of_element_located((By.ID, "gerarCertidaoForm:mensagemSucesso"))).text != '' :
+                            time.sleep(2)
                             self._download()
                             archive_name = os.listdir(self._save)[0]
                             shutil.move(f"{self._save}/{archive_name}", f"{self._pasta}_DEBITO_TRABALHISTA.pdf")
@@ -160,4 +161,5 @@ class Debito_trabalhista:
                     time.sleep(5)
                     cont += 1
                 else:
-                    return  
+                    return
+            return

@@ -61,6 +61,7 @@ class Divida_ativa:
             response = self._captcha.recaptcha('6Le9EjMUAAAAAPKi-JVCzXgY_ePjRV9FFVLmWKB_',self._link)
             self._driver.execute_script("document.getElementById('g-recaptcha-response').innerHTML = '"+response+"';")
             WebDriverWait(self._driver, 3).until(EC.presence_of_element_located((By.XPATH, "/html/body/div[1]/div/div/div/div[2]/div/div[3]/div/div[2]/div[2]/span/form/div/div[2]/div[2]/input[2]"))).click()
+            time.sleep(2)
             self._download()
             archive_name = os.listdir(self._save)[0]
             shutil.move(f"{self._save}/{archive_name}", f"{self._pasta}_CND_CONTRIBUINTE.pdf")
@@ -92,4 +93,5 @@ class Divida_ativa:
                     time.sleep(5)
                     cont += 1
                 else:
-                    return  
+                    return
+            return  

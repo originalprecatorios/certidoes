@@ -124,4 +124,5 @@ class Tj:
                     time.sleep(5)
                     cont += 1
                 else:
-                    return  
+                    return 
+            return 
