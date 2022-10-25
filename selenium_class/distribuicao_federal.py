@@ -87,6 +87,7 @@ class Distribuicao_federal:
         }
 
         self._driver.execute_cdp_cmd("Page.setDownloadBehavior", params)
+        print('Navegando no site')
         self._driver.get(self._link)
         self._driver.execute_script("window.stop();")
         
@@ -94,7 +95,7 @@ class Distribuicao_federal:
     
     def login(self):
         try:
-            
+            print('login')
             self._driver.get('https://web.trf3.jus.br/certidao-regional/CertidaoCivelEleitoralCriminal/SolicitarDadosCertidao')
 
             WebDriverWait(self._driver, 3).until(EC.presence_of_element_located((By.ID, "Tipo")))

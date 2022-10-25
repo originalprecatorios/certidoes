@@ -76,12 +76,14 @@ class Federal:
         }
 
         self._driver.execute_cdp_cmd("Page.setDownloadBehavior", params)
+        time.sleep(1)
+        print('Navegando no site')
         self._driver.get(self._link)
         self._driver.execute_script("window.stop();")
         
     
     def login(self):
-        
+        print('login')
         try:
             
             WebDriverWait(self._driver, 3).until(EC.presence_of_element_located((By.ID, "NI"))).send_keys(self._cnpj)
