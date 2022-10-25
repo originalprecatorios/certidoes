@@ -362,13 +362,17 @@ def certidao_initial():
 
         modifica['$set']['status_process'] = True
         mongo.updateOne_Query(busca, modifica)
-        del mongo
-        del erro
+    del mongo
+    del erro
 
     print('Programa finalizado...')
 
-certidao_initial()
-executors = {
+while True:
+    certidao_initial()
+    print('Aguardando novas solicitações')
+    time.sleep(300)
+
+'''executors = {
     'default': ThreadPoolExecutor(20),      
     'processpool': ProcessPoolExecutor(5)
 }
@@ -393,4 +397,4 @@ if __name__ == '__main__':
         while True:
             time.sleep(1)
     except (KeyboardInterrupt, SystemExit):
-        scheduler.shutdown()
+        scheduler.shutdown()'''
