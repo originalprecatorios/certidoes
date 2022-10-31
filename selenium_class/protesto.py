@@ -72,7 +72,7 @@ class Protesto:
             WebDriverWait(self._driver, 5).until(EC.presence_of_element_located((By.CLASS_NAME, "resultado-pesquisa")))
             
             name = os.path.join(self._pasta,'_PROTESTO.png')
-            
+            time.sleep(3)
             self._driver.get_full_page_screenshot_as_file('{}'.format(name))
             self.convert(name)
             print('Download concluido para o cpf {}'.format(self._data['cpf']))

@@ -70,6 +70,13 @@ class Trf:
                         texto = WebDriverWait(self._driver, 5).until(EC.presence_of_element_located((By.ID, "fPP:processosGridPanel"))).text
                         if texto.find('Sua pesquisa não encontrou nenhum processo disponível.') >= 0 :
                             name = os.path.join(self._pasta,'_PJE_TRF3.png')
+                            time.sleep(2)
+                            WebDriverWait(self._driver, 10).until(EC.presence_of_element_located((By.TAG_NAME, "body")))
+                            try:
+                                WebDriverWait(self._driver, 10).until(EC.presence_of_element_located((By.CLASS_NAME, "rich-messages-label")))
+                                print(self._driver.find_element(By.CLASS_NAME,'rich-messages-label').text)                
+                            except:
+                                pass
                             self._driver.find_element(By.TAG_NAME,'body').send_keys(Keys.CONTROL + Keys.HOME)
                             self._driver.get_full_page_screenshot_as_file('{}'.format(name))
                             self.convert(name)
@@ -80,7 +87,14 @@ class Trf:
                         self._driver.delete_all_cookies()
                         self._driver.get(self._link)
                         self.login()
+                    time.sleep(2)
                     name = os.path.join(self._pasta,'_PJE_TRF3.png')
+                    WebDriverWait(self._driver, 10).until(EC.presence_of_element_located((By.TAG_NAME, "body")))
+                    try:
+                        WebDriverWait(self._driver, 10).until(EC.presence_of_element_located((By.CLASS_NAME, "rich-messages-label")))
+                        print(self._driver.find_element(By.CLASS_NAME,'rich-messages-label').text)                
+                    except:
+                        pass
                     self._driver.find_element(By.TAG_NAME,'body').send_keys(Keys.CONTROL + Keys.HOME)
                     self._driver.get_full_page_screenshot_as_file('{}'.format(name))
                     self.convert(name)

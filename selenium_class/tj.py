@@ -65,7 +65,7 @@ class Tj:
             time.sleep(5)
 
             name = os.path.join(self._pasta,'_TJ.png')
-            
+            time.sleep(3)
             self._driver.get_full_page_screenshot_as_file('{}'.format(name))
             self.convert(name)
             print('Download concluido para o cpf {}'.format(self._data['cpf']))

@@ -90,7 +90,7 @@ class Esaj_busca:
             self._driver.find_element(By.ID,"botaoConsultarProcessos").click()
             time.sleep(4)
             name = os.path.join(self._pasta,self._definicao+'.png')
-            
+            time.sleep(3)
             self._driver.get_full_page_screenshot_as_file('{}'.format(name))
             self.convert(name)
             print('Download concluido para o cpf {}'.format(self._data['cpf']))
