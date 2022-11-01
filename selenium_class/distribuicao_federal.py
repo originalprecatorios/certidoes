@@ -127,8 +127,8 @@ class Distribuicao_federal:
                 select.select_by_value('TRF')
                 
 
-            #response = self._captcha.recaptcha('6Le_CtAZAAAAAEbTeETvetg4zQ7kJI0NH5HNHf1X',self._link)
-            #self._driver.execute_script("document.getElementById('g-recaptcha-response').innerHTML = #'"+response+"';")
+            response = self._captcha.recaptcha('6Le_CtAZAAAAAEbTeETvetg4zQ7kJI0NH5HNHf1X',self._link)
+            self._driver.execute_script("document.getElementById('g-recaptcha-response').innerHTML = #'"+response+"';")
             print()
             time.sleep(3)
 
