@@ -10,7 +10,7 @@ from pathlib import Path
 import time, os, shutil
 import undetected_chromedriver as uc
 import pdfkit
-
+from PIL import Image
 
 class Distribuicao_federal:
 
@@ -58,11 +58,10 @@ class Distribuicao_federal:
         time.sleep(2)
         '''
 
-
         options = uc.ChromeOptions()
         options.add_experimental_option('prefs', {
         "download.default_directory": f"{self._save}", #Change default directory for downloads
-        "download.prompt_for_download": True, #To auto download the file
+        "download.prompt_for_download": False, #To auto download the file
         "download.directory_upgrade": True,
         "plugins.always_open_pdf_externally": True #It will not show PDF directly in chrome
         })
@@ -128,13 +127,26 @@ class Distribuicao_federal:
                 select.select_by_value('TRF')
                 
 
-            response = self._captcha.recaptcha('6Le_CtAZAAAAAEbTeETvetg4zQ7kJI0NH5HNHf1X',self._link)
-            self._driver.execute_script("document.getElementById('g-recaptcha-response').innerHTML = '"+response+"';")
+            #response = self._captcha.recaptcha('6Le_CtAZAAAAAEbTeETvetg4zQ7kJI0NH5HNHf1X',self._link)
+            #self._driver.execute_script("document.getElementById('g-recaptcha-response').innerHTML = #'"+response+"';")
+            print()
+            time.sleep(3)
 
             WebDriverWait(self._driver, 3).until(EC.presence_of_element_located((By.ID, "submit")))
             self._driver.find_element(By.ID,'submit').click()
             time.sleep(2)
-            name = os.path.join(self._save,self._definicao+'.png')
+
+            #WebDriverWait(self._driver, 3).until(EC.presence_of_element_located((By.ID, "botaoImprimirCertidao")))
+            self._driver.find_element(By.ID,'botaoImprimirCertidao').click()
+            self._driver.execute_script("document.body.style.zoom='55%'")
+            self._driver.execute_script('window.scrollBy(0, 120)')
+            self._driver.get_screenshot_as_file(os.path.join(self._save,self._definicao))
+            image_1 = Image.open(os.path.join(self._save,self._definicao))
+            im_1 = image_1.convert('RGB')
+            im_1.save(os.path.join(self._pasta,self._definicao+'.pdf'))
+            shutil.rmtree(self._save)
+            time.sleep(2)
+            '''name = os.path.join(self._save,self._definicao+'.png')
             
             with open(os.path.join(self._save,'page_source.html'), "w") as f:
                 f.write(self._driver.page_source)
@@ -146,7 +158,7 @@ class Distribuicao_federal:
             
             archive_name = os.listdir(self._save)[0]
             shutil.move(f"{self._save}{self._definicao}.pdf", f"{self._pasta}{self._definicao}.pdf")
-            shutil.rmtree(self._save)
+            shutil.rmtree(self._save)'''
             print('Download concluido para o cpf {}'.format(self._info['cpf']))
             self._driver.close()
 
