@@ -250,22 +250,22 @@ def certidao_initial():
                             break
                     
 
-                elif ext == '_TJ':
-                    cont = 0
-                    while True:
-                        if cont <=2:
-                            try:
-                                tj = Tj(u,os.environ['PAGE_URL_TJ'],mongo,erro,cap)
-                                tj.login()
-                                del tj
-                                modifica['$set']['extracted']['_TJ'] = 1
-                                break
-                            except:
-                                cont += 1
-                        else:
-                            modifica['$set']['extracted']['_TJ'] = 2
-                            print('Erro ao acessar o site, para gerar a certidão _TJ')
-                            break
+                #elif ext == '_TJ':
+                #    cont = 0
+                #    while True:
+                #        if cont <=2:
+                #            try:
+                #                tj = Tj(u,os.environ['PAGE_URL_TJ'],mongo,erro,cap)
+                #                tj.login()
+                #                del tj
+                #                modifica['$set']['extracted']['_TJ'] = 1
+                #                break
+                #            except:
+                #                cont += 1
+                #        else:
+                #            modifica['$set']['extracted']['_TJ'] = 2
+                #            print('Erro ao acessar o site, para gerar a certidão _TJ')
+                #            break
                     
                 elif ext == '_PJE_TRF3':
                     cont = 0
@@ -284,23 +284,24 @@ def certidao_initial():
                             print('Erro ao acessar o site, para gerar a certidão _PJE_TRF3')
                             break
                 
-                elif ext == '_TST_TRABALHISTA':
-                    cont = 0
-                    while True:
-                        if cont <=2:
-                            try:
-                                tstt = Tst_trabalhista(u,os.environ['PAGE_URL_TST'],mongo,erro,cap)
-                                tstt.login()
-                                del tstt
-                                modifica['$set']['extracted']['_TST_TRABALHISTA'] = 1
-                                break
-                            except:
-                                cont += 1
-                        else:
-                            modifica['$set']['extracted']['_TST_TRABALHISTA'] = 2
-                            print('Erro ao acessar o site, para gerar a certidão _TST_TRABALHISTA')
-                            break
+                #elif ext == '_TST_TRABALHISTA':
+                #    cont = 0
+                #    while True:
+                #        if cont <=2:
+                #            try:
+                #                tstt = Tst_trabalhista(u,os.environ['PAGE_URL_TST'],mongo,erro,cap)
+                #                tstt.login()
+                #                del tstt
+                #                modifica['$set']['extracted']['_TST_TRABALHISTA'] = 1
+                #                break
+                #            except:
+                #                cont += 1
+                #        else:
+                #            modifica['$set']['extracted']['_TST_TRABALHISTA'] = 2
+                #            print('Erro ao acessar o site, para gerar a certidão _TST_TRABALHISTA')
+                #            break
                 
+
                 elif ext == '_ESAJ_CERTIDAO_6':
                     cont = 0
                     while True:

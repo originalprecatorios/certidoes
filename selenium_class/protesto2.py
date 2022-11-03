@@ -11,6 +11,7 @@ from pathlib import Path
 import time, os, shutil
 import img2pdf
 from PIL import Image
+import undetected_chromedriver as uc
 
 
 class Protesto2:
@@ -38,7 +39,7 @@ class Protesto2:
             
 
         
-        fp = webdriver.FirefoxProfile()
+        '''fp = webdriver.FirefoxProfile()
         fp.set_preference("general.useragent.override", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.45 Safari/537.36")
         fp.set_preference("browser.download.folderList", 2)
         fp.set_preference("browser.download.manager.showWhenStarting", False)
@@ -52,7 +53,42 @@ class Protesto2:
         options.add_argument("--headless")
         self._driver = webdriver.Firefox(firefox_profile=fp)
         self._driver.get(self._link)
-        time.sleep(2)
+        time.sleep(2)'''
+
+        options = uc.ChromeOptions()
+        options.add_experimental_option('prefs', {
+        "download.default_directory": f"{self._save}", #Change default directory for downloads
+        "download.prompt_for_download": False, #To auto download the file
+        "download.directory_upgrade": True,
+        "plugins.always_open_pdf_externally": True #It will not show PDF directly in chrome
+        })
+        options.add_argument('--no-first-run')
+        options.add_argument("--window-size=2560,1440")
+        options.add_argument('--no-sandbox')
+        # setting profile
+        options.user_data_dir = self._save
+
+        # another way to set profile is the below (which takes precedence if both variants are used
+        options.add_argument(f'--user-data-dir={self._save}')
+
+        # just some options passing in to skip annoying popups
+        options.add_argument('--no-first-run --no-service-autorun --password-store=basic')
+        #self._driver = uc.Chrome(options=options)
+        #self._driver = uc.Chrome(options=options,version_main=105)
+        self._driver = uc.Chrome(options=options,version_main=105)
+        try:
+            self._driver.set_page_load_timeout(60)
+        except:
+            pass
+        #MUDAR A PARSTA DE DOWNLOAD
+        params = {
+            "behavior": "allow",
+            "downloadPath": self._save
+        }
+
+        self._driver.execute_cdp_cmd("Page.setDownloadBehavior", params)
+        print('Navegando no site')
+        self._driver.get(self._link)
         
         
     
