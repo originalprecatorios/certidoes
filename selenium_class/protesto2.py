@@ -1,3 +1,4 @@
+from importlib.resources import path
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
@@ -8,23 +9,19 @@ from selenium.webdriver.support.ui import Select
 from datetime import datetime
 from pathlib import Path
 import time, os, shutil
-import undetected_chromedriver as uc
-import pdfkit
+import img2pdf
 from PIL import Image
 
-class Distribuicao_federal:
 
-    def __init__(self,pData,pLink,pMongo, pError,pCaptcha,pInfo,pInstancia,pName):
-        print('Robo Distribuicao_federal')
+class Protesto2:
+
+    def __init__(self,pData,pLink,pMongo, pError,pCaptcha):
+        print('Robo Protesto')
         self._data = pData
         self._link = pLink
         self._bdMongo = pMongo
         self._error = pError
         self._captcha = pCaptcha
-        self._info = pInfo
-        self._instancia = pInstancia
-        self._definicao = pName
-        
         self._error._getcoll('error')
         self._save = '/opt/certidao/download/'
         try:
@@ -38,14 +35,14 @@ class Distribuicao_federal:
             print("O diretório existe!")
         else:
             os.makedirs(f'{self._pasta}')
-           
+            
 
-        '''
+        
         fp = webdriver.FirefoxProfile()
         fp.set_preference("general.useragent.override", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.45 Safari/537.36")
         fp.set_preference("browser.download.folderList", 2)
         fp.set_preference("browser.download.manager.showWhenStarting", False)
-        fp.set_preference("browser.download.dir", self._pasta)
+        fp.set_preference("browser.download.dir", self._save)
         fp.set_preference("browser.helperApps.neverAsk.saveToDisk", "application/pdf")
         fp.set_preference("browser.helperApps.neverAsk.saveToDisk",
                           "text/plain, application/octet-stream, application/binary, text/csv, application/csv, application/excel, text/comma-separated-values, text/xml, application/xml")
@@ -56,112 +53,42 @@ class Distribuicao_federal:
         self._driver = webdriver.Firefox(firefox_profile=fp)
         self._driver.get(self._link)
         time.sleep(2)
-        '''
-
-        options = uc.ChromeOptions()
-        options.add_experimental_option('prefs', {
-        "download.default_directory": f"{self._save}", #Change default directory for downloads
-        "download.prompt_for_download": False, #To auto download the file
-        "download.directory_upgrade": True,
-        "plugins.always_open_pdf_externally": True #It will not show PDF directly in chrome
-        })
-        options.add_argument('--no-first-run')
-        options.add_argument("--window-size=2560,1440")
-        options.add_argument('--no-sandbox')
-        # setting profile
-        options.user_data_dir = self._save
-
-        # another way to set profile is the below (which takes precedence if both variants are used
-        options.add_argument(f'--user-data-dir={self._save}')
-
-        # just some options passing in to skip annoying popups
-        options.add_argument('--no-first-run --no-service-autorun --password-store=basic')
-        #self._driver = uc.Chrome(options=options)
-        #self._driver = uc.Chrome(options=options,version_main=105)
-        self._driver = uc.Chrome(options=options,version_main=89)
-        try:
-            self._driver.set_page_load_timeout(60)
-        except:
-            pass
-        #MUDAR A PARSTA DE DOWNLOAD
-        params = {
-            "behavior": "allow",
-            "downloadPath": self._save
-        }
-
-        self._driver.execute_cdp_cmd("Page.setDownloadBehavior", params)
-        print('Navegando no site')
-        self._driver.get(self._link)
-        self._driver.execute_script("window.stop();")
         
         
     
     def login(self):
         try:
-            print('login')
-            self._driver.get('https://web.trf3.jus.br/certidao-regional/CertidaoCivelEleitoralCriminal/SolicitarDadosCertidao')
-
-            WebDriverWait(self._driver, 3).until(EC.presence_of_element_located((By.ID, "Tipo")))
-            select = Select(self._driver.find_element(By.ID, 'Tipo'))
-            select.select_by_value('CIVEL')
-            
-
-            WebDriverWait(self._driver, 3).until(EC.presence_of_element_located((By.ID, "TipoDeDocumento")))
-            select = Select(self._driver.find_element(By.ID, 'TipoDeDocumento'))
-            select.select_by_value('CPF')
-            
-
-            WebDriverWait(self._driver, 3).until(EC.presence_of_element_located((By.ID, "Documento")))
-            self._driver.find_element(By.ID,'Documento').send_keys(self._data['cpf'])
-            WebDriverWait(self._driver, 3).until(EC.presence_of_element_located((By.ID, "Nome")))
-            self._driver.find_element(By.ID,'Nome').send_keys(self._data['nome'])
-
-            if self._instancia == '1':
-                WebDriverWait(self._driver, 3).until(EC.presence_of_element_located((By.ID, "TipoDeAbrangencia")))
-                select = Select(self._driver.find_element(By.ID, 'TipoDeAbrangencia'))
-                select.select_by_value('SJSP')
-                
-            else:
-                WebDriverWait(self._driver, 3).until(EC.presence_of_element_located((By.ID, "TipoDeAbrangencia")))
-                select = Select(self._driver.find_element(By.ID, 'TipoDeAbrangencia'))
-                select.select_by_value('TRF')
-                
-
-            response = self._captcha.recaptcha('6Le_CtAZAAAAAEbTeETvetg4zQ7kJI0NH5HNHf1X',self._link)
-            #self._driver.execute_script("document.getElementById('g-recaptcha-response').innerHTML = #'"+response+"';")
+            WebDriverWait(self._driver, 3).until(EC.presence_of_element_located((By.ID, "input_cpf_cnpj"))).send_keys(self._data['cpf'])
+            response = self._captcha.recaptcha('6LdCOO4dAAAAAEa2FWwvb1wj9V8eItq7c4SPUtUw',self._link)
+            #self._driver.execute_script("document.getElementById('g-recaptcha-response').innerHTML = '"+response+"';")
             self._driver.execute_script('document.getElementById("g-recaptcha-response").innerHTML = "%s"' % response)
+            #iframe = self._driver.find_element(By.XPATH,'/html/body/div[1]/div/div[2]/div/div/div/div[1]/div[3]/div[2]/div/div/div/div/iframe')
+            #self._driver.switch_to.frame(iframe)
+            #ele = self._driver.find_element(By.CSS_SELECTOR,"#recaptcha-token")
+            #self._driver.execute_script(f"arguments[0].setAttribute('value','{response}')", ele)
+            #self._driver.switch_to.default_content()
+            WebDriverWait(self._driver, 3).until(EC.presence_of_element_located((By.CLASS_NAME, "bt-consultar"))).click()
+            
+            
 
-            print()
+            self._driver.execute_script("document.getElementById('cookiefirst-root').style.display = 'none'")
+            time.sleep(2)
+            WebDriverWait(self._driver, 3).until(EC.presence_of_element_located((By.ID, "AbrangenciaNacional"))).click()
+            select = Select(self._driver.find_element(By.ID, 'TipoDocumento'))
+            select.select_by_visible_text('CPF')
+            WebDriverWait(self._driver, 3).until(EC.presence_of_element_located((By.ID, "Documento"))).send_keys(self._data['cpf'])
+            WebDriverWait(self._driver, 3).until(EC.presence_of_element_located((By.ID, "frmConsulta"))).find_elements(By.TAG_NAME,'input')
+            self._driver.execute_script("ValidarConsulta(this)")
             time.sleep(3)
-
-            WebDriverWait(self._driver, 3).until(EC.presence_of_element_located((By.ID, "submit")))
-            self._driver.find_element(By.ID,'submit').click()
+            self._driver.execute_script("document.getElementById('cookiefirst-root').style.display = 'none'")
             time.sleep(2)
-
-            WebDriverWait(self._driver, 3).until(EC.presence_of_element_located((By.ID, "botaoImprimirCertidao")))
-            self._driver.find_element(By.ID,'botaoImprimirCertidao').click()
-            self._driver.execute_script("document.body.style.zoom='55%'")
-            self._driver.execute_script('window.scrollBy(0, 120)')
-            self._driver.get_screenshot_as_file(os.path.join(self._save,self._definicao))
-            image_1 = Image.open(os.path.join(self._save,self._definicao))
-            im_1 = image_1.convert('RGB')
-            im_1.save(os.path.join(self._pasta,self._definicao+'.pdf'))
-            shutil.rmtree(self._save)
-            time.sleep(2)
-            '''name = os.path.join(self._save,self._definicao+'.png')
+            WebDriverWait(self._driver, 5).until(EC.presence_of_element_located((By.CLASS_NAME, "resultado-pesquisa")))
             
-            with open(os.path.join(self._save,'page_source.html'), "w") as f:
-                f.write(self._driver.page_source)
-            try:
-                pdfkit.from_file(os.path.join(self._save,'page_source.html'), os.path.join(self._save,f'{self._definicao}.pdf'))
-            except:
-                pass
-            time.sleep(2)
-            
-            archive_name = os.listdir(self._save)[0]
-            shutil.move(f"{self._save}{self._definicao}.pdf", f"{self._pasta}{self._definicao}.pdf")
-            shutil.rmtree(self._save)'''
-            print('Download concluido para o cpf {}'.format(self._info['cpf']))
+            name = os.path.join(self._pasta,'_PROTESTO.png')
+            time.sleep(3)
+            self._driver.get_full_page_screenshot_as_file('{}'.format(name))
+            self.convert(name)
+            print('Download concluido para o cpf {}'.format(self._data['cpf']))
             self._driver.close()
 
         except Exception as e:
@@ -174,6 +101,34 @@ class Distribuicao_federal:
             self._error.addData(err)
             return
 
+    def convert(self,pName):
+        # storing image path
+        img_path = pName
+        
+        # storing pdf path
+        pdf_path = pName.replace('png','pdf')
+        
+        # opening image
+        image = Image.open(img_path)
+        
+        # converting into chunks using img2pdf
+        pdf_bytes = img2pdf.convert(image.filename)
+        
+        # opening or creating pdf file
+        file = open(pdf_path, "wb")
+        
+        # writing pdf files with chunks
+        file.write(pdf_bytes)
+        
+        # closing image file
+        image.close()
+        
+        # closing pdf file
+        file.close()
+        
+        os.remove(img_path)
+        # output
+        print("Successfully made pdf file")
     
     ########## looping até o download concluir 
     def _download(self):
@@ -191,4 +146,3 @@ class Distribuicao_federal:
                 else:
                     return 
             return
-    

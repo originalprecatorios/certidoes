@@ -7,6 +7,7 @@ from selenium_class.trt15 import Trt15
 from selenium_class.distribuicao_federal import Distribuicao_federal
 from selenium_class.debito_trabalhista import Debito_trabalhista
 from selenium_class.protesto import Protesto
+from selenium_class.protesto2 import Protesto2
 from request.trabalhista import Trabalhista
 from request.federal_request import Federal_request
 from selenium_class.divida_ativa import Divida_ativa
@@ -185,6 +186,23 @@ def certidao_initial():
                         if cont <=2:
                             try:
                                 p = Protesto(u,os.environ['PAGE_URL_PROTESTO'],mongo,erro,cap)
+                                p.login()
+                                del p
+                                modifica['$set']['extracted']['_PROTESTO'] = 1
+                                break
+                            except:
+                                cont += 1
+                        else:
+                            modifica['$set']['extracted']['_PROTESTO'] = 2
+                            print('Erro ao acessar o site, para gerar a certidão _PROTESTO')
+                            break
+                
+                elif ext == '_PROTESTO2':
+                    cont = 0
+                    while True:
+                        if cont <=2:
+                            try:
+                                p = Protesto2(u,os.environ['PAGE_URL_PROTESTO2'],mongo,erro,cap)
                                 p.login()
                                 del p
                                 modifica['$set']['extracted']['_PROTESTO'] = 1
