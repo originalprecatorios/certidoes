@@ -104,7 +104,7 @@ class Trabalhista:
 
             
 
-            with open(self._pasta+'_TRTSP.pdf', 'wb') as f:
+            with open(self._pasta+'11- TRT2ª.pdf', 'wb') as f:
                 f.write(response.content)
 
         except:

@@ -18,16 +18,16 @@ from selenium_class.esaj import Esaj
 from selenium_class.esaj_busca import Esaj_busca
 from bd.class_mongo import Mongo
 from decouple import config
-from recaptcha.solve_captcha import hCaptcha
 from recaptcha.captcha import Solve_Captcha
 from apscheduler.events import EVENT_JOB_ERROR
-from apscheduler.executors.pool import ProcessPoolExecutor, ThreadPoolExecutor
-from apscheduler.schedulers.background import BackgroundScheduler
-from apscheduler.triggers.interval import IntervalTrigger
-from apscheduler.triggers.combining import AndTrigger
-import pytz, time, os
+import time, os, json
+from rabbit import rabbitmq
+from bson.objectid import ObjectId
+from crypto import db
 
-def certidao_initial():
+
+        
+def certidao_initial(id_mongo):
     print('Iniciando...')
     #bd = Mongo(config('MONGO_USER'), config('MONGO_PASS'), config('MONGO_HOST'), config('MONGO_PORT'), config('MONGO_DB'), config('AMBIENTE'))
     #mongo = Mongo(config('MONGO_USER'), config('MONGO_PASS'), config('MONGO_HOST'), config('MONGO_PORT'), config('MONGO_DB'), config('AMBIENTE'))
@@ -35,9 +35,11 @@ def certidao_initial():
     #mongo = Mongo(config('MONGO_USER_PROD'), config('MONGO_PASS_PROD'), config('MONGO_HOST_PROD'), config('MONGO_PORT_PROD'), config('MONGO_DB_PROD'), config('MONGO_AUTH_DB_PROD'))
     erro = Mongo(config('MONGO_USER_PROD'), config('MONGO_PASS_PROD'), config('MONGO_HOST_PROD'), config('MONGO_PORT_PROD'), config('MONGO_DB_PROD'), config('AMBIENTE_PROD'))
     mongo._getcoll('certidao')
+    id = id_mongo['_id']
     arr = {
-        'status_process' : False
+        "_id": ObjectId(id)
     }
+    
     users  = mongo.returnQuery(arr)
     cap = Solve_Captcha()
     usr = []
@@ -45,6 +47,11 @@ def certidao_initial():
     for user in users:
         usr.append(user)
     
+    if type(usr[0]['cpf']) is bytes:
+        usr[0]['cpf'] = db.decrypt(usr[0]['cpf'])
+    if type(user['rg']) is bytes:
+        usr[0]['rg'] = db.decrypt(usr[0]['rg'])
+
     
     for u in usr:
         for ext in u['extracted']:
@@ -113,7 +120,7 @@ def certidao_initial():
                     while True:
                         if cont <=2:
                             try:
-                                df1 = Distribuicao_federal(u,os.environ['PAGE_URL_TRF3_JUS'],mongo,erro,cap,u,'1','_TRF3_JUS_SJSP')
+                                df1 = Distribuicao_federal(u,os.environ['PAGE_URL_TRF3_JUS'],mongo,erro,cap,u,'1','9- CERTIDÃO DE DISTRIBUIÇÃO FEDERAL DE 1ª INSTANCIA')
                                 df1.login()
                                 del df1
                                 modifica['$set']['extracted']['_TRF3_JUS_SJSP'] = 1
@@ -131,7 +138,7 @@ def certidao_initial():
                     while True:
                         if cont <=2:
                             try:
-                                df2 = Distribuicao_federal(u,os.environ['PAGE_URL_TRF3_JUS'],mongo,erro,cap,u,'2','_TRF3_JUS_TRF')
+                                df2 = Distribuicao_federal(u,os.environ['PAGE_URL_TRF3_JUS'],mongo,erro,cap,u,'2','10- CERTIDÃO DE DISTRIBUIÇÃO FEDERAL DE 2ª INSTANCIA')
                                 df2.login()
                                 del df2
                                 modifica['$set']['extracted']['_TRF3_JUS_TRF'] = 1
@@ -347,7 +354,7 @@ def certidao_initial():
                     while True:
                         if cont <=2:
                             try:
-                                e = Esaj_busca(u,os.environ['PAGE_URL_ESAJ_B_NOME_CPF'],mongo,erro,cap,'_ESAJ_BUSCA_CPF')
+                                e = Esaj_busca(u,os.environ['PAGE_URL_ESAJ_B_NOME_CPF'],mongo,erro,cap,'15- PESQUISA ONLINE TJSP - CPF')
                                 e.login()
                                 e.get_data('CPF')
                                 del e
@@ -365,7 +372,7 @@ def certidao_initial():
                     while True:
                         if cont <=2:
                             try:
-                                e = Esaj_busca(u,os.environ['PAGE_URL_ESAJ_B_NOME_CPF'],mongo,erro,cap,'_ESAJ_BUSCA_NOME')
+                                e = Esaj_busca(u,os.environ['PAGE_URL_ESAJ_B_NOME_CPF'],mongo,erro,cap,'15.1- PESQUISA ONLINE TJSP - NOME')
                                 e.login()
                                 e.get_data('NOME')
                                 del e
@@ -386,34 +393,21 @@ def certidao_initial():
 
     print('Programa finalizado...')
 
+
+# Executa as filas do RabbitMQ
 while True:
-    certidao_initial()
-    print('Aguardando novas solicitações')
-    time.sleep(300)
-
-'''executors = {
-    'default': ThreadPoolExecutor(20),      
-    'processpool': ProcessPoolExecutor(5)
-}
-job_defaults = {
-    'coalesce': False,
-    'max_instances': 1
-}
     
-scheduler = BackgroundScheduler(
-    executors=executors, job_defaults=job_defaults,
-    timezone=pytz.timezone('America/Sao_Paulo')
-)
-
-trigger = AndTrigger([IntervalTrigger(minutes=5)])
-
-scheduler.add_job(certidao_initial, trigger)
-
-if __name__ == '__main__':  
-    print('Aguardando novas solicitações')
-    scheduler.start()
-    try:
-        while True:
-            time.sleep(1)
-    except (KeyboardInterrupt, SystemExit):
-        scheduler.shutdown()'''
+    rabbit = rabbitmq.RabbitMQ(os.environ['RABBIT_QUEUE'])
+    retorno = rabbit.get_queue()
+    
+    if retorno[0]:
+        try:
+            dados = json.loads(retorno[-1])
+        except:
+            da = str(retorno[-1])
+            dados = {
+                '_id':da.split(':')[1].split('"')[1]
+            }
+        certidao_initial(dados)
+    else:
+        time.sleep(100)

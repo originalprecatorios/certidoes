@@ -1,47 +1,91 @@
-'''from pymongo import CursorType
-from pymongo import MongoClient
-import time
-import pymongo
-
-db = MongoClient("mongodb://original:bp3f6QTU58dbY3sP@200.194.172.112:27017/?authSource=admin") 
-coll = db['monitora']
-teste = coll['certidao']
-cursor = teste.find(cursor_type=pymongo.CursorType.TAILABLE_AWAIT,oplog_replay=True).sort('$natural', pymongo.ASCENDING).limit(-1)
-while cursor.alive:
-    try:
-        doc = cursor.next()
-        print (doc)
-    except StopIteration:
-        time.sleep(1)'''
+#!/usr/bin/python3
 
 
-import time
+import pika, time, json
 
-import pymongo
 
-client = pymongo.MongoClient('mongodb://original:bp3f6QTU58dbY3sP@200.194.172.112:27017/?authSource=admin')
-oplog = client.local.oplog.rs
-first = oplog.find().sort('$natural', pymongo.ASCENDING).limit(-1).next()
-print(first)
-ts = first['ts']
+cp = ''
 
+try:
+    upload.creat('e-proc')
+except:
+    print ('Bucket já existe')
+
+# Conecta no RabbitMQ para processar o que vier da queue "consumidor_gov"
+class RabbitMQ:
+
+   def __init__(self, pQueue):
+      self._queue = pQueue
+      self._host = '200.194.172.112'
+      self._port = '5672'
+      self._credentials = pika.PlainCredentials('robot', 'original2022!')
+      
+      self._conn = pika.BlockingConnection(pika.ConnectionParameters(host= self._host,port=self._port,credentials=self._credentials))
+      self._channel = self._conn.channel()
+      self._channel.queue_declare(queue=pQueue)
+
+
+   def __dell__(self):
+      self._channel.close()
+
+
+   def send_queue(self, pBody):
+      self._channel.basic_publish(exchange='', routing_key=self._queue, body=pBody)
+      return True
+    
+
+   def get_queue(self):
+      print('buscando')
+      self._channel.queue_declare(queue=self._queue)
+      retorno = self._channel.basic_get(queue=self._queue,auto_ack=True)
+
+      # Fecha a conexão com o RabbitMQ
+      self.__dell__()
+
+      tem_dado = False
+      if retorno[-1] != None:
+         tem_dado = True
+
+      return tem_dado, retorno[-1]
+        
+
+   def processa_dado(self, dados):
+
+      dados['numero_cnj'] = dados['numero_cnj'].replace('.','').replace('-','').replace('/','')
+      
+      if dados['legado']:         
+
+         exe = Eproc(mongo, dados['login'], dados['senha'], cp, dados['sistema'], upload, pLegado=True)
+         exe.fazer_login()
+
+         exe.ir_para_consulta_processual()
+         exe.pesquisar_processo(dados['numero_cnj'])
+         
+      else:
+
+         exe = Eproc(mongo, dados['login'], dados['senha'], cp, dados['sistema'], upload, pLegado=False)
+         exe.fazer_login()
+
+         exe.ir_para_consulta_processual()
+         exe.pesquisar_processo(dados['numero_cnj'])
+
+
+    
+# Executa as filas do RabbitMQ
 while True:
-    # For a regular capped collection CursorType.TAILABLE_AWAIT is the
-    # only option required to create a tailable cursor. When querying the
-    # oplog, the oplog_replay option enables an optimization to quickly
-    # find the 'ts' value we're looking for. The oplog_replay option
-    # can only be used when querying the oplog. Starting in MongoDB 4.4
-    # this option is ignored by the server as queries against the oplog
-    # are optimized automatically by the MongoDB query engine.
-    cursor = oplog.find({'ts': {'$gt': ts}},
-                        cursor_type=pymongo.CursorType.TAILABLE_AWAIT,
-                        oplog_replay=True)
-    while cursor.alive:
-        for doc in cursor:
-            ts = doc['ts']
-            print(doc)
-        # We end up here if the find() returned no documents or if the
-        # tailable cursor timed out (no new documents were added to the
-        # collection for more than 1 second).
-        time.sleep(1)
+
+    rabbit = RabbitMQ('web_certidao')
+    retorno = rabbit.get_queue()
+    
+    if retorno[0]:
+        dados = json.loads(retorno[-1])
+        rabbit.processa_dado(dados)
+    else:
+        time.sleep(300)
+
+
+
+
+
+   
 

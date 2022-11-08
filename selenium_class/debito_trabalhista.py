@@ -80,7 +80,7 @@ class Debito_trabalhista:
                             time.sleep(2)
                             self._download()
                             archive_name = os.listdir(self._save)[0]
-                            shutil.move(f"{self._save}/{archive_name}", f"{self._pasta}_DEBITO_TRABALHISTA.pdf")
+                            shutil.move(f"{self._save}/{archive_name}", f"{self._pasta}12- CERTIDÃO DE DÉBITOS TRABALHISTAS.pdf")
                             self._driver.close()
                             print('Download do arquivo gerado para o cliente {}'.format(self._data['nome']))
                             break

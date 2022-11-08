@@ -88,7 +88,7 @@ class Trf:
                         self._driver.get(self._link)
                         self.login()
                     time.sleep(2)
-                    name = os.path.join(self._pasta,'_PJE_TRF3.png')
+                    name = os.path.join(self._pasta,'16- PESQUISA ONLINE TRF3.png')
                     WebDriverWait(self._driver, 10).until(EC.presence_of_element_located((By.TAG_NAME, "body")))
                     try:
                         WebDriverWait(self._driver, 10).until(EC.presence_of_element_located((By.CLASS_NAME, "rich-messages-label")))

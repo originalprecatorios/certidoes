@@ -64,7 +64,7 @@ class Divida_ativa:
             time.sleep(2)
             self._download()
             archive_name = os.listdir(self._save)[0]
-            shutil.move(f"{self._save}/{archive_name}", f"{self._pasta}_CND_CONTRIBUINTE.pdf")
+            shutil.move(f"{self._save}/{archive_name}", f"{self._pasta}17- DIVIDA ATIVA.pdf")
             self._driver.close()
             print('Download do arquivo gerado para o cliente {}'.format(self._data['nome']))
             

@@ -71,7 +71,7 @@ class Protesto:
             time.sleep(2)
             WebDriverWait(self._driver, 5).until(EC.presence_of_element_located((By.CLASS_NAME, "resultado-pesquisa")))
             
-            name = os.path.join(self._pasta,'_PROTESTO.png')
+            name = os.path.join(self._pasta,'13- CENPROT.png')
             time.sleep(3)
             self._driver.get_full_page_screenshot_as_file('{}'.format(name))
             self.convert(name)

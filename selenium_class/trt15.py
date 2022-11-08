@@ -110,7 +110,7 @@ class Trt15:
             time.sleep(2)
             self._download()
             archive_name = os.listdir(self._save)[0]
-            shutil.move(f"{self._save}/{archive_name}", f"{self._pasta}_TRT15.pdf")
+            shutil.move(f"{self._save}/{archive_name}", f"{self._pasta}14- TRT15ª.pdf")
             self._driver.close()
             print('Download concluido para o cpf {}'.format(self._data['cpf']))
 
