@@ -39,7 +39,7 @@ class Distribuicao_federal:
         else:
             os.makedirs(f'{self._pasta}')
            
-        options = webdriver.ChromeOptions()
+        '''options = webdriver.ChromeOptions()
         options.add_experimental_option('prefs', {
         "download.default_directory": f"{self._save}", #Change default directory for downloads
         "download.prompt_for_download": False, #To auto download the file
@@ -58,9 +58,9 @@ class Distribuicao_federal:
         self._driver.execute_cdp_cmd('Network.setUserAgentOverride', {"userAgent": 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) '
                                                                             'AppleWebKit/537.36 (KHTML, like Gecko) '
                                                                             'Chrome/85.0.4183.102 Safari/537.36'})
-        self._driver.get(self._link)
+        self._driver.get(self._link)'''
         
-        '''options = uc.ChromeOptions()
+        options = uc.ChromeOptions()
         options.add_experimental_option('prefs', {
         "download.default_directory": f"{self._save}", #Change default directory for downloads
         "download.prompt_for_download": False, #To auto download the file
@@ -94,7 +94,7 @@ class Distribuicao_federal:
         self._driver.execute_cdp_cmd("Page.setDownloadBehavior", params)
         print('Navegando no site')
         self._driver.get(self._link)
-        self._driver.execute_script("window.stop();")'''
+        
         
         
     

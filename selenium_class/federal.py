@@ -35,7 +35,7 @@ class Federal:
         else:
             os.makedirs(f'{self._pasta}')
             
-        options = webdriver.ChromeOptions()
+        '''options = webdriver.ChromeOptions()
         options.add_experimental_option('prefs', {
         "download.default_directory": f"{self._save}", #Change default directory for downloads
         "download.prompt_for_download": False, #To auto download the file
@@ -54,14 +54,20 @@ class Federal:
         self._driver.execute_cdp_cmd('Network.setUserAgentOverride', {"userAgent": 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) '
                                                                             'AppleWebKit/537.36 (KHTML, like Gecko) '
                                                                             'Chrome/85.0.4183.102 Safari/537.36'})
-        self._driver.get(self._link)
+        self._driver.get(self._link)'''
         
-        '''options = uc.ChromeOptions()
+        options = uc.ChromeOptions()
         options.add_argument('--no-first-run')
         options.add_argument("--window-size=2560,1440")
         options.add_argument('--no-sandbox')
+        options.add_experimental_option('prefs', {
+        "download.default_directory": f"{self._save}", #Change default directory for downloads
+        "download.prompt_for_download": False, #To auto download the file
+        "download.directory_upgrade": True,
+        "plugins.always_open_pdf_externally": True #It will not show PDF directly in chrome
+        })
         #self._driver = uc.Chrome(options=options,version_main=105)
-        self._driver = uc.Chrome(options=options,version_main=106)
+        self._driver = uc.Chrome(options=options,version_main=89)
         try:
             self._driver.set_page_load_timeout(60)
         except:
@@ -80,7 +86,7 @@ class Federal:
                                                                      'AppleWebKit/537.36 (KHTML, like Gecko) '
                                                                      'Chrome/85.0.4183.102 Safari/537.36'})
         self._driver.get(self._link)
-        self._driver.execute_script("window.stop();")'''
+        
         
     
     def login(self):
