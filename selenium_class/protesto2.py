@@ -80,7 +80,7 @@ class Protesto2:
         options.add_argument('--no-first-run --no-service-autorun --password-store=basic')
         #self._driver = uc.Chrome(options=options)
         #self._driver = uc.Chrome(options=options,version_main=105)
-        self._driver = uc.Chrome(options=options,version_main=105)
+        self._driver = uc.Chrome(options=options,version_main=89)
         try:
             self._driver.set_page_load_timeout(60)
         except:

@@ -8,7 +8,8 @@ from selenium_class.distribuicao_federal import Distribuicao_federal
 from selenium_class.debito_trabalhista import Debito_trabalhista
 from selenium_class.protesto import Protesto
 from selenium_class.protesto2 import Protesto2
-from request.trabalhista import Trabalhista
+#from request.trabalhista import Trabalhista
+from selenium_class.trabalhista import Trabalhista
 from request.federal_request import Federal_request
 from selenium_class.divida_ativa import Divida_ativa
 from selenium_class.tj import Tj
@@ -24,6 +25,7 @@ import time, os, json
 from rabbit import rabbitmq
 from bson.objectid import ObjectId
 from crypto import db
+import requests
 
 
         
@@ -39,6 +41,7 @@ def certidao_initial(id_mongo):
     arr = {
         "_id": ObjectId(id)
     }
+
     
     users  = mongo.returnQuery(arr)
     cap = Solve_Captcha()
@@ -156,7 +159,7 @@ def certidao_initial(id_mongo):
                     while True:
                         if cont <=2:
                             try:
-                                t = Trabalhista(u,cap)
+                                t = Trabalhista(u,os.environ['PAGE_URL_TRTSP'],mongo,erro,cap)
                                 t.login()
                                 del t
                                 modifica['$set']['extracted']['_TRTSP'] = 1
@@ -167,6 +170,24 @@ def certidao_initial(id_mongo):
                             modifica['$set']['extracted']['_TRTSP'] = 2
                             print('Erro ao acessar o site, para gerar a certidão _TRTSP')
                             break
+                
+
+                #elif ext == '_TRTSP':
+                #    cont = 0
+                #    while True:
+                #        if cont <=2:
+                #            try:
+                #                t = Trabalhista(u,cap,os.environ['PAGE_URL_TRTSP'])
+                #                t.login()
+                #                del t
+                #                modifica['$set']['extracted']['_TRTSP'] = 1
+                #                break
+                #            except:
+                #                cont += 1
+                #        else:
+                #            modifica['$set']['extracted']['_TRTSP'] = 2
+                #            print('Erro ao acessar o site, para gerar a certidão _TRTSP')
+                #            break
                     
 
                 elif ext == '_DEBITO_TRABALHISTA':
@@ -391,9 +412,46 @@ def certidao_initial(id_mongo):
     del mongo
     del erro
 
+    headers = {
+
+    # Already added when you pass json=
+
+    # 'Content-Type': 'application/json',
+
+    'Authorization': 'Bearer 2851F6E32BE3DFD959495AE626F589E3C16663E8334060BF7A126DD39612400B',
+
+    }
+
+
+
+    json_data = {
+
+    'interests': [
+
+        'User_{}'.format(u['iduser']),
+
+    ],
+
+    'web': {
+
+        'notification': {
+
+            'title': 'B7 Solutions',
+
+            'body': 'As certdões do CPF {} já estão disponiveis no sistema.'.format(u['cpf']),
+
+            'icon': 'http://localhost:8080/assets/images/b7-only-36x36.png'
+
+                        },
+
+        },
+
+    }
+    response = requests.post('https://f8f37533-9c29-482e-93e9-284804b874b7.pushnotifications.pusher.com/publish_api/v1/instances/f8f37533-9c29-482e-93e9-284804b874b7/publishes', headers=headers, json=json_data)
     print('Programa finalizado...')
 
-
+#dados = {'_id':'636baad9cdac07f8c458900b'}
+#certidao_initial(dados)
 # Executa as filas do RabbitMQ
 while True:
     

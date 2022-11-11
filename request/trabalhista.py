@@ -1,14 +1,29 @@
 from bs4 import BeautifulSoup
 import requests
-import shutil,os
-
+import shutil,os, time
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+from selenium.webdriver.firefox.options import Options
 
 class Trabalhista:
-    def __init__(self,pData,pCaptcha):
+    def __init__(self,pData,pCaptcha,pLink):
         print('Robo Trabalhista')
         self._data = pData
         self._captcha = pCaptcha
         self._cont = 0
+        self._link = pLink
+
+        fp = webdriver.FirefoxProfile()
+        fp.set_preference("general.useragent.override", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.45 Safari/537.36")
+        options = Options()
+        options.add_argument("--headless")
+        self._driver = webdriver.Firefox(firefox_profile=fp)
+        self._driver.get(self._link)
+        time.sleep(2)
+        cooki = self._driver.get_cookies()
+        self._cookies = {
+            'Cookie': "PHPSESSID={}; _ga={}; _gid={}; ww2.trtsp.jus.br={}; contraste={}; fontes={}; escalabilidade={}; _gat=1".format(cooki[0]['value'],cooki[1]['value'],cooki[2]['value'],cooki[4]['value'],cooki[5]['value'],cooki[6]['value'],cooki[7]['value'])
+        }
         
     def login(self):
         self._capt = '/tmp/captcha/'
@@ -35,7 +50,7 @@ class Trabalhista:
             'Accept-Encoding': 'gzip, deflate, br',
             'Referer': 'https://aplicacoes10.trt2.jus.br/certidao_trabalhista_eletronica/public/index.php/index/imprimecertidao',
             'Connection': 'keep-alive',
-            'Cookie': 'PHPSESSID=kqd6a0n4n43ve8u1m8anu0u5k6; _ga=GA1.3.971099137.1658337294; _gid=GA1.3.1289141189.1658337294; ww2.trtsp.jus.br={%22contraste%22:0%2C%22fontes%22:1%2C%22escalabilidade%22:0}; contraste=0; fontes=1; escalabilidade=0; _gat=1',
+            'Cookie': '{}'.format(self._cookies['Cookie']),
             'Upgrade-Insecure-Requests': '1',
             'Sec-Fetch-Dest': 'document',
             'Sec-Fetch-Mode': 'navigate',
@@ -69,7 +84,7 @@ class Trabalhista:
             'Origin': 'https://aplicacoes10.trt2.jus.br',
             'Connection': 'keep-alive',
             'Referer': 'https://aplicacoes10.trt2.jus.br/certidao_trabalhista_eletronica/public/index.php/index/solicitacao',
-            'Cookie': 'PHPSESSID=kqd6a0n4n43ve8u1m8anu0u5k6; _ga=GA1.3.971099137.1658337294; _gid=GA1.3.1289141189.1658337294; ww2.trtsp.jus.br={%22contraste%22:0%2C%22fontes%22:1%2C%22escalabilidade%22:0}; contraste=0; fontes=1; escalabilidade=0; _gat=1',
+            'Cookie': '{}'.format(self._cookies['Cookie']),
             'Upgrade-Insecure-Requests': '1',
             'Sec-Fetch-Dest': 'document',
             'Sec-Fetch-Mode': 'navigate',
@@ -92,7 +107,7 @@ class Trabalhista:
             'Accept-Encoding': 'gzip, deflate, br',
             'Connection': 'keep-alive',
             'Referer': 'https://aplicacoes10.trt2.jus.br/certidao_trabalhista_eletronica/public/index.php/index/imprimecertidao',
-            'Cookie': 'PHPSESSID=kqd6a0n4n43ve8u1m8anu0u5k6; _ga=GA1.3.971099137.1658337294; _gid=GA1.3.1289141189.1658337294; ww2.trtsp.jus.br={%22contraste%22:0%2C%22fontes%22:1%2C%22escalabilidade%22:0}; contraste=0; fontes=1; escalabilidade=0; _gat=1',
+            'Cookie': '{}'.format(self._cookies['Cookie']),
             'Upgrade-Insecure-Requests': '1',
             'Sec-Fetch-Dest': 'document',
             'Sec-Fetch-Mode': 'navigate',
@@ -106,7 +121,7 @@ class Trabalhista:
 
             with open(self._pasta+'11- TRT2ª.pdf', 'wb') as f:
                 f.write(response.content)
-
+            self._driver.close()
         except:
             self._cont += 1
             if self._cont <= 3:
