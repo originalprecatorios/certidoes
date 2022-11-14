@@ -68,6 +68,7 @@ class Esaj_busca:
                     'funcao' : 'erro na função login',
             }
             self._error.addData(err)
+            self._driver.close()
             return
     
     def get_data(self,pSelect):
@@ -104,6 +105,7 @@ class Esaj_busca:
                     'funcao' : 'erro na função login',
             }
             self._error.addData(err)
+            self._driver.close()
             return
     
     def convert(self,pName):
