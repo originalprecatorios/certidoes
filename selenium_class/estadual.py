@@ -96,6 +96,7 @@ class Estadual:
                     'sistema': 'estadual',
                     'funcao' : 'erro na função download_document',
             }
+            self._driver.close()
             self._error.addData(err)
         
 
