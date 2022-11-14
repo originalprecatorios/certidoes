@@ -62,13 +62,14 @@ class Esaj_busca:
             time.sleep(5)
         
         except Exception as e:
+            self._driver.close()
             err = {'data':str(datetime.today()).split(' ')[0].replace('-',''),
                     'dado_utilizado': self._data['nome'],
                     'sistema': 'municipal',
                     'funcao' : 'erro na função login',
             }
             self._error.addData(err)
-            self._driver.close()
+            
             return
     
     def get_data(self,pSelect):
@@ -99,13 +100,14 @@ class Esaj_busca:
             time.sleep(6)
 
         except Exception as e:
+            self._driver.close()
             err = {'data':str(datetime.today()).split(' ')[0].replace('-',''),
                     'dado_utilizado': self._data['nome'],
                     'sistema': 'municipal',
                     'funcao' : 'erro na função login',
             }
             self._error.addData(err)
-            self._driver.close()
+            
             return
     
     def convert(self,pName):

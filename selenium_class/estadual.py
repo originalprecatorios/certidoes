@@ -91,12 +91,13 @@ class Estadual:
             self._driver.close()
             print('Download do arquivo gerado para o cliente {}'.format(self._data['nome']))
         except:
+            self._driver.close()
             err = {'data':str(datetime.today()).split(' ')[0].replace('-',''),
                     'dado_utilizado': self._data['nome'],
                     'sistema': 'estadual',
                     'funcao' : 'erro na função download_document',
             }
-            self._driver.close()
+            
             self._error.addData(err)
         
 
