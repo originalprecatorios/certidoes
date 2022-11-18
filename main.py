@@ -457,7 +457,7 @@ while True:
     
     rabbit = rabbitmq.RabbitMQ(os.environ['RABBIT_QUEUE'])
     retorno = rabbit.get_queue()
-    
+    del rabbit
     if retorno[0]:
         try:
             dados = json.loads(retorno[-1])
