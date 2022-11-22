@@ -21,10 +21,13 @@ class Divida_ativa:
         self._error = pError
         self._captcha = pCaptcha
         self._error._getcoll('error')
-        self._save = '/opt/certidao/download/'
+        self._save = '/opt/certidao/download/divida_ativa'
         try:
-            shutil.rmtree(self._save)
-            os.makedirs(f'{self._save}')
+            if os.path.isdir(f'{self._save}') is False:
+                os.makedirs(f'{self._save}')
+            else:
+                shutil.rmtree(self._save)
+                os.makedirs(f'{self._save}')
         except:
             pass
         self._pasta = self._data['path']

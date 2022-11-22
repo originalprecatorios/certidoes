@@ -25,12 +25,18 @@ class Municipal:
         self._error._getcoll('error')
         self._pasta = self._data['path']
         #self._pasta = '/opt/certidao/{}/'.format(self._data['cpf'].replace('.','').replace('-',''))
-        self._save = '/opt/certidao/download/'
+
+        self._save = '/opt/certidao/download/municipal'
+
         try:
-            shutil.rmtree(self._save)
-            os.makedirs(f'{self._save}')
+            if os.path.isdir(f'{self._save}') is False:
+                os.makedirs(f'{self._save}')
+            else:
+                shutil.rmtree(self._save)
+                os.makedirs(f'{self._save}')
         except:
             pass
+
         if os.path.isdir(f'{self._pasta}'):
             print("O diretório existe!")
         else:

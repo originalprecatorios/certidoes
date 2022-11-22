@@ -1,91 +1,65 @@
 #!/usr/bin/python3
 
+from selenium_class.estadual import Estadual
+from selenium_class.municipal import Municipal
+from selenium_class.federal import Federal
+from selenium_class.trt15 import Trt15
+from selenium_class.distribuicao_federal import Distribuicao_federal
+from selenium_class.debito_trabalhista import Debito_trabalhista
+from selenium_class.protesto import Protesto
+from selenium_class.protesto2 import Protesto2
+#from request.trabalhista import Trabalhista
+from selenium_class.trabalhista import Trabalhista
+from request.federal_request import Federal_request
+from selenium_class.divida_ativa import Divida_ativa
+from selenium_class.tj import Tj
+from selenium_class.trf import Trf
+from selenium_class.tst_trabalhista import Tst_trabalhista
+from selenium_class.esaj import Esaj
+from selenium_class.esaj_busca import Esaj_busca
+from bd.class_mongo import Mongo
+from decouple import config
+from recaptcha.captcha import Solve_Captcha
+from apscheduler.events import EVENT_JOB_ERROR
+import time, os, json
+from rabbit import rabbitmq
+from bson.objectid import ObjectId
+from crypto import db
+import requests
 
-import pika, time, json
 
-
-cp = ''
-
-try:
-    upload.creat('e-proc')
-except:
-    print ('Bucket já existe')
-
-# Conecta no RabbitMQ para processar o que vier da queue "consumidor_gov"
-class RabbitMQ:
-
-   def __init__(self, pQueue):
-      self._queue = pQueue
-      self._host = '200.194.172.112'
-      self._port = '5672'
-      self._credentials = pika.PlainCredentials('robot', 'original2022!')
-      
-      self._conn = pika.BlockingConnection(pika.ConnectionParameters(host= self._host,port=self._port,credentials=self._credentials))
-      self._channel = self._conn.channel()
-      self._channel.queue_declare(queue=pQueue)
-
-
-   def __dell__(self):
-      self._channel.close()
-
-
-   def send_queue(self, pBody):
-      self._channel.basic_publish(exchange='', routing_key=self._queue, body=pBody)
-      return True
-    
-
-   def get_queue(self):
-      print('buscando')
-      self._channel.queue_declare(queue=self._queue)
-      retorno = self._channel.basic_get(queue=self._queue,auto_ack=True)
-
-      # Fecha a conexão com o RabbitMQ
-      self.__dell__()
-
-      tem_dado = False
-      if retorno[-1] != None:
-         tem_dado = True
-
-      return tem_dado, retorno[-1]
         
+def certidao_initial(id_mongo):
+    print('Iniciando...')
+    #bd = Mongo(config('MONGO_USER'), config('MONGO_PASS'), config('MONGO_HOST'), config('MONGO_PORT'), config('MONGO_DB'), config('AMBIENTE'))
+    #mongo = Mongo(config('MONGO_USER'), config('MONGO_PASS'), config('MONGO_HOST'), config('MONGO_PORT'), config('MONGO_DB'), config('AMBIENTE'))
+    mongo = Mongo(os.environ['MONGO_USER_PROD'], os.environ['MONGO_PASS_PROD'], os.environ['MONGO_HOST_PROD'], os.environ['MONGO_PORT_PROD'], os.environ['MONGO_DB_PROD'], os.environ['MONGO_AUTH_DB_PROD'])
+    #mongo = Mongo(config('MONGO_USER_PROD'), config('MONGO_PASS_PROD'), config('MONGO_HOST_PROD'), config('MONGO_PORT_PROD'), config('MONGO_DB_PROD'), config('MONGO_AUTH_DB_PROD'))
+    erro = Mongo(config('MONGO_USER_PROD'), config('MONGO_PASS_PROD'), config('MONGO_HOST_PROD'), config('MONGO_PORT_PROD'), config('MONGO_DB_PROD'), config('AMBIENTE_PROD'))
+    mongo._getcoll('certidao')
+    
+    
+    users  = mongo.returnQuery()
+    cap = Solve_Captcha()
+    usr = []
+    list_process = []
+    for user in users:
+        usr.append(user)
+    
+    
 
-   def processa_dado(self, dados):
-
-      dados['numero_cnj'] = dados['numero_cnj'].replace('.','').replace('-','').replace('/','')
-      
-      if dados['legado']:         
-
-         exe = Eproc(mongo, dados['login'], dados['senha'], cp, dados['sistema'], upload, pLegado=True)
-         exe.fazer_login()
-
-         exe.ir_para_consulta_processual()
-         exe.pesquisar_processo(dados['numero_cnj'])
-         
+    
+    for u in usr:
+      if type(u['cpf']) is bytes:
+        u['cpf'] = db.decrypt(u['cpf'])
+      if type(user['rg']) is bytes:
+         u['rg'] = db.decrypt(u['rg'])
+      print(u['rg'])
+      if u['rg'] == '262.779.928-21':
+         print()
       else:
+         continue
+      
 
-         exe = Eproc(mongo, dados['login'], dados['senha'], cp, dados['sistema'], upload, pLegado=False)
-         exe.fazer_login()
-
-         exe.ir_para_consulta_processual()
-         exe.pesquisar_processo(dados['numero_cnj'])
-
-
-    
-# Executa as filas do RabbitMQ
-while True:
-
-    rabbit = RabbitMQ('web_certidao')
-    retorno = rabbit.get_queue()
-    
-    if retorno[0]:
-        dados = json.loads(retorno[-1])
-        rabbit.processa_dado(dados)
-    else:
-        time.sleep(300)
-
-
-
-
-
-   
-
+dados = {'_id':'636e936ecd2cbfcfd5ad8511'}
+certidao_initial(dados)
