@@ -17,6 +17,8 @@ from selenium_class.trf import Trf
 from selenium_class.tst_trabalhista import Tst_trabalhista
 from selenium_class.esaj import Esaj
 from selenium_class.esaj_busca import Esaj_busca
+from create_certificate.create import Creat
+from selenium_class.antecedentes_criminais import Antecedentes_criminais
 from bd.class_mongo import Mongo
 from decouple import config
 from recaptcha.captcha import Solve_Captcha
@@ -404,6 +406,39 @@ def certidao_initial(id_mongo):
                         else:
                             modifica['$set']['extracted']['_ESAJ_BUSCA_NOME'] = 2
                             print('Erro ao acessar o site, para gerar a certidão _ESAJ_BUSCA_NOME')
+                            break
+                
+                elif ext == '_PODER_JUDICIARIO':
+                    cont = 0
+                    while True:
+                        if cont <=2:
+                            try:
+                                c = Creat(u)
+                                del c
+                                modifica['$set']['extracted']['_PODER_JUDICIARIO'] = 1
+                                break
+                            except:
+                                cont += 1
+                        else:
+                            modifica['$set']['extracted']['_PODER_JUDICIARIO'] = 2
+                            print('Erro ao acessar o site, para gerar a certidão _PODER_JUDICIARIO')
+                            break
+                
+                elif ext == '_ANTECEDENTES_CRIMINAIS':
+                    cont = 0
+                    while True:
+                        if cont <=2:
+                            try:
+                                ac = Antecedentes_criminais(u,os.environ['PAGE_URL_SSP'],mongo,erro,cap)
+                                ac.login()
+                                del ac
+                                modifica['$set']['extracted']['_ANTECEDENTES_CRIMINAIS '] = 1
+                                break
+                            except:
+                                cont += 1
+                        else:
+                            modifica['$set']['extracted']['_ANTECEDENTES_CRIMINAIS '] = 2
+                            print('Erro ao acessar o site, para gerar a certidão _ANTECEDENTES_CRIMINAIS ')
                             break
                     
 
