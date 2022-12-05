@@ -19,7 +19,7 @@ class Email:
         passwd = self._config['passwd']
         receiver = self._to
         mail_content = """
-            Segue pdf com os dados para solicitação de certidão
+            Segue pdf com os dados para solicitação de certificado
         """
         message = MIMEMultipart()
         message['From'] = address

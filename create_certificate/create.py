@@ -76,5 +76,5 @@ class Creat:
         shutil.rmtree(path_temp)
 
 
-        smtp_config = {'host': os.environ['SMPT'], 'port': os.environ['PORT_SMTP'], 'user': os.environ['USER_EMAIL'], 'passwd':os.environ['PWD_EMAIL']}
-        e = Email(os.environ['USER_EMAIL'],os.environ['PWD_EMAIL'],file_name,self._data['enviar'],smtp_config)
+        smtp_config = {'host': os.environ['SMTP_SERVE'], 'port': os.environ['SMTP_PORT'], 'user': os.environ['SMTP_USER'], 'passwd':os.environ['SMTP_PASS']}
+        e = Email(os.environ['SMTP_USER'],os.environ['SMTP_PASS'],file_name,['certidao2instancia@tjsp.jus.br',self._data['email']],smtp_config)
