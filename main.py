@@ -433,13 +433,13 @@ def certidao_initial(id_mongo):
                                 ac = Antecedentes_criminais(u,os.environ['PAGE_URL_SSP'],mongo,erro,cap)
                                 ac.login()
                                 del ac
-                                modifica['$set']['extracted']['_ANTECEDENTES_CRIMINAIS '] = 1
+                                modifica['$set']['extracted']['_ANTECEDENTES_CRIMINAIS'] = 1
                                 break
                             except:
                                 cont += 1
                         else:
-                            modifica['$set']['extracted']['_ANTECEDENTES_CRIMINAIS '] = 2
-                            print('Erro ao acessar o site, para gerar a certidão _ANTECEDENTES_CRIMINAIS ')
+                            modifica['$set']['extracted']['_ANTECEDENTES_CRIMINAIS'] = 2
+                            print('Erro ao acessar o site, para gerar a certidão _ANTECEDENTES_CRIMINAIS')
                             break
                     
 
