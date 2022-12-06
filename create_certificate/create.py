@@ -6,7 +6,7 @@ from datetime import datetime
 from random import randint
 import webbrowser, os, string, random
 import shutil, json
-from create_certificate.send_email import Email
+from create_certificate.send_email import Email_enviar
 
 class Creat:
 
@@ -26,7 +26,7 @@ class Creat:
             '12': 'Dezembro'        
         }
         self._data = pData
-        estado = self._data['estado']
+        estado = 'São Paulo'
         now = datetime.now()
         day = str(now.day)
         year = str(now.year)
@@ -34,15 +34,19 @@ class Creat:
         self._dt = estado+', '+day+' de '+month+' de '+year
 
     def cert(self):
-        # paths
+        print("função cert")
         path = os.path.abspath('')
         path_templates = os.path.join(path, 'templates/')
         path_images = os.path.join(path, 'imgs/')
         path_temp = os.path.join('/tmp',''.join(random.choices(string.ascii_uppercase + string.digits, k = 4)) + '/') #Pasta onde as imagens serão gravadas
-        path_out = os.path.join(path, 'out/') #Pasta onde o template será gerado
+        path_out = '/tmp/out/'
 
         # make temp dir
         os.makedirs(path_temp)
+        try:
+            shutil.rmtree(path_out)
+        except:
+            pass
         try:
             os.makedirs(path_out)
         except:
@@ -61,7 +65,7 @@ class Creat:
                         "rg": self._data['rg'], 
                         "cpf": self._data['cpf'][:-3],
                         "cpf_digit": self._data['cpf'].replace('.','').replace('-','')[-2:],
-                        "org" : self._data['orgao'],
+                        "org" : self._data['orgao_expedidor'],
                         "data" : self._dt
                         }
 
@@ -77,4 +81,6 @@ class Creat:
 
 
         smtp_config = {'host': os.environ['SMTP_SERVE'], 'port': os.environ['SMTP_PORT'], 'user': os.environ['SMTP_USER'], 'passwd':os.environ['SMTP_PASS']}
-        e = Email(os.environ['SMTP_USER'],os.environ['SMTP_PASS'],file_name,['certidao2instancia@tjsp.jus.br',self._data['email']],smtp_config)
+        #e = Email(os.environ['SMTP_USER'],os.environ['SMTP_PASS'],file_name,['certidao2instancia@tjsp.jus.br',self._data['email']],smtp_config)
+        e = Email_enviar(os.environ['SMTP_USER'],os.environ['SMTP_PASS'],file_name,[self._data['email']],smtp_config)
+        e.send_email_ruralservice(path_out)

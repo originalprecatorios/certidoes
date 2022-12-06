@@ -113,6 +113,7 @@ class Antecedentes_criminais:
             time.sleep(2)
             name = os.path.join(self._pasta,'6.1-ANTECEDENTE CRIMINAL.png')
             self._driver.switch_to.default_content()
+            time.sleep(2)
             self._driver.get_full_page_screenshot_as_file('{}'.format(name))
             self.convert(name)
             print('Download do arquivo gerado para o cliente {}'.format(self._data['nome']))
