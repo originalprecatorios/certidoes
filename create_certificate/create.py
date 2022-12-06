@@ -77,6 +77,7 @@ class Creat:
 
 
         # remove temp path
+        print("removendo pasta")
         shutil.rmtree(path_temp)
 
 
