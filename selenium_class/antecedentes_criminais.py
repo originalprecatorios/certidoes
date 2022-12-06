@@ -106,8 +106,11 @@ class Antecedentes_criminais:
 
 
             response = self._captcha.recaptcha('6Ld1lM8ZAAAAABVIXgGLwvF9kmRJvVgIBFCWDpl5',self._link)
+            print(response)
             self._driver.execute_script("document.getElementById('g-recaptcha-response').innerHTML = '"+response+"';")
+            print('clicar pesquisar')
             WebDriverWait(self._driver, 3).until(EC.presence_of_element_located((By.ID, "pesquisa"))).click()
+            print('ok')
             time.sleep(2)
             self._driver.execute_script("javascript:printF();")
             time.sleep(2)
