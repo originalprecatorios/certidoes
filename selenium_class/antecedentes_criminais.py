@@ -119,6 +119,7 @@ class Antecedentes_criminais:
             time.sleep(2)
             self._driver.get_full_page_screenshot_as_file('{}'.format(name))
             self.convert(name)
+            self._driver.close()
             print('Download do arquivo gerado para o cliente {}'.format(self._data['nome']))
             
 
