@@ -55,7 +55,7 @@ def certidao_initial(id_mongo):
       if type(user['rg']) is bytes:
          u['rg'] = db.decrypt(u['rg'])
       print(u['rg'])
-      if u['rg'] == '262.779.928-21':
+      if u['cpf'] == '071.547.188-03':
          print()
       else:
          continue
