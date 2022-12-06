@@ -114,7 +114,7 @@ class Antecedentes_criminais:
             time.sleep(2)
             self._driver.execute_script("javascript:printF();")
             time.sleep(2)
-            name = os.path.join(self._pasta,'6.1-ANTECEDENTE CRIMINAL.png')
+            name = os.path.join(self._pasta,'ANTECEDENTE CRIMINAL.png')
             self._driver.switch_to.default_content()
             time.sleep(2)
             self._driver.get_full_page_screenshot_as_file('{}'.format(name))
