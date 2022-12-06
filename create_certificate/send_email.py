@@ -8,6 +8,7 @@ from email.mime.application import MIMEApplication
 
 class Email_enviar:
     def __init__(self, login, pwd,attach, to = [], config = {}):
+        print("Email_enviar")
         self._attach = attach
         self._to = to
         self._config = config
@@ -15,6 +16,7 @@ class Email_enviar:
         self._pwd = pwd
 
     def send_email_ruralservice(self,path_temp):
+        print("send_email_ruralservice")
         address = self._config['user']
         passwd = self._config['passwd']
         receiver = self._to
