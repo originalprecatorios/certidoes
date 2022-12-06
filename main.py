@@ -414,6 +414,7 @@ def certidao_initial(id_mongo):
                         if cont <=2:
                             try:
                                 c = Creat(u)
+                                c.cert()
                                 del c
                                 modifica['$set']['extracted']['_PODER_JUDICIARIO'] = 1
                                 break
