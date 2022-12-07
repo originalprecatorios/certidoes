@@ -56,8 +56,9 @@ def certidao_initial(id_mongo):
         usr[0]['cpf'] = db.decrypt(usr[0]['cpf'])
     if type(user['rg']) is bytes:
         usr[0]['rg'] = db.decrypt(usr[0]['rg'])
+    if usr[0]['rg'].find('.') >= 0:
+        usr[0]['rg'] = usr[0]['rg'].replace('.','')   
 
-    
     for u in usr:
         for ext in u['extracted']:
             busca = {'_id': u['_id']}
