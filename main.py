@@ -74,9 +74,12 @@ def certidao_initial(id_mongo):
                                 logged = e.login()
                                 if logged is True:
                                     e.download_document()
-                                del e
-                                modifica['$set']['extracted']['_CND_ESTADUAL'] = 1
-                                break
+                                    del e
+                                    modifica['$set']['extracted']['_CND_ESTADUAL'] = 1
+                                    break
+                                else:
+                                    cont += 1
+                                
                             except:
                                 cont += 1
                         else:
@@ -487,7 +490,7 @@ def certidao_initial(id_mongo):
     response = requests.post('https://f8f37533-9c29-482e-93e9-284804b874b7.pushnotifications.pusher.com/publish_api/v1/instances/f8f37533-9c29-482e-93e9-284804b874b7/publishes', headers=headers, json=json_data)
     print('Programa finalizado...')
 
-#dados = {'_id':'636e936ecd2cbfcfd5ad8511'}
+#dados = {'_id':'6391ec6b182b4d83b0012486'}
 #certidao_initial(dados)
 # Executa as filas do RabbitMQ
 while True:
