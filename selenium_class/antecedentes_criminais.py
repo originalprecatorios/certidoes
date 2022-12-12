@@ -101,6 +101,12 @@ class Antecedentes_criminais:
             self._driver.find_element(By.NAME,'txtANO').send_keys(self._data['nascimento'].split('-')[0])
             time.sleep(1)
 
+            try:
+                WebDriverWait(self._driver, 3).until(EC.presence_of_element_located((By.NAME, "nomePai")))
+                self._driver.find_element(By.NAME,'nomePai').send_keys(self._data['pai'])
+            except:
+                pass
+
             WebDriverWait(self._driver, 3).until(EC.presence_of_element_located((By.NAME, "nomeMae")))
             self._driver.find_element(By.NAME,'nomeMae').send_keys(self._data['mae'])
 
