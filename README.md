@@ -71,7 +71,7 @@
 
 **Let's divide it into 3 steps.**
 1. Clone this repository - Clonar este repositório
-2. Install dependencies - Instale as dependências
+2. Install dependencies - Instale as dependênciass
 3. Install 32-bits JAVA - instale JAVA 32-bits
 4. Install ReceitanetBX - instale ReceitanetBX
 5. Get the digital certificates - Obtenha os certificados digitais
