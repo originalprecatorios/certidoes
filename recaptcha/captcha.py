@@ -1,11 +1,14 @@
 from twocaptcha import TwoCaptcha
 from decouple import config
-import requests, time
+import requests, time, os
 
 class Solve_Captcha:
 
     def __init__(self):
-        self._key = config('CAPTCHA')
+        try:
+            os.environ["CAPTCHA"]
+        except:
+            self._key = config('CAPTCHA')
 
     def resolve_recaptcha(self,url):
         print('Resolvendo captcha')
