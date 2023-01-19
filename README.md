@@ -72,12 +72,7 @@
 **Let's divide it into 3 steps.**
 1. Clone this repository - Clonar este repositório
 2. Install dependencies - Instale as dependênciass
-3. Install 32-bits JAVA - instale JAVA 32-bits
-4. Install ReceitanetBX - instale ReceitanetBX
-5. Get the digital certificates - Obtenha os certificados digitais
-6. Get passwords for digital certificates - Obtenha as senhas dos certificados digitais
-7. Obtain the path of the folder where the ReceitanetBX is installed - Obtenha o caminho da pasta onde está instalado o ReceitanetBX
-8. Create environment variable - Criar variavel de ambiente
+3. Create environment variable - Criar variavel de ambiente
   ---
 ### 1. Clone this repository
 ```
@@ -89,43 +84,8 @@ git clone https://github.com/originalprecatorios/receitanetbx.git
 pip install -r /path/to/requirements.txt
 ```
 ---
-### 3. Install 32-bits JAVA
-```
-https://www.java.com/pt-BR/download/help/linux_install.html
-```
----
-### 4. Install ReceitanetBX
-```
-https://www.gov.br/receitafederal%22/pt-br/centrais-de-conteudo/download/receitanetbx/download-do-programa-receitanetbx-linux
-```
-When installing ReceitanetBX, the system will 'inform which is the path of the installed java?', The path of the 32bits java installed must be informed Exp: /usr/lib/jvm/jre-8u351-linux-i586/jre1.8.0_351/
 
-Ao instalar o ReceitanetBX o sistema irá 'informar qual o caminho do java instalado?', Deve ser informado o caminho do java 32bits instalado Exp: /usr/lib/jvm/jre-8u351-linux-i586/jre1.8.0_351/
-
----
-### 5. Get the digital certificates
-
-Obtain a digital certificate to be able to start the robot
-
-Obetenha um certificado digital para poder inicializar o robô
-
-Create a folder in /opt with the name cert and add the certificate in this folder
-
-Criar uma pasta no /opt com o nome cert e adcionar o certificado nesta pasta
-
-### 6. Get passwords for digital certificates
-
-Obtain the password of the digital certificate where it will be installed in the netbx recipe
-
-Obetenha a senha do certificado digital onde será instalado no receitanetbx
-
-### 7. Obtain the path of the folder where the ReceitanetBX is installed
-
-When starting the installation of ReceitanetBX, it will inform you in which folder the program will be installed, obtain this path to be informed in the robot
-
-Ao iniciar a instalação do ReceitanetBX o mesmo irá informar em que pasta irá ser feita a instalação do programa, obtenha esse caminho para ser informado no robo
-
-### 8. Create environment variable
+### 3. Create environment variable
 
 open the terminal
 type export variablename="variablevalue"
@@ -133,14 +93,62 @@ type export variablename="variablevalue"
 abra o terminal
 digite export nomedavariavel="valordavariavel"
 
-certificate password - Senha do certificado
+captcha password - Senha do captcha
 ```
-export CERT="SenhaCertificado"
+export CAPTCHA="SenhaCAPTCHA"
 ```
 
-Path where RevenuenetBX is installed - Caminho onde esta instalado o ReceitanetBX 
+SMTP
 ```
-export RECEITANET="/home/wesley/Programas-RFB/ReceitanetBX/receitanetbx-gui-1.9.20.jar"
+export SMTP_PORT=587
+export SMTP_SERVE="smtp.office365.com"
+export SMTP_USER="user"
+export SMTP_PASS="password"
+```
+
+MONGO
+```
+MONGO_HOST_PROD="000.000.000.000"
+MONGO_PORT_PROD=27017
+MONGO_USER_PROD="user"
+MONGO_PASS_PROD="password"
+MONGO_AUTH_DB_PROD="admin"
+MONGO_DB_PROD='database'
+```
+
+Website links - Links dos sites
+```
+export PAGE_URL="https://www10.fazenda.sp.gov.br/CertidaoNegativaDeb/Pages/EmissaoCertidaoNegativa.aspx"
+
+export PAGE_URL_MUN="https://duc.prefeitura.sp.gov.br/certidoes/forms_anonimo/frmConsultaEmissaoCertificado.aspx"
+
+export PAGE_URL_CONTRIBUINTE="https://www.dividaativa.pge.sp.gov.br/sc/pages/crda/emitirCrda.jsf?param=150304"
+
+export PAGE_URL_FEDERAL="https://solucoes.receita.fazenda.gov.br/Servicos/certidaointernet/PF/Emitir"
+
+export PAGE_URL_CRIMINAL_1="https://esaj.tjsp.jus.br/sco/abrirCadastro.do"
+
+export PAGE_URL_TRTSP="https://aplicacoes10.trt2.jus.br/certidao_trabalhista_eletronica/public/index.php/index/solicitacao"
+
+export PAGE_URL_TST="https://cndt-certidao.tst.jus.br/inicio.faces"
+
+export PAGE_URL_TRT15="https://trt15.jus.br/servicos/certidoes/certidao-eletronica-de-acoes-trabalhistas-ceat"
+
+export PAGE_URL_TRF3_JUS="https://web.trf3.jus.br/certidao-regional/CertidaoCivelEleitoralCriminal/SolicitarDadosCertidao"
+
+export PAGE_URL_ESAJ_B_NOME_CPF="https://esaj.tjsp.jus.br/cpopg/open.do"
+
+export PAGE_URL_PROTESTO="https://protestosp.com.br/consulta-de-protesto"
+
+export PAGE_URL_PROTESTO2="https://site.cenprotnacional.org.br/"
+
+export PAGE_URL_PJE_TRF3="https://pje1g.trf3.jus.br/pje/ConsultaPublica/listView.seam"
+
+export PAGE_URL_DEBITO_TRABALHISTA="http://www.tst.jus.br/certidao1"
+
+export PAGE_URL_TJ="https://esaj.tjsp.jus.br/cpopg/search.do"
+
+export PAGE_URL_SSP="https://www.ssp.sp.gov.br/servicos/atestado.aspx"
 ```
 
 
