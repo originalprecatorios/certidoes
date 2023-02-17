@@ -141,6 +141,19 @@ class Distribuicao_federal:
            
             WebDriverWait(self._driver, 10).until(EC.presence_of_element_located((By.ID, "botaoImprimirCertidao")))
             #self._driver.find_element(By.ID,'botaoImprimirCertidao').click()
+            cont = 0
+            while True:
+                if cont >= 3:
+                    break
+                else:
+                    try:
+                        WebDriverWait(self._driver, 3).until(EC.presence_of_element_located((By.ID, "botaoImprimirCertidao")))
+                        WebDriverWait(self._driver, 3).until(EC.presence_of_element_located((By.ID, "ContainerImpressaoCertidao")))
+                        break
+                    except:
+                        time.sleep(2)
+                        cont+=1
+                        pass
             self._driver.execute_script("document.body.style.zoom='55%'")
             self._driver.execute_script('window.scrollBy(0, 120)')
             self._driver.get_screenshot_as_file(os.path.join(self._save,self._definicao))
