@@ -60,15 +60,17 @@ class Trabalhista:
             WebDriverWait(self._driver, 3).until(EC.presence_of_element_located((By.ID, "nomePesquisado"))).send_keys(self._data['nome'])
             cont = 0
             while True:
-                if cont <= 5:
+                if cont <= 2:
                     try:
                         self.solve_cap()
                         WebDriverWait(self._driver, 10).until(EC.presence_of_element_located((By.CLASS_NAME, "container")))
                         if self._driver.find_element(By.CLASS_NAME, 'container').text.find('Certidão gerada com sucesso!') >= 0:
                             self._driver.execute_script("javascript:location.href='/certidao_trabalhista_eletronica/public/index.php/index/recuperarcertidao'")
-                            time.sleep(3)
-                            self._download()
+                            time.sleep(5)
+                            #self._download()
+                            print(f'todos os arquivos {os.listdir(self._save)}')
                             archive_name = os.listdir(self._save)[0]
+                            print(archive_name)
                             shutil.move(f"{self._save}/{archive_name}", f"{self._pasta}11- TRT2ª.pdf")
                             self._driver.close()
                             print('Download do arquivo gerado para o cliente {}'.format(self._data['nome']))
