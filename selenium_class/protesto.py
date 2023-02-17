@@ -69,11 +69,16 @@ class Protesto:
             WebDriverWait(self._driver, 3).until(EC.presence_of_element_located((By.ID, "Documento"))).send_keys(self._data['cpf'])
             WebDriverWait(self._driver, 3).until(EC.presence_of_element_located((By.ID, "frmConsulta"))).find_elements(By.TAG_NAME,'input')
             self._driver.execute_script("ValidarConsulta(this)")
-            time.sleep(3)
+            time.sleep(5)
             self._driver.execute_script("document.getElementById('cookiefirst-root').style.display = 'none'")
             time.sleep(2)
             WebDriverWait(self._driver, 5).until(EC.presence_of_element_located((By.CLASS_NAME, "resultado-pesquisa")))
-            
+            WebDriverWait(self._driver, 5).until(EC.presence_of_element_located((By.CLASS_NAME, "labelTotalOutros")))
+
+            try:
+                WebDriverWait(self._driver, 5).until(EC.presence_of_element_located((By.ID, "btnfecharMessage"))).click()
+            except:
+                pass
             name = os.path.join(self._pasta,'13- CENPROT.png')
             time.sleep(3)
             self._driver.get_full_page_screenshot_as_file('{}'.format(name))
