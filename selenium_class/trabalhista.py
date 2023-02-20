@@ -55,6 +55,7 @@ class Trabalhista:
         
     
     def login(self):
+        print('login')
         try:
             WebDriverWait(self._driver, 3).until(EC.presence_of_element_located((By.ID, "numeroDocumentoPesquisado"))).send_keys(self._data['cpf'])
             WebDriverWait(self._driver, 3).until(EC.presence_of_element_located((By.ID, "nomePesquisado"))).send_keys(self._data['nome'])
@@ -63,8 +64,10 @@ class Trabalhista:
                 if cont <= 2:
                     try:
                         self.solve_cap()
+                        print('captcha resolvido')
                         WebDriverWait(self._driver, 10).until(EC.presence_of_element_located((By.CLASS_NAME, "container")))
                         if self._driver.find_element(By.CLASS_NAME, 'container').text.find('Certidão gerada com sucesso!') >= 0:
+                            print('iniciando download')
                             self._driver.execute_script("javascript:location.href='/certidao_trabalhista_eletronica/public/index.php/index/recuperarcertidao'")
                             time.sleep(5)
                             #self._download()
@@ -76,6 +79,7 @@ class Trabalhista:
                             print('Download do arquivo gerado para o cliente {}'.format(self._data['nome']))
                             break
                         else:
+                            print('iniciando download')
                             time.sleep(3)
                             WebDriverWait(self._driver, 3).until(EC.presence_of_element_located((By.CLASS_NAME, "botao")))
                             self._driver.find_elements(By.CLASS_NAME,"botao")[0].click()

@@ -11,6 +11,7 @@ from pathlib import Path
 import time, os, shutil
 import img2pdf
 from PIL import Image
+import undetected_chromedriver as uc
 
 
 class Protesto:
