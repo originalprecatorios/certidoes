@@ -67,6 +67,8 @@ class Trabalhista:
                         if self._driver.find_element(By.CLASS_NAME, 'container').text.find('Certidão gerada com sucesso!') >= 0:
                             print('iniciando download')
                             #self._driver.execute_script("javascript:location.href='/certidao_trabalhista_eletronica/public/index.php/index/recuperarcertidao'")
+                            time.sleep(3)
+                            WebDriverWait(self._driver, 10).until(EC.presence_of_element_located((By.XPATH, "/html/body/div[2]/main/div[1]/div/fieldset/button")))
                             self._driver.find_element(By.XPATH,'/html/body/div[2]/main/div[1]/div/fieldset/button').click()
                             print('click')
                             time.sleep(5)
