@@ -28,7 +28,7 @@ class Email_enviar:
         message['To'] = ", ".join(receiver)
         message['Subject'] = "Solicitação de Certidão"
         message.attach(MIMEText(mail_content))
-
+        print(message)
         # Anexando o PDF
         pdfname=self._attach
         fp=open(pdfname,'rb')
@@ -36,12 +36,13 @@ class Email_enviar:
         fp.close()
         anexo.add_header('Content-Disposition','attachment',filename='certidao.pdf')
         message.attach(anexo)
-
+        print('pdf anexado')
         server = smtplib.SMTP('smtp.office365.com',587)
         server.ehlo()
         server.starttls()
         server.ehlo()
         server.login(self._login, self._pwd)
+        print('server login')
         text = message.as_string()
         server.sendmail(address, receiver, text)
         server.quit()
