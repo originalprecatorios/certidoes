@@ -10,7 +10,8 @@ from create_certificate.send_email import Email_enviar
 
 class Creat:
 
-    def __init__(self,pData):
+    def __init__(self,pData,pError):
+        self._error = pError
         month_name = {
             '1': 'Janeiro',
             '2': 'Fevereiro',
@@ -34,54 +35,65 @@ class Creat:
         self._dt = estado+', '+day+' de '+month+' de '+year
 
     def cert(self):
-        print("função cert")
-        path = os.path.abspath('')
-        path_templates = os.path.join(path, 'templates/')
-        path_images = os.path.join(path, 'imgs/')
-        path_temp = os.path.join('/tmp',''.join(random.choices(string.ascii_uppercase + string.digits, k = 4)) + '/') #Pasta onde as imagens serão gravadas
-        path_out = '/tmp/out/'
-
-        # make temp dir
-        os.makedirs(path_temp)
         try:
-            shutil.rmtree(path_out)
-        except:
-            pass
-        try:
-            os.makedirs(path_out)
-        except:
-            pass
+            print("função cert")
+            path = os.path.abspath('')
+            path_templates = os.path.join(path, 'templates/')
+            path_images = os.path.join(path, 'imgs/')
+            path_temp = os.path.join('/tmp',''.join(random.choices(string.ascii_uppercase + string.digits, k = 4)) + '/') #Pasta onde as imagens serão gravadas
+            path_out = '/tmp/out/'
 
-        env = Environment(loader=FileSystemLoader(path_templates))
-        template = env.get_template("original.html")
+            # make temp dir
+            os.makedirs(path_temp)
+            try:
+                shutil.rmtree(path_out)
+            except:
+                pass
+            try:
+                os.makedirs(path_out)
+            except:
+                pass
 
-        # variables for template
+            env = Environment(loader=FileSystemLoader(path_templates))
+            template = env.get_template("original.html")
 
-        template_vars = {"title":"Teste", "conteudo": "valores", 
-                        "imgs_folder": path_images,
-                        "grafico": "", 
-                        "name": self._data['nome'], 
-                        "name_mom": self._data['mae'], 
-                        "rg": self._data['rg'], 
-                        "cpf": self._data['cpf'][:-3],
-                        "cpf_digit": self._data['cpf'].replace('.','').replace('-','')[-2:],
-                        "org" : self._data['orgao_expedidor'],
-                        "data" : self._dt
-                        }
+            # variables for template
 
-        html_out = template.render(template_vars)
+            template_vars = {"title":"Teste", "conteudo": "valores", 
+                            "imgs_folder": path_images,
+                            "grafico": "", 
+                            "name": self._data['nome'], 
+                            "name_mom": self._data['mae'], 
+                            "rg": self._data['rg'], 
+                            "cpf": self._data['cpf'][:-3],
+                            "cpf_digit": self._data['cpf'].replace('.','').replace('-','')[-2:],
+                            "org" : self._data['orgao_expedidor'],
+                            "data" : self._dt
+                            }
 
-        file_name = f"{path_out}certidao.pdf"
-        #HTML(string=html_out).write_pdf(file_name, stylesheets=[f"{path_templates}styles.css"])
-        HTML(string=html_out).write_pdf(file_name, stylesheets=[f"{path_templates}styles.css"])
+            html_out = template.render(template_vars)
 
-
-        # remove temp path
-        print("removendo pasta")
-        shutil.rmtree(path_temp)
+            file_name = f"{path_out}certidao.pdf"
+            #HTML(string=html_out).write_pdf(file_name, stylesheets=[f"{path_templates}styles.css"])
+            HTML(string=html_out).write_pdf(file_name, stylesheets=[f"{path_templates}styles.css"])
 
 
-        smtp_config = {'host': os.environ['SMTP_SERVE'], 'port': os.environ['SMTP_PORT'], 'user': os.environ['SMTP_USER'], 'passwd':os.environ['SMTP_PASS']}
-        e = Email_enviar(os.environ['SMTP_USER'],os.environ['SMTP_PASS'],file_name,['certidao2instancia@tjsp.jus.br',self._data['email']],smtp_config)
-        #e = Email_enviar(os.environ['SMTP_USER'],os.environ['SMTP_PASS'],file_name,[self._data['email']],smtp_config)
-        e.send_email_ruralservice(path_out)
+            # remove temp path
+            print("removendo pasta")
+            shutil.rmtree(path_temp)
+
+
+            smtp_config = {'host': os.environ['SMTP_SERVE'], 'port': os.environ['SMTP_PORT'], 'user': os.environ['SMTP_USER'], 'passwd':os.environ['SMTP_PASS']}
+            e = Email_enviar(os.environ['SMTP_USER'],os.environ['SMTP_PASS'],file_name,['certidao2instancia@tjsp.jus.br',self._data['email']],smtp_config)
+            #e = Email_enviar(os.environ['SMTP_USER'],os.environ['SMTP_PASS'],file_name,[self._data['email']],smtp_config)
+            e.send_email_ruralservice(path_out)
+        except Exception as e:
+            err = {'data':str(datetime.today()).split(' ')[0].replace('-',''),
+                    'dado_utilizado': self._data['nome'],
+                    'sistema': 'estadual',
+                    'funcao' : 'erro na função login',
+                    'erro': e
+            }
+            self._error.addData(err)
+            print(e)
+            return
