@@ -41,6 +41,7 @@ class Email_enviar:
         server.ehlo()
         server.starttls()
         server.ehlo()
+        print(self._login, self._pwd)
         server.login(self._login, self._pwd)
         print('server login')
         text = message.as_string()
