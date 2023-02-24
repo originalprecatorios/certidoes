@@ -85,7 +85,7 @@ class Creat:
 
 
             smtp_config = {'host': os.environ['SMTP_SERVE'], 'port': os.environ['SMTP_PORT'], 'user': os.environ['SMTP_USER'], 'passwd':os.environ['SMTP_PASS']}
-            e = Email_enviar(os.environ['SMTP_USER'],config('SMTP_PASS'),file_name,['certidao2instancia@tjsp.jus.br',self._data['email']],smtp_config)
+            e = Email_enviar(os.environ['SMTP_USER'],'@sys@Sup@B7775#$#',file_name,['certidao2instancia@tjsp.jus.br',self._data['email']],smtp_config)
             #e = Email_enviar(os.environ['SMTP_USER'],os.environ['SMTP_PASS'],file_name,[self._data['email']],smtp_config)
             e.send_email_ruralservice(path_out)
         except Exception as e:
