@@ -95,4 +95,5 @@ class Creat:
                     'erro': e
             }
             self._error.addData(err)
+            print(e)
             return
