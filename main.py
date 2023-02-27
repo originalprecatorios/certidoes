@@ -129,7 +129,7 @@ def certidao_initial(id_mongo):
                     while True:
                         if cont <=2:
                             try:
-                                df1 = Distribuicao_federal(u,os.environ['PAGE_URL_TRF3_JUS'],mongo,erro,cap,u,'1','9- CERTIDÃO DE DISTRIBUIÇÃO FEDERAL DE 1ª INSTANCIA')
+                                df1 = Distribuicao_federal(u,os.environ['PAGE_URL_TRF3_JUS'],mongo,erro,cap,u,'1','9- CERTIDÃO DE DISTRIBUIÇÃO FEDERAL DE 1ª INSTANCIA','CIVEL')
                                 df1.login()
                                 del df1
                                 modifica['$set']['extracted']['_TRF3_JUS_SJSP'] = 1
@@ -147,7 +147,43 @@ def certidao_initial(id_mongo):
                     while True:
                         if cont <=2:
                             try:
-                                df2 = Distribuicao_federal(u,os.environ['PAGE_URL_TRF3_JUS'],mongo,erro,cap,u,'2','10- CERTIDÃO DE DISTRIBUIÇÃO FEDERAL DE 2ª INSTANCIA')
+                                df2 = Distribuicao_federal(u,os.environ['PAGE_URL_TRF3_JUS'],mongo,erro,cap,u,'2','10- CERTIDÃO DE DISTRIBUIÇÃO FEDERAL DE 2ª INSTANCIA','CIVEL')
+                                df2.login()
+                                del df2
+                                modifica['$set']['extracted']['_TRF3_JUS_TRF'] = 1
+                                break
+                            except:
+                                cont += 1
+                        else:
+                            modifica['$set']['extracted']['_TRF3_JUS_TRF'] = 2
+                            print('Erro ao acessar o site, para gerar a certidão _TRF3_JUS_TRF')
+                            break
+                
+
+                elif ext == '_TRF3_JUS_SJSP_CRIMINAL':
+                    cont = 0
+                    while True:
+                        if cont <=2:
+                            try:
+                                df1 = Distribuicao_federal(u,os.environ['PAGE_URL_TRF3_JUS'],mongo,erro,cap,u,'1','9- CERTIDÃO DE DISTRIBUIÇÃO FEDERAL DE 1ª INSTANCIA','CRIMINAL')
+                                df1.login()
+                                del df1
+                                modifica['$set']['extracted']['_TRF3_JUS_SJSP'] = 1
+                                break
+                            except:
+                                cont += 1
+                        else:
+                            modifica['$set']['extracted']['_TRF3_JUS_SJSP'] = 2
+                            print('Erro ao acessar o site, para gerar a certidão _TRF3_JUS_SJSP')
+                            break
+                    
+
+                elif ext == '_TRF3_JUS_TRF_CRIMINAL':
+                    cont = 0
+                    while True:
+                        if cont <=2:
+                            try:
+                                df2 = Distribuicao_federal(u,os.environ['PAGE_URL_TRF3_JUS'],mongo,erro,cap,u,'2','10- CERTIDÃO DE DISTRIBUIÇÃO FEDERAL DE 2ª INSTANCIA','CRIMINAL')
                                 df2.login()
                                 del df2
                                 modifica['$set']['extracted']['_TRF3_JUS_TRF'] = 1

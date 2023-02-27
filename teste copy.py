@@ -40,7 +40,7 @@ def process_browser_log_entry(entry):
 caps = DesiredCapabilities.CHROME
 caps['goog:loggingPrefs'] = {'performance': 'ALL'}
 driver = Chrome(options=options, desired_capabilities=caps)
-URL = 'https://www10.fazenda.sp.gov.br/CertidaoNegativaDeb/Pages/EmissaoCertidaoNegativa.aspx'
+URL = 'https://web.trf3.jus.br/certidao-regional/CertidaoCivelEleitoralCriminal/SolicitarDadosCertidao'
 driver.get(URL)
 sleep(2)
 driver.find_element(By.NAME,'ctl00$MainContent$txtDocumento').send_keys('000.000.000-00')

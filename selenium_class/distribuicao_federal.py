@@ -14,7 +14,7 @@ from PIL import Image
 
 class Distribuicao_federal:
 
-    def __init__(self,pData,pLink,pMongo, pError,pCaptcha,pInfo,pInstancia,pName):
+    def __init__(self,pData,pLink,pMongo, pError,pCaptcha,pInfo,pInstancia,pName,pTipo):
         print('Robo Distribuicao_federal')
         self._data = pData
         self._link = pLink
@@ -24,6 +24,7 @@ class Distribuicao_federal:
         self._info = pInfo
         self._instancia = pInstancia
         self._definicao = pName
+        self._tipo = pTipo
         
         self._error._getcoll('error')
         self._save = '/opt/certidao/download/distribuicao_federal'
@@ -108,7 +109,7 @@ class Distribuicao_federal:
 
             WebDriverWait(self._driver, 3).until(EC.presence_of_element_located((By.ID, "Tipo")))
             select = Select(self._driver.find_element(By.ID, 'Tipo'))
-            select.select_by_value('CIVEL')
+            select.select_by_value(self._tipo)
             
 
             WebDriverWait(self._driver, 3).until(EC.presence_of_element_located((By.ID, "TipoDeDocumento")))
