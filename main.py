@@ -160,12 +160,12 @@ def certidao_initial(id_mongo):
                             break
                 
 
-                elif ext == '_TRF3_JUS_SJSP_CRIMINAL':
+                elif ext == '_DISTRIBUICAO_FEDERAL_1_INSTANCIA':
                     cont = 0
                     while True:
                         if cont <=2:
                             try:
-                                df1 = Distribuicao_federal(u,os.environ['PAGE_URL_TRF3_JUS'],mongo,erro,cap,u,'1','9- CERTIDÃO DE DISTRIBUIÇÃO FEDERAL DE 1ª INSTANCIA','CRIMINAL')
+                                df1 = Distribuicao_federal(u,os.environ['PAGE_URL_TRF3_JUS'],mongo,erro,cap,u,'1','9.1- CERTIDÃO DE DISTRIBUIÇÃO FEDERAL DE 1ª INSTANCIA','CRIMINAL')
                                 df1.login()
                                 del df1
                                 modifica['$set']['extracted']['_TRF3_JUS_SJSP'] = 1
@@ -178,12 +178,12 @@ def certidao_initial(id_mongo):
                             break
                     
 
-                elif ext == '_TRF3_JUS_TRF_CRIMINAL':
+                elif ext == '_DISTRIBUICAO_FEDERAL_2_INSTANCIA':
                     cont = 0
                     while True:
                         if cont <=2:
                             try:
-                                df2 = Distribuicao_federal(u,os.environ['PAGE_URL_TRF3_JUS'],mongo,erro,cap,u,'2','10- CERTIDÃO DE DISTRIBUIÇÃO FEDERAL DE 2ª INSTANCIA','CRIMINAL')
+                                df2 = Distribuicao_federal(u,os.environ['PAGE_URL_TRF3_JUS'],mongo,erro,cap,u,'2','10.1- CERTIDÃO DE DISTRIBUIÇÃO FEDERAL DE 2ª INSTANCIA','CRIMINAL')
                                 df2.login()
                                 del df2
                                 modifica['$set']['extracted']['_TRF3_JUS_TRF'] = 1
