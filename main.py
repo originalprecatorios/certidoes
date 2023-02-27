@@ -168,13 +168,13 @@ def certidao_initial(id_mongo):
                                 df1 = Distribuicao_federal(u,os.environ['PAGE_URL_TRF3_JUS'],mongo,erro,cap,u,'1','9.1- CERTIDÃO DE DISTRIBUIÇÃO FEDERAL DE 1ª INSTANCIA','CRIMINAL')
                                 df1.login()
                                 del df1
-                                modifica['$set']['extracted']['_TRF3_JUS_SJSP'] = 1
+                                modifica['$set']['extracted']['_DISTRIBUICAO_FEDERAL_1_INSTANCIA'] = 1
                                 break
                             except:
                                 cont += 1
                         else:
-                            modifica['$set']['extracted']['_TRF3_JUS_SJSP'] = 2
-                            print('Erro ao acessar o site, para gerar a certidão _TRF3_JUS_SJSP')
+                            modifica['$set']['extracted']['_DISTRIBUICAO_FEDERAL_1_INSTANCIA'] = 2
+                            print('Erro ao acessar o site, para gerar a certidão _DISTRIBUICAO_FEDERAL_1_INSTANCIA')
                             break
                     
 
@@ -186,13 +186,13 @@ def certidao_initial(id_mongo):
                                 df2 = Distribuicao_federal(u,os.environ['PAGE_URL_TRF3_JUS'],mongo,erro,cap,u,'2','10.1- CERTIDÃO DE DISTRIBUIÇÃO FEDERAL DE 2ª INSTANCIA','CRIMINAL')
                                 df2.login()
                                 del df2
-                                modifica['$set']['extracted']['_TRF3_JUS_TRF'] = 1
+                                modifica['$set']['extracted']['_DISTRIBUICAO_FEDERAL_2_INSTANCIA'] = 1
                                 break
                             except:
                                 cont += 1
                         else:
-                            modifica['$set']['extracted']['_TRF3_JUS_TRF'] = 2
-                            print('Erro ao acessar o site, para gerar a certidão _TRF3_JUS_TRF')
+                            modifica['$set']['extracted']['_DISTRIBUICAO_FEDERAL_2_INSTANCIA'] = 2
+                            print('Erro ao acessar o site, para gerar a certidão _DISTRIBUICAO_FEDERAL_2_INSTANCIA')
                             break
                     
                 
@@ -526,7 +526,7 @@ def certidao_initial(id_mongo):
     response = requests.post('https://f8f37533-9c29-482e-93e9-284804b874b7.pushnotifications.pusher.com/publish_api/v1/instances/f8f37533-9c29-482e-93e9-284804b874b7/publishes', headers=headers, json=json_data)
     print('Programa finalizado...')
 
-#dados = {'_id':'63efd8d819866cf6b78ac50c'}
+#dados = {'_id':'63fcde8c5f3b455cd617581a'}
 #certidao_initial(dados)
 # Executa as filas do RabbitMQ
 while True:
