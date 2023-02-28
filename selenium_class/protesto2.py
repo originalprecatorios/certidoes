@@ -12,6 +12,7 @@ import time, os, shutil
 import img2pdf
 from PIL import Image
 import undetected_chromedriver as uc
+from decouple import config
 
 
 class Protesto2:
@@ -83,7 +84,7 @@ class Protesto2:
         options.add_argument('--no-first-run --no-service-autorun --password-store=basic')
         #self._driver = uc.Chrome(options=options)
         #self._driver = uc.Chrome(options=options,version_main=105)
-        self._driver = uc.Chrome(options=options,version_main=89)
+        self._driver = uc.Chrome(options=options,version_main=int(config('VERSION')))
         try:
             self._driver.set_page_load_timeout(60)
         except:
@@ -103,7 +104,8 @@ class Protesto2:
     def login(self):
         try:
             WebDriverWait(self._driver, 3).until(EC.presence_of_element_located((By.ID, "input_cpf_cnpj"))).send_keys(self._data['cpf'])
-            response = self._captcha.recaptcha('6LdCOO4dAAAAAEa2FWwvb1wj9V8eItq7c4SPUtUw',self._link)
+            site_key = self._driver.find_element(By.TAG_NAME,'iframe').get_attribute('src').split('=')[2].split('&')[0]
+            response = self._captcha.recaptcha(site_key,self._link)
             #self._driver.execute_script("document.getElementById('g-recaptcha-response').innerHTML = '"+response+"';")
             self._driver.execute_script('document.getElementById("g-recaptcha-response").innerHTML = "%s"' % response)
             #iframe = self._driver.find_element(By.XPATH,'/html/body/div[1]/div/div[2]/div/div/div/div[1]/div[3]/div[2]/div/div/div/div/iframe')

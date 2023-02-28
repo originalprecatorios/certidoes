@@ -9,6 +9,7 @@ from pathlib import Path
 import time, os, shutil
 from recaptcha.captcha import Solve_Captcha
 import undetected_chromedriver as uc
+from decouple import config
 
 
 class Federal:
@@ -70,7 +71,7 @@ class Federal:
         "plugins.always_open_pdf_externally": True #It will not show PDF directly in chrome
         })
         #self._driver = uc.Chrome(options=options,version_main=105)
-        self._driver = uc.Chrome(options=options,version_main=89)
+        self._driver = uc.Chrome(options=options,version_main=int(config('VERSION')))
         try:
             self._driver.set_page_load_timeout(60)
         except:

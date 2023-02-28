@@ -11,6 +11,7 @@ import time, os, shutil
 import undetected_chromedriver as uc
 import pdfkit
 from PIL import Image
+from decouple import config
 
 class Distribuicao_federal:
 
@@ -82,9 +83,7 @@ class Distribuicao_federal:
 
         # just some options passing in to skip annoying popups
         options.add_argument('--no-first-run --no-service-autorun --password-store=basic')
-        #self._driver = uc.Chrome(options=options)
-        #self._driver = uc.Chrome(options=options,version_main=105)
-        self._driver = uc.Chrome(options=options,version_main=89)
+        self._driver = uc.Chrome(options=options,version_main=int(config('VERSION')))
         try:
             self._driver.set_page_load_timeout(60)
         except:
@@ -98,10 +97,8 @@ class Distribuicao_federal:
         self._driver.execute_cdp_cmd("Page.setDownloadBehavior", params)
         print('Navegando no site')
         self._driver.get(self._link)
-        
-        
-        
-    
+
+
     def login(self):
         try:
             print('login')
@@ -132,8 +129,8 @@ class Distribuicao_federal:
                 select = Select(self._driver.find_element(By.ID, 'TipoDeAbrangencia'))
                 select.select_by_value('TRF')
                 
-
-            response = self._captcha.recaptcha('6Le_CtAZAAAAAEbTeETvetg4zQ7kJI0NH5HNHf1X',self._link)
+            site_key = self._driver.find_element(By.TAG_NAME,'iframe').get_attribute('src').split('=')[2].split('&')[0]
+            response = self._captcha.recaptcha(site_key,self._link)
             #self._driver.execute_script("document.getElementById('g-recaptcha-response').innerHTML = #'"+response+"';")
             self._driver.execute_script('document.getElementById("g-recaptcha-response").innerHTML = "%s"' % response)
 
@@ -155,27 +152,20 @@ class Distribuicao_federal:
                         time.sleep(2)
                         cont+=1
                         pass
-            self._driver.execute_script("document.body.style.zoom='55%'")
-            self._driver.execute_script('window.scrollBy(0, 120)')
-            self._driver.get_screenshot_as_file(os.path.join(self._save,self._definicao))
+
+            self._driver.execute_script("$('.btn').hide()")
+            self._driver.execute_script("$('header').css('display', 'none')")
+            self._driver.execute_script("$('br').remove()")
+            total_width = self._driver.execute_script("return document.body.offsetWidth")
+            total_height = self._driver.execute_script("return document.body.scrollHeight")
+            self._driver.set_window_size(total_width, total_height)
+            self._driver.execute_script("document.body.style.zoom='67%'")
+            self._driver.save_screenshot(os.path.join(self._save,self._definicao))
             image_1 = Image.open(os.path.join(self._save,self._definicao))
             im_1 = image_1.convert('RGB')
             im_1.save(os.path.join(self._pasta,self._definicao+'.pdf'))
             shutil.rmtree(self._save)
             time.sleep(2)
-            '''name = os.path.join(self._save,self._definicao+'.png')
-            
-            with open(os.path.join(self._save,'page_source.html'), "w") as f:
-                f.write(self._driver.page_source)
-            try:
-                pdfkit.from_file(os.path.join(self._save,'page_source.html'), os.path.join(self._save,f'{self._definicao}.pdf'))
-            except:
-                pass
-            time.sleep(2)
-            
-            archive_name = os.listdir(self._save)[0]
-            shutil.move(f"{self._save}{self._definicao}.pdf", f"{self._pasta}{self._definicao}.pdf")
-            shutil.rmtree(self._save)'''
             print('Download concluido para o cpf {}'.format(self._info['cpf']))
             self._driver.close()
 

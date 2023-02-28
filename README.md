@@ -73,6 +73,7 @@
 1. Clone this repository - Clonar este repositório
 2. Install dependencies - Instale as dependênciass
 3. Create environment variable - Criar variavel de ambiente
+4. Download and configure chromedriver and geckodriver - Baixar e configurar chromedriver e geckodriver
   ---
 ### 1. Clone this repository
 ```
@@ -149,8 +150,23 @@ export PAGE_URL_DEBITO_TRABALHISTA="http://www.tst.jus.br/certidao1"
 export PAGE_URL_TJ="https://esaj.tjsp.jus.br/cpopg/search.do"
 
 export PAGE_URL_SSP="https://www.ssp.sp.gov.br/servicos/atestado.aspx"
+
+export VERSION=89
 ```
 
+### 4. Download and configure chromedriver and geckodriver
+```
+Download chromedriver geckodriver as per installed version of both browsers - 
+Fazer o download do geckodriver chromedriver conforme a verção instalada de ambos os navegadores 
+https://chromedriver.chromium.org/downloads
+https://github.com/mozilla/geckodriver/releases
+```
+
+```
+Extract and copy the files to the /usr/local/bin/ folder -
+Extrair e copiar os arquivos para a pasta /usr/local/bin/
+```
+---
 
 ## 🎮Getting Started
 
