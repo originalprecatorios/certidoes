@@ -62,8 +62,8 @@ class Estadual:
         try:
             WebDriverWait(self._driver, 3).until(EC.presence_of_element_located((By.ID, "MainContent_cpfradio"))).click()
             WebDriverWait(self._driver, 3).until(EC.presence_of_element_located((By.ID, "MainContent_txtDocumento"))).send_keys(self._data['cpf'])
-
-            response = self._captcha.recaptcha('6LdoPeUUAAAAAIC5yvhe7oc9h4_qf8_Vmq0xd9GU',self._link)
+            site_key = self._driver.find_element(By.TAG_NAME,'iframe').get_attribute('src').split('=')[2].split('&')[0]
+            response = self._captcha.recaptcha(site_key,self._link)
             self._driver.execute_script("document.getElementById('g-recaptcha-response').innerHTML = '"+response+"';")
             WebDriverWait(self._driver, 3).until(EC.presence_of_element_located((By.ID, "MainContent_btnPesquisar"))).click()
 
