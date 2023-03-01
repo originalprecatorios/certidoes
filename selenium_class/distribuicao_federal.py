@@ -159,7 +159,7 @@ class Distribuicao_federal:
             total_width = self._driver.execute_script("return document.body.offsetWidth")
             total_height = self._driver.execute_script("return document.body.scrollHeight")
             self._driver.set_window_size(total_width, total_height)
-            self._driver.execute_script("document.body.style.zoom='65%'")
+            self._driver.execute_script("document.body.style.zoom='80%'")
             self._driver.save_screenshot(os.path.join(self._save,self._definicao))
             image_1 = Image.open(os.path.join(self._save,self._definicao))
             im_1 = image_1.convert('RGB')
