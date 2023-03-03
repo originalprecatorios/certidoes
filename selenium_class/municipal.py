@@ -8,7 +8,7 @@ from selenium.webdriver.support.ui import Select
 from datetime import datetime
 from pathlib import Path
 import time, os, shutil
-import undetected_chromedriver.v2 as uc
+#import undetected_chromedriver.v2 as uc
 from pyshadow.main import Shadow
 
 
