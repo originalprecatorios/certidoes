@@ -108,28 +108,23 @@ class Federal:
             WebDriverWait(self._driver, 3).until(EC.presence_of_element_located((By.ID, "validar"))).click()
             time.sleep(5)
             #self._driver.execute_script("window.stop();")
+            
+            WebDriverWait(self._driver, 10).until(EC.presence_of_element_located((By.ID, "FrmSelecao")))
+            self._driver.find_element(By.ID,"FrmSelecao").find_elements(By.TAG_NAME,"a")[1].click()
+            time.sleep(10)
             try:
                 WebDriverWait(self._driver, 10).until(EC.presence_of_element_located((By.ID, "main")))
-                if self._driver.find_element(By.ID,'main').text.find('A certidão foi emitida com sucesso') >= 0:
-                    self.get_download()
-                    self._driver.close()
             except:
-                WebDriverWait(self._driver, 10).until(EC.presence_of_element_located((By.ID, "FrmSelecao")))
-                self._driver.find_element(By.ID,"FrmSelecao").find_elements(By.TAG_NAME,"a")[1].click()
-                time.sleep(10)
-                try:
-                    WebDriverWait(self._driver, 10).until(EC.presence_of_element_located((By.ID, "main")))
-                except:
-                    self._driver.refresh()
-                    pass
-                WebDriverWait(self._driver, 10).until(EC.presence_of_element_located((By.ID, "main")))
-                try:
-                    self.get_download()
-                except:
-                    self._driver.refresh()
-                    self.get_download()     
-                
-                self._driver.close()
+                self._driver.refresh()
+                pass
+            WebDriverWait(self._driver, 10).until(EC.presence_of_element_located((By.ID, "main")))
+            try:
+                self.get_download()
+            except:
+                self._driver.refresh()
+                self.get_download()     
+            
+            self._driver.close()
             
         except Exception as e:
             self._driver.close()
