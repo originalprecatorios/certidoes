@@ -101,30 +101,35 @@ class Federal:
             time.sleep(3)
             WebDriverWait(self._driver, 3).until(EC.presence_of_element_located((By.ID, "NI"))).send_keys(self._cnpj)
             time.sleep(2)
-            button_element = self._driver.find_element(By.ID, "validar")
-            action = ActionChains(self._driver)
-            action.move_to_element(button_element).perform()
-            action.click(button_element).perform()
-            #WebDriverWait(self._driver, 3).until(EC.presence_of_element_located((By.ID, "validar"))).click()
-            time.sleep(2)
+            #button_element = self._driver.find_element(By.ID, "validar")
+            #action = ActionChains(self._driver)
+            #action.move_to_element(button_element).perform()
+            #action.click(button_element).perform()
+            WebDriverWait(self._driver, 3).until(EC.presence_of_element_located((By.ID, "validar"))).click()
+            time.sleep(5)
             #self._driver.execute_script("window.stop();")
-            
-            WebDriverWait(self._driver, 3).until(EC.presence_of_element_located((By.ID, "FrmSelecao")))
-            self._driver.find_element(By.ID,"FrmSelecao").find_elements(By.TAG_NAME,"a")[1].click()
-            time.sleep(10)
             try:
                 WebDriverWait(self._driver, 10).until(EC.presence_of_element_located((By.ID, "main")))
+                if self._driver.find_element(By.ID,'main').text.find('A certidão foi emitida com sucesso') >= 0:
+                    self.get_download()
+                    self._driver.close()
             except:
-                self._driver.refresh()
-                pass
-            WebDriverWait(self._driver, 10).until(EC.presence_of_element_located((By.ID, "main")))
-            try:
-                self.get_download()
-            except:
-                self._driver.refresh()
-                self.get_download()     
-            
-            self._driver.close()
+                WebDriverWait(self._driver, 10).until(EC.presence_of_element_located((By.ID, "FrmSelecao")))
+                self._driver.find_element(By.ID,"FrmSelecao").find_elements(By.TAG_NAME,"a")[1].click()
+                time.sleep(10)
+                try:
+                    WebDriverWait(self._driver, 10).until(EC.presence_of_element_located((By.ID, "main")))
+                except:
+                    self._driver.refresh()
+                    pass
+                WebDriverWait(self._driver, 10).until(EC.presence_of_element_located((By.ID, "main")))
+                try:
+                    self.get_download()
+                except:
+                    self._driver.refresh()
+                    self.get_download()     
+                
+                self._driver.close()
             
         except Exception as e:
             self._driver.close()
