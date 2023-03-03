@@ -10,6 +10,7 @@ import time, os, shutil
 from recaptcha.captcha import Solve_Captcha
 import undetected_chromedriver as uc
 from decouple import config
+from selenium.webdriver.common.action_chains import ActionChains
 
 
 class Federal:
@@ -60,6 +61,7 @@ class Federal:
                                                                             'Chrome/85.0.4183.102 Safari/537.36'})
         self._driver.get(self._link)'''
         
+        
         options = uc.ChromeOptions()
         options.add_argument('--no-first-run')
         options.add_argument("--window-size=2560,1440")
@@ -96,9 +98,14 @@ class Federal:
     def login(self):
         print('login')
         try:
-        
+            time.sleep(3)
             WebDriverWait(self._driver, 3).until(EC.presence_of_element_located((By.ID, "NI"))).send_keys(self._cnpj)
-            WebDriverWait(self._driver, 3).until(EC.presence_of_element_located((By.ID, "validar"))).click()
+            time.sleep(2)
+            button_element = self._driver.find_element(By.ID, "validar")
+            action = ActionChains(self._driver)
+            action.move_to_element(button_element).perform()
+            action.click(button_element).perform()
+            #WebDriverWait(self._driver, 3).until(EC.presence_of_element_located((By.ID, "validar"))).click()
             time.sleep(2)
             #self._driver.execute_script("window.stop();")
             
@@ -183,7 +190,7 @@ class Federal:
             time.sleep(2)
             self._download()
             archive_name = os.listdir(self._save)[0]
-            shutil.move(f"{self._save}/{archive_name}", f"{self._pasta}_CND_FEDERAL.pdf")
+            shutil.move(f"{self._save}/{archive_name}", f"{self._pasta}4- CND FEDERAL.pdf")
             print('Download concluido para o cpf {}'.format(self._cnpj))
         else:
             WebDriverWait(self._driver, 10).until(EC.presence_of_element_located((By.ID, "rfb-main-container")))
