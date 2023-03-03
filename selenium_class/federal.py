@@ -98,7 +98,7 @@ class Federal:
     def login(self):
         print('login')
         try:
-            time.sleep(3)
+            time.sleep(5)
             WebDriverWait(self._driver, 3).until(EC.presence_of_element_located((By.ID, "NI"))).send_keys(self._cnpj)
             time.sleep(2)
             #button_element = self._driver.find_element(By.ID, "validar")
