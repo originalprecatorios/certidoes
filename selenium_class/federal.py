@@ -1,16 +1,12 @@
-from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.firefox.options import Options
 from selenium.webdriver.common.by import By
 from datetime import datetime
 from pathlib import Path
 import time, os, shutil
-from recaptcha.captcha import Solve_Captcha
 import undetected_chromedriver as uc
 from decouple import config
-from selenium.webdriver.common.action_chains import ActionChains
 
 
 class Federal:
@@ -109,22 +105,29 @@ class Federal:
             time.sleep(5)
             #self._driver.execute_script("window.stop();")
             
-            WebDriverWait(self._driver, 10).until(EC.presence_of_element_located((By.ID, "FrmSelecao")))
-            self._driver.find_element(By.ID,"FrmSelecao").find_elements(By.TAG_NAME,"a")[1].click()
-            time.sleep(10)
-            try:
+            texto = WebDriverWait(self._driver, 5).until(EC.presence_of_element_located((By.CLASS_NAME, "parametros"))).text
+            if texto.find('são insuficientes para a emissão de certidão por meio da Internet') >= 0 :
+                return False,texto
+            elif texto.find('O número do CPF deve ser informado incluindo-se os 11 dígitos numéricos.') >= 0 :
+                return False,texto
+            else:
+                WebDriverWait(self._driver, 10).until(EC.presence_of_element_located((By.ID, "FrmSelecao")))
+                self._driver.find_element(By.ID,"FrmSelecao").find_elements(By.TAG_NAME,"a")[1].click()
+                time.sleep(10)
+                try:
+                    WebDriverWait(self._driver, 10).until(EC.presence_of_element_located((By.ID, "main")))
+                except:
+                    self._driver.refresh()
+                    pass
                 WebDriverWait(self._driver, 10).until(EC.presence_of_element_located((By.ID, "main")))
-            except:
-                self._driver.refresh()
-                pass
-            WebDriverWait(self._driver, 10).until(EC.presence_of_element_located((By.ID, "main")))
-            try:
-                self.get_download()
-            except:
-                self._driver.refresh()
-                self.get_download()     
-            
-            self._driver.close()
+                try:
+                    self.get_download()
+                except:
+                    self._driver.refresh()
+                    self.get_download()     
+                
+                self._driver.close()
+                return True,''
             
         except Exception as e:
             self._driver.close()

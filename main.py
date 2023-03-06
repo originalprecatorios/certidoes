@@ -28,6 +28,7 @@ from rabbit import rabbitmq
 from bson.objectid import ObjectId
 from crypto import db
 import requests
+from datetime import datetime
 
 
         
@@ -37,7 +38,7 @@ def certidao_initial(id_mongo):
     #mongo = Mongo(config('MONGO_USER'), config('MONGO_PASS'), config('MONGO_HOST'), config('MONGO_PORT'), config('MONGO_DB'), config('AMBIENTE'))
     mongo = Mongo(os.environ['MONGO_USER_PROD'], os.environ['MONGO_PASS_PROD'], os.environ['MONGO_HOST_PROD'], os.environ['MONGO_PORT_PROD'], os.environ['MONGO_DB_PROD'], os.environ['MONGO_AUTH_DB_PROD'])
     #mongo = Mongo(config('MONGO_USER_PROD'), config('MONGO_PASS_PROD'), config('MONGO_HOST_PROD'), config('MONGO_PORT_PROD'), config('MONGO_DB_PROD'), config('MONGO_AUTH_DB_PROD'))
-    erro = Mongo(os.environ['MONGO_USER_PROD'], os.environ['MONGO_PASS_PROD'], os.environ['MONGO_HOST_PROD'], os.environ['MONGO_PORT_PROD'], os.environ['MONGO_DB_PROD'], config('AMBIENTE_PROD'))
+    erro = Mongo(os.environ['MONGO_USER_PROD'], os.environ['MONGO_PASS_PROD'], os.environ['MONGO_HOST_PROD'], os.environ['MONGO_PORT_PROD'], os.environ['MONGO_DB_PROD'], os.environ['MONGO_AUTH_DB_PROD'])
     mongo._getcoll('certidao')
     id = id_mongo['_id']
     arr = {
@@ -51,6 +52,8 @@ def certidao_initial(id_mongo):
     list_process = []
     for user in users:
         usr.append(user)
+    
+    cpf_binario = usr[0]['cpf']
     
     if type(usr[0]['cpf']) is bytes:
         usr[0]['cpf'] = db.decrypt(usr[0]['cpf'])
@@ -71,16 +74,40 @@ def certidao_initial(id_mongo):
                         if cont <=2:
                             try:
                                 e = Estadual(u,os.environ['PAGE_URL'],mongo,erro,cap)
-                                logged = e.login()
+                                logged,texto = e.login()
                                 if logged is True:
                                     e.download_document()
                                     del e
                                     modifica['$set']['extracted']['_CND_ESTADUAL'] = 1
                                     break
                                 else:
+                                    if texto.find('Não foi possível emitir a Certidão Negativa.') >=0:
+                                        modifica['$set']['extracted']['_CND_ESTADUAL'] = 2
+                                        print('Não foi possível emitir a Certidão Negativa.')
+                                        break
+                                    if cont == 2:
+                                        arr = {
+                                            'created_at': str(datetime.today()).split(' ')[0].replace('-',''),
+                                            'error': texto,
+                                            'cpf' : cpf_binario,
+                                            'robot' : '_CND_ESTADUAL',
+                                            'id_certidao': ObjectId(id),
+                                        }
+                                        erro.getcoll('error_cert')
+                                        erro.addData(arr)
                                     cont += 1
                                 
-                            except:
+                            except Exception as e:
+                                if cont == 2:
+                                    arr = {
+                                        'created_at': str(datetime.today()).split(' ')[0].replace('-',''),
+                                        'error': e.msg,
+                                        'cpf' : cpf_binario,
+                                        'robot' : '_CND_ESTADUAL',
+                                        'id_certidao': ObjectId(id),
+                                    }
+                                    erro.getcoll('error_cert')
+                                    erro.addData(arr)
                                 cont += 1
                         else:
                             modifica['$set']['extracted']['_CND_ESTADUAL'] = 2
@@ -97,7 +124,17 @@ def certidao_initial(id_mongo):
                                 del m
                                 modifica['$set']['extracted']['_CND_MUNICIPAL'] = 1
                                 break
-                            except:
+                            except Exception as e:
+                                if cont == 2:
+                                    arr = {
+                                        'created_at': str(datetime.today()).split(' ')[0].replace('-',''),
+                                        'error': e.msg,
+                                        'cpf' : cpf_binario,
+                                        'robot' : '_CND_MUNICIPAL',
+                                        'id_certidao': ObjectId(id),
+                                    }
+                                    erro.getcoll('error_cert')
+                                    erro.addData(arr)
                                 cont += 1
                         else:
                             modifica['$set']['extracted']['_CND_MUNICIPAL'] = 2
@@ -112,12 +149,38 @@ def certidao_initial(id_mongo):
                             try:
                                 # USO COM O CHROME
                                 f = Federal(u,os.environ['PAGE_URL_FEDERAL'],mongo,erro,u['cpf'])
-                                f.login()
-                                del f
-                                modifica['$set']['extracted']['_CND_FEDERAL'] = 1
-                                break
-                            except:
+                                resposta,texto = f.login()
+                                if resposta is True:
+                                    del f
+                                    modifica['$set']['extracted']['_CND_FEDERAL'] = 1
+                                    break
+                                else:
+                                    modifica['$set']['extracted']['_CND_FEDERAL'] = 2
+                                    print('Certidão de Débitos Relativos a Créditos Tributários Federais e à Dívida Ativa da União\nResultado da Consulta\n\nAs informações disponíveis na Secretaria da Receita Federal do Brasil - RFB sobre o contribuinte 138.525.098-40 são insuficientes para a emissão de certidão por meio da Internet.\nPara consultar sua situação fiscal, acesse Centro Virtual de Atendimento e-CAC.\nPara maiores esclarecimentos, consulte a página Orientações para emissão de Certidão nas unidades da RFB.')
+                                    arr = {
+                                        'created_at': str(datetime.today()).split(' ')[0].replace('-',''),
+                                        'error': texto,
+                                        'cpf' : cpf_binario,
+                                        'robot' : '_CND_FEDERAL',
+                                        'id_certidao': ObjectId(id),
+                                    }
+                                    erro.getcoll('error_cert')
+                                    erro.addData(arr)
+                                    break
+
+                            except Exception as e:
+                                if cont == 2:
+                                    arr = {
+                                        'created_at': str(datetime.today()).split(' ')[0].replace('-',''),
+                                        'error': e.msg,
+                                        'cpf' : cpf_binario,
+                                        'robot' : '_CND_FEDERAL',
+                                        'id_certidao': ObjectId(id),
+                                    }
+                                    erro.getcoll('error_cert')
+                                    erro.addData(arr)
                                 cont += 1
+                                
                         else:
                             modifica['$set']['extracted']['_CND_FEDERAL'] = 2
                             print('Erro ao acessar o site, para gerar a certidão _CND_FEDERAL')
@@ -134,7 +197,17 @@ def certidao_initial(id_mongo):
                                 del df1
                                 modifica['$set']['extracted']['_TRF3_JUS_SJSP'] = 1
                                 break
-                            except:
+                            except Exception as e:
+                                if cont == 2:
+                                    arr = {
+                                        'created_at': str(datetime.today()).split(' ')[0].replace('-',''),
+                                        'error': e.msg,
+                                        'cpf' : cpf_binario,
+                                        'robot' : '_TRF3_JUS_SJSP',
+                                        'id_certidao': ObjectId(id),
+                                    }
+                                    erro.getcoll('error_cert')
+                                    erro.addData(arr)
                                 cont += 1
                         else:
                             modifica['$set']['extracted']['_TRF3_JUS_SJSP'] = 2
@@ -152,7 +225,17 @@ def certidao_initial(id_mongo):
                                 del df2
                                 modifica['$set']['extracted']['_TRF3_JUS_TRF'] = 1
                                 break
-                            except:
+                            except Exception as e:
+                                if cont == 2:
+                                    arr = {
+                                        'created_at': str(datetime.today()).split(' ')[0].replace('-',''),
+                                        'error': e.msg,
+                                        'cpf' : cpf_binario,
+                                        'robot' : '_TRF3_JUS_TRF',
+                                        'id_certidao': ObjectId(id),
+                                    }
+                                    erro.getcoll('error_cert')
+                                    erro.addData(arr)
                                 cont += 1
                         else:
                             modifica['$set']['extracted']['_TRF3_JUS_TRF'] = 2
@@ -170,7 +253,17 @@ def certidao_initial(id_mongo):
                                 del df1
                                 modifica['$set']['extracted']['_DISTRIBUICAO_FEDERAL_1_INSTANCIA'] = 1
                                 break
-                            except:
+                            except Exception as e:
+                                if cont == 2:
+                                    arr = {
+                                        'created_at': str(datetime.today()).split(' ')[0].replace('-',''),
+                                        'error': e.msg,
+                                        'cpf' : cpf_binario,
+                                        'robot' : '_DISTRIBUICAO_FEDERAL_1_INSTANCIA',
+                                        'id_certidao': ObjectId(id),
+                                    }
+                                    erro.getcoll('error_cert')
+                                    erro.addData(arr)
                                 cont += 1
                         else:
                             modifica['$set']['extracted']['_DISTRIBUICAO_FEDERAL_1_INSTANCIA'] = 2
@@ -188,7 +281,17 @@ def certidao_initial(id_mongo):
                                 del df2
                                 modifica['$set']['extracted']['_DISTRIBUICAO_FEDERAL_2_INSTANCIA'] = 1
                                 break
-                            except:
+                            except Exception as e:
+                                if cont == 2:
+                                    arr = {
+                                        'created_at': str(datetime.today()).split(' ')[0].replace('-',''),
+                                        'error': e.msg,
+                                        'cpf' : cpf_binario,
+                                        'robot' : '_DISTRIBUICAO_FEDERAL_2_INSTANCIA',
+                                        'id_certidao': ObjectId(id),
+                                    }
+                                    erro.getcoll('error_cert')
+                                    erro.addData(arr)
                                 cont += 1
                         else:
                             modifica['$set']['extracted']['_DISTRIBUICAO_FEDERAL_2_INSTANCIA'] = 2
@@ -206,7 +309,17 @@ def certidao_initial(id_mongo):
                                 del t
                                 modifica['$set']['extracted']['_TRTSP'] = 1
                                 break
-                            except:
+                            except Exception as e:
+                                if cont == 2:
+                                    arr = {
+                                        'created_at': str(datetime.today()).split(' ')[0].replace('-',''),
+                                        'error': e.msg,
+                                        'cpf' : cpf_binario,
+                                        'robot' : '_TRTSP',
+                                        'id_certidao': ObjectId(id),
+                                    }
+                                    erro.getcoll('error_cert')
+                                    erro.addData(arr)
                                 cont += 1
                         else:
                             modifica['$set']['extracted']['_TRTSP'] = 2
@@ -242,7 +355,17 @@ def certidao_initial(id_mongo):
                                 del dt
                                 modifica['$set']['extracted']['_DEBITO_TRABALHISTA'] = 1
                                 break
-                            except:
+                            except Exception as e:
+                                if cont == 2:
+                                    arr = {
+                                        'created_at': str(datetime.today()).split(' ')[0].replace('-',''),
+                                        'error': e.msg,
+                                        'cpf' : cpf_binario,
+                                        'robot' : '_DEBITO_TRABALHISTA',
+                                        'id_certidao': ObjectId(id),
+                                    }
+                                    erro.getcoll('error_cert')
+                                    erro.addData(arr)
                                 cont += 1
                         else:
                             modifica['$set']['extracted']['_DEBITO_TRABALHISTA'] = 2
@@ -260,7 +383,17 @@ def certidao_initial(id_mongo):
                                 del p
                                 modifica['$set']['extracted']['_PROTESTO'] = 1
                                 break
-                            except:
+                            except Exception as e:
+                                if cont == 2:
+                                    arr = {
+                                        'created_at': str(datetime.today()).split(' ')[0].replace('-',''),
+                                        'error': e.msg,
+                                        'cpf' : cpf_binario,
+                                        'robot' : '_PROTESTO',
+                                        'id_certidao': ObjectId(id),
+                                    }
+                                    erro.getcoll('error_cert')
+                                    erro.addData(arr)
                                 cont += 1
                         else:
                             modifica['$set']['extracted']['_PROTESTO'] = 2
@@ -277,7 +410,17 @@ def certidao_initial(id_mongo):
                                 del p
                                 modifica['$set']['extracted']['_PROTESTO'] = 1
                                 break
-                            except:
+                            except Exception as e:
+                                if cont == 2:
+                                    arr = {
+                                        'created_at': str(datetime.today()).split(' ')[0].replace('-',''),
+                                        'error': e.msg,
+                                        'cpf' : cpf_binario,
+                                        'robot' : '_PROTESTO',
+                                        'id_certidao': ObjectId(id),
+                                    }
+                                    erro.getcoll('error_cert')
+                                    erro.addData(arr)
                                 cont += 1
                         else:
                             modifica['$set']['extracted']['_PROTESTO'] = 2
@@ -294,7 +437,17 @@ def certidao_initial(id_mongo):
                                 del t15
                                 modifica['$set']['extracted']['_TRT15'] = 1
                                 break
-                            except:
+                            except Exception as e:
+                                if cont == 2:
+                                    arr = {
+                                        'created_at': str(datetime.today()).split(' ')[0].replace('-',''),
+                                        'error': e.msg,
+                                        'cpf' : cpf_binario,
+                                        'robot' : '_TRT15',
+                                        'id_certidao': ObjectId(id),
+                                    }
+                                    erro.getcoll('error_cert')
+                                    erro.addData(arr)
                                 cont += 1
                         else:
                             modifica['$set']['extracted']['_TRT15'] = 2
@@ -312,7 +465,17 @@ def certidao_initial(id_mongo):
                                 del da
                                 modifica['$set']['extracted']['_CND_CONTRIBUINTE'] = 1
                                 break
-                            except:
+                            except Exception as e:
+                                if cont == 2:
+                                    arr = {
+                                        'created_at': str(datetime.today()).split(' ')[0].replace('-',''),
+                                        'error': e.msg,
+                                        'cpf' : cpf_binario,
+                                        'robot' : '_CND_CONTRIBUINTE',
+                                        'id_certidao': ObjectId(id),
+                                    }
+                                    erro.getcoll('error_cert')
+                                    erro.addData(arr)
                                 cont += 1
                         else:
                             modifica['$set']['extracted']['_CND_CONTRIBUINTE'] = 2
@@ -347,7 +510,17 @@ def certidao_initial(id_mongo):
                                 del trf
                                 modifica['$set']['extracted']['_PJE_TRF3'] = 1
                                 break
-                            except:
+                            except Exception as e:
+                                if cont == 2:
+                                    arr = {
+                                        'created_at': str(datetime.today()).split(' ')[0].replace('-',''),
+                                        'error': e.msg,
+                                        'cpf' : cpf_binario,
+                                        'robot' : '_PJE_TRF3',
+                                        'id_certidao': ObjectId(id),
+                                    }
+                                    erro.getcoll('error_cert')
+                                    erro.addData(arr)
                                 cont += 1
                         else:
                             modifica['$set']['extracted']['_PJE_TRF3'] = 2
@@ -384,7 +557,17 @@ def certidao_initial(id_mongo):
                                 del e
                                 modifica['$set']['extracted']['_ESAJ_CERTIDAO_6'] = 1
                                 break
-                            except:
+                            except Exception as e:
+                                if cont == 2:
+                                    arr = {
+                                        'created_at': str(datetime.today()).split(' ')[0].replace('-',''),
+                                        'error': e.msg,
+                                        'cpf' : cpf_binario,
+                                        'robot' : '_ESAJ_CERTIDAO_6',
+                                        'id_certidao': ObjectId(id),
+                                    }
+                                    erro.getcoll('error_cert')
+                                    erro.addData(arr)
                                 cont += 1
                         else:
                             modifica['$set']['extracted']['_ESAJ_CERTIDAO_6'] = 2
@@ -404,7 +587,17 @@ def certidao_initial(id_mongo):
                                 del e
                                 modifica['$set']['extracted']['_ESAJ_CERTIDAO_52'] = 1
                                 break
-                            except:
+                            except Exception as e:
+                                if cont == 2:
+                                    arr = {
+                                        'created_at': str(datetime.today()).split(' ')[0].replace('-',''),
+                                        'error': e.msg,
+                                        'cpf' : cpf_binario,
+                                        'robot' : '_ESAJ_CERTIDAO_52',
+                                        'id_certidao': ObjectId(id),
+                                    }
+                                    erro.getcoll('error_cert')
+                                    erro.addData(arr)
                                 cont += 1
                         else:
                             modifica['$set']['extracted']['_ESAJ_CERTIDAO_52'] = 2
@@ -423,7 +616,17 @@ def certidao_initial(id_mongo):
                                 del e
                                 modifica['$set']['extracted']['_ESAJ_BUSCA_CPF'] = 1
                                 break
-                            except:
+                            except Exception as e:
+                                if cont == 2:
+                                    arr = {
+                                        'created_at': str(datetime.today()).split(' ')[0].replace('-',''),
+                                        'error': e.msg,
+                                        'cpf' : cpf_binario,
+                                        'robot' : '_ESAJ_BUSCA_CPF',
+                                        'id_certidao': ObjectId(id),
+                                    }
+                                    erro.getcoll('error_cert')
+                                    erro.addData(arr)
                                 cont += 1
                         else:
                             modifica['$set']['extracted']['_ESAJ_BUSCA_CPF'] = 2
@@ -441,7 +644,17 @@ def certidao_initial(id_mongo):
                                 del e
                                 modifica['$set']['extracted']['_ESAJ_BUSCA_NOME'] = 1
                                 break
-                            except:
+                            except Exception as e:
+                                if cont == 2:
+                                    arr = {
+                                        'created_at': str(datetime.today()).split(' ')[0].replace('-',''),
+                                        'error': e.msg,
+                                        'cpf' : cpf_binario,
+                                        'robot' : '_ESAJ_BUSCA_NOME',
+                                        'id_certidao': ObjectId(id),
+                                    }
+                                    erro.getcoll('error_cert')
+                                    erro.addData(arr)
                                 cont += 1
                         else:
                             modifica['$set']['extracted']['_ESAJ_BUSCA_NOME'] = 2
@@ -458,7 +671,17 @@ def certidao_initial(id_mongo):
                                 del c
                                 modifica['$set']['extracted']['_PODER_JUDICIARIO'] = 1
                                 break
-                            except:
+                            except Exception as e:
+                                if cont == 2:
+                                    arr = {
+                                        'created_at': str(datetime.today()).split(' ')[0].replace('-',''),
+                                        'error': e.msg,
+                                        'cpf' : cpf_binario,
+                                        'robot' : '_PODER_JUDICIARIO',
+                                        'id_certidao': ObjectId(id),
+                                    }
+                                    erro.getcoll('error_cert')
+                                    erro.addData(arr)
                                 cont += 1
                         else:
                             modifica['$set']['extracted']['_PODER_JUDICIARIO'] = 2
@@ -475,7 +698,17 @@ def certidao_initial(id_mongo):
                                 del ac
                                 modifica['$set']['extracted']['_ANTECEDENTES_CRIMINAIS'] = 1
                                 break
-                            except:
+                            except Exception as e:
+                                if cont == 2:
+                                    arr = {
+                                        'created_at': str(datetime.today()).split(' ')[0].replace('-',''),
+                                        'error': e.msg,
+                                        'cpf' : cpf_binario,
+                                        'robot' : '_ANTECEDENTES_CRIMINAIS',
+                                        'id_certidao': ObjectId(id),
+                                    }
+                                    erro.getcoll('error_cert')
+                                    erro.addData(arr)
                                 cont += 1
                         else:
                             modifica['$set']['extracted']['_ANTECEDENTES_CRIMINAIS'] = 2
@@ -526,7 +759,7 @@ def certidao_initial(id_mongo):
     response = requests.post('https://f8f37533-9c29-482e-93e9-284804b874b7.pushnotifications.pusher.com/publish_api/v1/instances/f8f37533-9c29-482e-93e9-284804b874b7/publishes', headers=headers, json=json_data)
     print('Programa finalizado...')
 
-#dados = {'_id':'63fcde8c5f3b455cd617581a'}
+#dados = {'_id':'63ff68d8128182d5699998d0'}
 #certidao_initial(dados)
 # Executa as filas do RabbitMQ
 while True:
