@@ -7,7 +7,6 @@ from selenium.webdriver.common.by import By
 from datetime import datetime
 from pathlib import Path
 import os, time
-#import undetected_chromedriver.v2 as uc
 import shutil
 
 

@@ -7,7 +7,6 @@ from selenium.webdriver.common.by import By
 from datetime import datetime
 from pathlib import Path
 import os, time
-#import undetected_chromedriver.v2 as uc
 import shutil
 
 
@@ -70,9 +69,9 @@ class Estadual:
             try:
                 WebDriverWait(self._driver, 3).until(EC.presence_of_element_located((By.ID, "MainContent_PnlMensagemUsuario")))
                 self._driver.close()
-                return False
+                return False,WebDriverWait(self._driver, 3).until(EC.presence_of_element_located((By.ID, "MainContent_PnlMensagemUsuario"))).text
             except:
-                return True
+                return True,''
 
 
         except Exception as e:

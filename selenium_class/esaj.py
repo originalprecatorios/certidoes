@@ -6,9 +6,8 @@ from selenium.webdriver.firefox.options import Options
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import Select
 from datetime import datetime
-from pathlib import Path
 from decouple import config
-import time, os
+import time
 
 class Esaj:
 

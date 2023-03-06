@@ -74,6 +74,7 @@
 2. Install dependencies - Instale as dependênciass
 3. Create environment variable - Criar variavel de ambiente
 4. Download and configure chromedriver and geckodriver - Baixar e configurar chromedriver e geckodriver
+5. Create .env file with the necessary environment variables - Criar arquivo .env com as variaveis de ambiente necessárias
   ---
 ### 1. Clone this repository
 ```
@@ -165,6 +166,93 @@ https://github.com/mozilla/geckodriver/releases
 ```
 Extract and copy the files to the /usr/local/bin/ folder -
 Extrair e copiar os arquivos para a pasta /usr/local/bin/
+```
+---
+
+### 5. Create .env file with the necessary environment variables
+```
+In the project folder create an .env file and add the following data: - 
+Na pasta do projeto criar um arquivo .env e adicionar os seguintes dados: 
+
+#2CAPTCHA
+API_KEY="key"
+
+#CAPTCHA
+CAPTCHA="key"
+
+DATA_SITE_KEY="6LdoPeUUAAAAAIC5yvhe7oc9h4_qf8_Vmq0xd9GU"
+DATA_SITE_KEY_CONTRIBUINTE="6Le9EjMUAAAAAPKi-JVCzXgY_ePjRV9FFVLmWKB_"
+DATA_SITE_KEY_HCAPTCHA_PJE="7e009f34-bff7-4068-a486-0b6fcf730b25"
+DATA_SITE_KEY_ESAJ="6LcX22AUAAAAABvrd9PDOqsE2Rlj0h3AijenXoft"
+
+PAGE_URL="https://www10.fazenda.sp.gov.br/CertidaoNegativaDeb/Pages/EmissaoCertidaoNegativa.aspx"
+PAGE_URL_MUN="https://duc.prefeitura.sp.gov.br/certidoes/forms_anonimo/frmConsultaEmissaoCertificado.aspx"
+PAGE_URL_CONTRIBUINTE="https://www.dividaativa.pge.sp.gov.br/sc/pages/crda/emitirCrda.jsf?param=150304"
+PAGE_URL_FEDERAL="https://solucoes.receita.fazenda.gov.br/Servicos/certidaointernet/PF/Emitir"
+PAGE_URL_CRIMINAL_1="https://esaj.tjsp.jus.br/sco/abrirCadastro.do"
+PAGE_URL_TRTSP="https://aplicacoes10.trt2.jus.br/certidao_trabalhista_eletronica/public/index.php/index/solicitacao"
+PAGE_URL_TST="https://cndt-certidao.tst.jus.br/inicio.faces"
+PAGE_URL_TRT15="https://trt15.jus.br/servicos/certidoes/certidao-eletronica-de-acoes-trabalhistas-ceat"
+#PAGE_URL_TRF3_JUS="http://web.trf3.jus.br/certidao/Certidao/Solicitar"
+PAGE_URL_TRF3_JUS="https://web.trf3.jus.br/certidao-regional/CertidaoCivelEleitoralCriminal/SolicitarDadosCertidao"
+PAGE_URL_ESAJ_B_NOME_CPF="https://esaj.tjsp.jus.br/cpopg/open.do"
+PAGE_URL_PROTESTO="https://protestosp.com.br/consulta-de-protesto"
+PAGE_URL_PROTESTO2="https://site.cenprotnacional.org.br/"
+PAGE_URL_PJE_TRF3="https://pje1g.trf3.jus.br/pje/ConsultaPublica/listView.seam"
+PAGE_URL_DEBITO_TRABALHISTA="http://www.tst.jus.br/certidao1"
+PAGE_URL_TJ="https://esaj.tjsp.jus.br/cpopg/search.do"
+PAGE_URL_SSP="https://www.ssp.sp.gov.br/servicos/atestado.aspx"
+
+
+HEADLESS=False
+
+#SMTP
+SMTP_PORT=587
+SMTP_SERVE="smtp.office365.com"
+SMTP_USER="user"
+SMTP_PASS="password"
+
+#LOGIN ESAJ
+ESAJ_USER="user"
+ESAJ_PASS="login"
+ESAJ_PAGE_LOGIN="https://esaj.tjsp.jus.br/sajcas/login"
+
+#CAMINHO DOS ARQUIVOS
+PATH_FILES="/files/files_csv/files_certidoes/"
+
+#MONGO_DB
+#MONGO_PORT_PROD=27017
+#MONGO_USER_PROD="user"
+#MONGO_PASS_PROD="password"
+#MONGO_AUTH_DB_PROD="original"
+#MONGO_DB_PROD='certidoes'
+
+MONGO_HOST_PROD="host"
+MONGO_PORT_PROD=27017
+MONGO_USER_PROD="user"
+MONGO_PASS_PROD="password"
+MONGO_AUTH_DB_PROD="admin"
+MONGO_DB_PROD='monitora'
+
+#AMBIENTE
+AMBIENTE="DEV"
+AMBIENTE_PROD="original"
+
+#EMAILESAJ="evellyn.areco@bachegaadvogados.com.br"
+#EMAILESAJ="rafael.alves@originalprecatorios.com.br"
+EMAILESAJ="junior.ppp@gmail.com"
+TENTATIVAS=15
+
+
+RABBIT_HOST="host"
+RABBIT_PORT=5672
+RABBIT_USR="user"
+RABBIT_PWD="password"
+RABBIT_QUEUE="web_certidao"
+
+KEY='key' #Key captcha
+
+VERSION=89 #version of chromedriver
 ```
 ---
 

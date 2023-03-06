@@ -50,8 +50,7 @@ class Esaj_busca:
         self._driver = webdriver.Firefox(firefox_profile=fp)
         self._driver.get(self._link)
         time.sleep(2)
-        
-        
+              
     
     def login(self):
         try:    
