@@ -101,7 +101,7 @@ def certidao_initial(id_mongo):
                                 if cont == 2:
                                     arr = {
                                         'created_at': str(datetime.today()).split(' ')[0].replace('-',''),
-                                        'error': e.msg,
+                                        'error': str(e),
                                         'cpf' : cpf_binario,
                                         'robot' : '_CND_ESTADUAL',
                                         'id_certidao': ObjectId(id),
@@ -128,7 +128,7 @@ def certidao_initial(id_mongo):
                                 if cont == 2:
                                     arr = {
                                         'created_at': str(datetime.today()).split(' ')[0].replace('-',''),
-                                        'error': e.msg,
+                                        'error': str(e),
                                         'cpf' : cpf_binario,
                                         'robot' : '_CND_MUNICIPAL',
                                         'id_certidao': ObjectId(id),
@@ -172,7 +172,7 @@ def certidao_initial(id_mongo):
                                 if cont == 2:
                                     arr = {
                                         'created_at': str(datetime.today()).split(' ')[0].replace('-',''),
-                                        'error': e.msg,
+                                        'error': str(e),
                                         'cpf' : cpf_binario,
                                         'robot' : '_CND_FEDERAL',
                                         'id_certidao': ObjectId(id),
@@ -201,7 +201,7 @@ def certidao_initial(id_mongo):
                                 if cont == 2:
                                     arr = {
                                         'created_at': str(datetime.today()).split(' ')[0].replace('-',''),
-                                        'error': e.msg,
+                                        'error': str(e),
                                         'cpf' : cpf_binario,
                                         'robot' : '_TRF3_JUS_SJSP',
                                         'id_certidao': ObjectId(id),
@@ -229,7 +229,7 @@ def certidao_initial(id_mongo):
                                 if cont == 2:
                                     arr = {
                                         'created_at': str(datetime.today()).split(' ')[0].replace('-',''),
-                                        'error': e.msg,
+                                        'error': str(e),
                                         'cpf' : cpf_binario,
                                         'robot' : '_TRF3_JUS_TRF',
                                         'id_certidao': ObjectId(id),
@@ -257,7 +257,7 @@ def certidao_initial(id_mongo):
                                 if cont == 2:
                                     arr = {
                                         'created_at': str(datetime.today()).split(' ')[0].replace('-',''),
-                                        'error': e.msg,
+                                        'error': str(e),
                                         'cpf' : cpf_binario,
                                         'robot' : '_DISTRIBUICAO_FEDERAL_1_INSTANCIA',
                                         'id_certidao': ObjectId(id),
@@ -285,7 +285,7 @@ def certidao_initial(id_mongo):
                                 if cont == 2:
                                     arr = {
                                         'created_at': str(datetime.today()).split(' ')[0].replace('-',''),
-                                        'error': e.msg,
+                                        'error': str(e),
                                         'cpf' : cpf_binario,
                                         'robot' : '_DISTRIBUICAO_FEDERAL_2_INSTANCIA',
                                         'id_certidao': ObjectId(id),
@@ -313,7 +313,7 @@ def certidao_initial(id_mongo):
                                 if cont == 2:
                                     arr = {
                                         'created_at': str(datetime.today()).split(' ')[0].replace('-',''),
-                                        'error': e.msg,
+                                        'error': str(e),
                                         'cpf' : cpf_binario,
                                         'robot' : '_TRTSP',
                                         'id_certidao': ObjectId(id),
@@ -359,7 +359,7 @@ def certidao_initial(id_mongo):
                                 if cont == 2:
                                     arr = {
                                         'created_at': str(datetime.today()).split(' ')[0].replace('-',''),
-                                        'error': e.msg,
+                                        'error': str(e),
                                         'cpf' : cpf_binario,
                                         'robot' : '_DEBITO_TRABALHISTA',
                                         'id_certidao': ObjectId(id),
@@ -387,7 +387,7 @@ def certidao_initial(id_mongo):
                                 if cont == 2:
                                     arr = {
                                         'created_at': str(datetime.today()).split(' ')[0].replace('-',''),
-                                        'error': e.msg,
+                                        'error': str(e),
                                         'cpf' : cpf_binario,
                                         'robot' : '_PROTESTO',
                                         'id_certidao': ObjectId(id),
@@ -414,7 +414,7 @@ def certidao_initial(id_mongo):
                                 if cont == 2:
                                     arr = {
                                         'created_at': str(datetime.today()).split(' ')[0].replace('-',''),
-                                        'error': e.msg,
+                                        'error': str(e),
                                         'cpf' : cpf_binario,
                                         'robot' : '_PROTESTO',
                                         'id_certidao': ObjectId(id),
@@ -441,7 +441,7 @@ def certidao_initial(id_mongo):
                                 if cont == 2:
                                     arr = {
                                         'created_at': str(datetime.today()).split(' ')[0].replace('-',''),
-                                        'error': e.msg,
+                                        'error': str(e),
                                         'cpf' : cpf_binario,
                                         'robot' : '_TRT15',
                                         'id_certidao': ObjectId(id),
@@ -469,7 +469,7 @@ def certidao_initial(id_mongo):
                                 if cont == 2:
                                     arr = {
                                         'created_at': str(datetime.today()).split(' ')[0].replace('-',''),
-                                        'error': e.msg,
+                                        'error': str(e),
                                         'cpf' : cpf_binario,
                                         'robot' : '_CND_CONTRIBUINTE',
                                         'id_certidao': ObjectId(id),
@@ -514,7 +514,7 @@ def certidao_initial(id_mongo):
                                 if cont == 2:
                                     arr = {
                                         'created_at': str(datetime.today()).split(' ')[0].replace('-',''),
-                                        'error': e.msg,
+                                        'error': str(e),
                                         'cpf' : cpf_binario,
                                         'robot' : '_PJE_TRF3',
                                         'id_certidao': ObjectId(id),
@@ -561,7 +561,7 @@ def certidao_initial(id_mongo):
                                 if cont == 2:
                                     arr = {
                                         'created_at': str(datetime.today()).split(' ')[0].replace('-',''),
-                                        'error': e.msg,
+                                        'error': str(e),
                                         'cpf' : cpf_binario,
                                         'robot' : '_ESAJ_CERTIDAO_6',
                                         'id_certidao': ObjectId(id),
@@ -591,7 +591,7 @@ def certidao_initial(id_mongo):
                                 if cont == 2:
                                     arr = {
                                         'created_at': str(datetime.today()).split(' ')[0].replace('-',''),
-                                        'error': e.msg,
+                                        'error': str(e),
                                         'cpf' : cpf_binario,
                                         'robot' : '_ESAJ_CERTIDAO_52',
                                         'id_certidao': ObjectId(id),
@@ -620,7 +620,7 @@ def certidao_initial(id_mongo):
                                 if cont == 2:
                                     arr = {
                                         'created_at': str(datetime.today()).split(' ')[0].replace('-',''),
-                                        'error': e.msg,
+                                        'error': str(e),
                                         'cpf' : cpf_binario,
                                         'robot' : '_ESAJ_BUSCA_CPF',
                                         'id_certidao': ObjectId(id),
@@ -648,7 +648,7 @@ def certidao_initial(id_mongo):
                                 if cont == 2:
                                     arr = {
                                         'created_at': str(datetime.today()).split(' ')[0].replace('-',''),
-                                        'error': e.msg,
+                                        'error': str(e),
                                         'cpf' : cpf_binario,
                                         'robot' : '_ESAJ_BUSCA_NOME',
                                         'id_certidao': ObjectId(id),
@@ -675,7 +675,7 @@ def certidao_initial(id_mongo):
                                 if cont == 2:
                                     arr = {
                                         'created_at': str(datetime.today()).split(' ')[0].replace('-',''),
-                                        'error': e.msg,
+                                        'error': str(e),
                                         'cpf' : cpf_binario,
                                         'robot' : '_PODER_JUDICIARIO',
                                         'id_certidao': ObjectId(id),
@@ -702,7 +702,7 @@ def certidao_initial(id_mongo):
                                 if cont == 2:
                                     arr = {
                                         'created_at': str(datetime.today()).split(' ')[0].replace('-',''),
-                                        'error': e.msg,
+                                        'error': str(e),
                                         'cpf' : cpf_binario,
                                         'robot' : '_ANTECEDENTES_CRIMINAIS',
                                         'id_certidao': ObjectId(id),
