@@ -94,7 +94,7 @@ class Municipal:
                     try:
                         self.solve_cap()
                         WebDriverWait(self._driver, 3).until(EC.presence_of_element_located((By.ID, "btnFecharModalCertidoes")))
-                        time.sleep(2)
+                        time.sleep(6)
                         self._download()
                         archive_name = os.listdir(self._save)[0]
                         shutil.move(f"{self._save}/{archive_name}", f"{self._pasta}3- CND MUNICIPAL.pdf")

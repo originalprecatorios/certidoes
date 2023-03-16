@@ -28,6 +28,7 @@
 <p align="center">
  <a href="#about">About</a> •
  <a href="#features">Features</a> •
+ <a href="#description">Description</a> • 
  <a href="#revised-concepts">Revised Concepts</a> • 
  <a href="#installation">Installation</a> • 
  <a href="#getting-started">Get Started</a> • 
@@ -49,6 +50,11 @@
 
 - Manipulação do google,baixar certificados automaticamente,envia email solicitando certificado.
 - Google manipulation, download certificates automatically, send email requesting certificate.
+
+## Description
+
+- É feito o processo onde entra em 18 sites do governo para solicitar certidão de débtos. Essa solicitação é feito pelo sistema da B7 onde se deve cadastrar alguns dados pessoais como Nome, CPF, RG e etc. Após o termino da captura o mesmo é apresentado no sistema para dowload de forma individual ou compactado.  
+- The process is carried out where you enter 18 government websites to request a debt certificate. This request is made through the B7 system, where you must register some personal data such as Name, CPF, RG, etc. After the end of the capture, it is presented in the system for download individually or compressed.
 
 ## 👓Revised Concepts
 
