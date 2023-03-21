@@ -109,7 +109,7 @@ class Trt15:
                 self._driver.find_elements(By.TAG_NAME,'input')[1].click()
             except:
                 pass
-            time.sleep(2)
+            time.sleep(6)
             self._download()
             archive_name = os.listdir(self._save)[0]
             shutil.move(f"{self._save}/{archive_name}", f"{self._pasta}14- TRT15ª.pdf")
@@ -135,12 +135,16 @@ class Trt15:
             cont = 0
             path = Path(self._save)
 
-            for conteudo in path.glob('*'):
-                print ("Aguardando termino do download!")
-                ext = (conteudo.suffix)
-                if ext == '.crdownload' or cont >= 15:
-                    time.sleep(5)
-                    cont += 1
-                else:
-                    return  
-            return
+            if cont <=2:
+                for conteudo in path.glob('*'):
+                    print ("Aguardando termino do download!")
+                    ext = (conteudo.suffix)
+                    if ext == '.crdownload':
+                        time.sleep(5)
+                        cont += 1
+                    else:
+                        return  
+                cont +=1
+                time.sleep(2)
+            else:
+                return

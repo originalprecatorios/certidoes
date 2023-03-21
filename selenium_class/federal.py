@@ -177,15 +177,19 @@ class Federal:
             cont = 0
             path = Path(self._save)
 
-            for conteudo in path.glob('*'):
-                print ("Aguardando termino do download!")
-                ext = (conteudo.suffix)
-                if ext == '.crdownload' or cont >= 15:
-                    time.sleep(5)
-                    cont += 1
-                else:
-                    return  
-            return
+            if cont <=2:
+                for conteudo in path.glob('*'):
+                    print ("Aguardando termino do download!")
+                    ext = (conteudo.suffix)
+                    if ext == '.crdownload':
+                        time.sleep(5)
+                        cont += 1
+                    else:
+                        return  
+                cont +=1
+                time.sleep(2)
+            else:
+                return
     
     def get_download(self):
         WebDriverWait(self._driver, 10).until(EC.presence_of_element_located((By.ID, "main")))

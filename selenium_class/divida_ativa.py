@@ -63,7 +63,7 @@ class Divida_ativa:
             response = self._captcha.recaptcha(site_key,self._link)
             self._driver.execute_script("document.getElementById('g-recaptcha-response').innerHTML = '"+response+"';")
             WebDriverWait(self._driver, 3).until(EC.presence_of_element_located((By.XPATH, "/html/body/div[1]/div/div/div/div[2]/div/div[3]/div/div[2]/div[2]/span/form/div/div[2]/div[2]/input[2]"))).click()
-            time.sleep(2)
+            time.sleep(6)
             self._download()
             archive_name = os.listdir(self._save)[0]
             shutil.move(f"{self._save}/{archive_name}", f"{self._pasta}17- DIVIDA ATIVA.pdf")
@@ -88,12 +88,16 @@ class Divida_ativa:
             cont = 0
             path = Path(self._save)
 
-            for conteudo in path.glob('*'):
-                print ("Aguardando termino do download!")
-                ext = (conteudo.suffix)
-                if ext == '.crdownload' or cont >= 15:
-                    time.sleep(5)
-                    cont += 1
-                else:
-                    return
-            return  
+            if cont <=2:
+                for conteudo in path.glob('*'):
+                    print ("Aguardando termino do download!")
+                    ext = (conteudo.suffix)
+                    if ext == '.crdownload':
+                        time.sleep(5)
+                        cont += 1
+                    else:
+                        return
+                cont +=1
+                time.sleep(2)
+            else:
+                return  
