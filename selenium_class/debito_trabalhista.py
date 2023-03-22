@@ -18,7 +18,7 @@ class Debito_trabalhista:
         self._error = pError
         self._captcha = pCaptcha
         self._error._getcoll('error')
-        self._save = '/opt/certidao/download/debito_trabalhista'
+        self._save = '/opt/certidao/download/debito_trabalhista{}'.format(self._data['cpf'])
         try:
             if os.path.isdir(f'{self._save}') is False:
                 os.makedirs(f'{self._save}')
@@ -84,6 +84,7 @@ class Debito_trabalhista:
                             archive_name = os.listdir(self._save)[0]
                             shutil.move(f"{self._save}/{archive_name}", f"{self._pasta}12- CERTIDÃO DE DÉBITOS TRABALHISTAS.pdf")
                             self._driver.close()
+                            shutil.rmtree(self._save)
                             print('Download do arquivo gerado para o cliente {}'.format(self._data['nome']))
                             break
                         else:

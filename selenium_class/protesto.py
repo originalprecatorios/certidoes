@@ -23,7 +23,7 @@ class Protesto:
         self._error = pError
         self._captcha = pCaptcha
         self._error._getcoll('error')
-        self._save = '/opt/certidao/download/protesto'
+        self._save = '/opt/certidao/download/protesto{}'.format(self._data['cpf'])
         try:
             if os.path.isdir(f'{self._save}') is False:
                 os.makedirs(f'{self._save}')
@@ -81,10 +81,16 @@ class Protesto:
                     WebDriverWait(self._driver, 5).until(EC.presence_of_element_located((By.ID, "btnfecharMessage"))).click()
                 except:
                     pass
-                name = os.path.join(self._pasta,'13- CENPROT.png')
+                name = os.path.join(self._save,'13- CENPROT.png')
                 time.sleep(3)
                 self._driver.get_full_page_screenshot_as_file('{}'.format(name))
+                time.sleep(1)
                 self.convert(name)
+                time.sleep(1)
+                archive_name = os.listdir(self._save)[0]
+                time.sleep(1)
+                shutil.move(f"{self._save}/{archive_name}", f"{self._pasta}{archive_name}")
+                shutil.rmtree(self._save)
                 print('Download concluido para o cpf {}'.format(self._data['cpf']))
                 self._driver.close()
             else:
