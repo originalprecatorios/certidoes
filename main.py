@@ -765,7 +765,7 @@ def certidao_initial(id_mongo):
 # Configuração para teste
 '''
 #dados = {'_id':'63ff68d8128182d5699998d0'}
-dados = {"_id": "6405ec5128f620c3ddd9fb35", "certidao": "_TRT15"}
+dados = {"_id": "6405ec5128f620c3ddd9fb35", "certidao": {"_TRT15"}}
 certidao_initial(dados)
 '''
 

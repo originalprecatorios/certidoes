@@ -70,21 +70,26 @@ class Protesto:
             WebDriverWait(self._driver, 3).until(EC.presence_of_element_located((By.ID, "frmConsulta"))).find_elements(By.TAG_NAME,'input')
             self._driver.execute_script("ValidarConsulta(this)")
             time.sleep(5)
-            self._driver.execute_script("document.getElementById('cookiefirst-root').style.display = 'none'")
-            time.sleep(2)
-            WebDriverWait(self._driver, 5).until(EC.presence_of_element_located((By.CLASS_NAME, "resultado-pesquisa")))
-            WebDriverWait(self._driver, 5).until(EC.presence_of_element_located((By.CLASS_NAME, "labelTotalOutros")))
+            texto = WebDriverWait(self._driver, 3).until(EC.presence_of_element_located((By.CLASS_NAME, "resultado-pesquisa"))).text
+            if texto.find('Protocolo da Consulta') >= 0:
+                self._driver.execute_script("document.getElementById('cookiefirst-root').style.display = 'none'")
+                time.sleep(2)
+                WebDriverWait(self._driver, 5).until(EC.presence_of_element_located((By.CLASS_NAME, "resultado-pesquisa")))
+                WebDriverWait(self._driver, 5).until(EC.presence_of_element_located((By.CLASS_NAME, "labelTotalOutros")))
 
-            try:
-                WebDriverWait(self._driver, 5).until(EC.presence_of_element_located((By.ID, "btnfecharMessage"))).click()
-            except:
-                pass
-            name = os.path.join(self._pasta,'13- CENPROT.png')
-            time.sleep(3)
-            self._driver.get_full_page_screenshot_as_file('{}'.format(name))
-            self.convert(name)
-            print('Download concluido para o cpf {}'.format(self._data['cpf']))
-            self._driver.close()
+                try:
+                    WebDriverWait(self._driver, 5).until(EC.presence_of_element_located((By.ID, "btnfecharMessage"))).click()
+                except:
+                    pass
+                name = os.path.join(self._pasta,'13- CENPROT.png')
+                time.sleep(3)
+                self._driver.get_full_page_screenshot_as_file('{}'.format(name))
+                self.convert(name)
+                print('Download concluido para o cpf {}'.format(self._data['cpf']))
+                self._driver.close()
+            else:
+                self._driver.close()
+                WebDriverWait(self._driver, 3).until(EC.presence_of_element_located((By.CLASS_NAME, "resultado-pesquisa"))).text
 
         except Exception as e:
             self._driver.close()

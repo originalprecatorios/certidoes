@@ -79,7 +79,7 @@ class Debito_trabalhista:
                     try:
                         self.solve_cap()
                         if WebDriverWait(self._driver, 5).until(EC.presence_of_element_located((By.ID, "gerarCertidaoForm:mensagemSucesso"))).text != '' :
-                            time.sleep(2)
+                            time.sleep(6)
                             self._download()
                             archive_name = os.listdir(self._save)[0]
                             shutil.move(f"{self._save}/{archive_name}", f"{self._pasta}12- CERTIDÃO DE DÉBITOS TRABALHISTAS.pdf")
@@ -116,17 +116,18 @@ class Debito_trabalhista:
     def solve_cap(self):
         try:
             WebDriverWait(self._driver, 5).until(EC.presence_of_element_located((By.ID, "idImgBase64")))
-            time.sleep(2)
+            time.sleep(5)
             with open(f'{self._capt}captcha.png', 'wb') as file:
                 l = self._driver.find_element(By.ID,'idImgBase64')
                 file.write(l.screenshot_as_png)
-            time.sleep(1)
+            time.sleep(2)
             self._driver.switch_to.default_content()
             iframe = self._driver.find_element(By.ID,'layout-column_column-2').find_elements(By.CLASS_NAME,"journal-content-article")[1].find_element(By.TAG_NAME,'iframe')
             self._driver.execute_script("window.scrollTo(0, 300)")
             time.sleep(1)
             self._driver.switch_to.frame(iframe)         
             response = self._captcha.resolve_normal(os.path.join(self._capt,'captcha.png'))
+            #response = ''
             if response is None:
                 response = self._captcha.resolve_normal(os.path.join(self._capt,'captcha.png'))
             #response = ''
@@ -137,6 +138,8 @@ class Debito_trabalhista:
             time.sleep(2)
             
             WebDriverWait(self._driver, 5).until(EC.presence_of_element_located((By.ID, "gerarCertidaoForm:btnEmitirCertidao")))
+            element=self._driver.find_element(By.ID,'gerarCertidaoForm:btnEmitirCertidao')
+            element.location_once_scrolled_into_view
             self._driver.find_element(By.ID, 'gerarCertidaoForm:btnEmitirCertidao').click()
      
             time.sleep(3)
