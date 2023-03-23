@@ -194,7 +194,7 @@ def certidao_initial(id_mongo):
                         if cont <=2:
                             try:
                                 # USO COM O CHROME
-                                #verifica_chrome()
+                                ##verifica_chrome()
                                 f = Federal(u,os.environ['PAGE_URL_FEDERAL'],mongo,erro,u['cpf'])
                                 resposta,texto = f.login()
                                 if resposta is True:
