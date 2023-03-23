@@ -108,8 +108,8 @@ def certidao_initial(id_mongo):
         usr[0]['rg'] = usr[0]['rg'].replace('.','')   
 
     for u in usr:
-        for ext in id_mongo['certidao']:
-            #for ext in u['extracted']:
+        #for ext in id_mongo['certidao']:
+        for ext in u['extracted']:
             busca = {'_id': u['_id']}
             modifica = {'$set' :{"extracted": {}}}
             modifica['$set']['extracted'] = u['extracted']
