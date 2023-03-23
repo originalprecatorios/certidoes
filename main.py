@@ -29,23 +29,68 @@ from bson.objectid import ObjectId
 from crypto import db
 import requests
 from datetime import datetime
+import subprocess
 
+# Função utilizada para verificar se o chrome esta aberto gerando um numero de ID
+# Caso esteja o mesmo espera 35 segundos e faz uma nova verificação
+# se o numero de verificação do primeiro ID for igual ao segundo ID a função encerra o chrome
+# Essa função é utilizado por um erro gerado nos sites FEDERAL, TRF3 e DISTRIBUIÇÂO FEDERAL quando abre 2 chrome do mesmo site
+# quando abre 2 chrome com o mesmo site o google não carrega a página
+def verifica_chrome():
 
-        
+    while True:
+        process = subprocess.Popen(['pgrep', 'chrome'], stdout=subprocess.PIPE)
+        output, error = process.communicate()
+
+        # Armazena o ID do processo em uma variável
+        chrome_process_id = output.decode('utf-8').strip()
+
+        # Verifica se existe o ID do processo do Chrome
+        if len(chrome_process_id) > 0 :
+            
+            process_id = chrome_process_id.split('\n')[0]
+            time.sleep(35)
+
+            process = subprocess.Popen(['pgrep', 'chrome'], stdout=subprocess.PIPE)
+            output, error = process.communicate()
+
+            chrome_process_id = output.decode('utf-8').strip()
+
+            if len(chrome_process_id) > 0:
+                process_id2 = chrome_process_id.split('\n')[0]
+            else:
+                process_id2 = ''
+            
+            if process_id2 == process_id:
+                process = subprocess.Popen(['kill', process_id], stdout=subprocess.PIPE)
+                output, error = process.communicate()
+                break
+            else:
+                time.sleep(5)
+                continue
+        else:
+            time.sleep(2)
+            print('Não existe processo do chrome aberto')
+            break
+
+# Função que recebe do rabbit o numero do ID do mongo e quais certidoẽs baixar exempl: {"_id": "6405ec5128f620c3ddd9fb35", "certidao": "_TRT15"}
+# Recebe a conexão do banco mongo e armazena em duas variaves 1 para oberter as informações necessárias para gerar as certidoes 2 para gerar log de erro
+# Recebe os dados da collection certidao passando o id que foi recebido pelo rabbit
+# Descriptografa o RG e o CPF
+# Faz um looping com as certidoẽs que precisa ser baixada onde os dados foram informados pelo rabbit
+# Baixa a certidão e muda o status no mongo caso gere erro o mesmo tenta 3 vezes gerar a certidão
+# status 0: Solicitado baixa 1: Baixa concluida 2: Erro
+# Salva os status na collection certidão e fecha as conexões do mongo
+# Envia para o sistema B7 que o processo já foi realizado
 def certidao_initial(id_mongo):
     print('Iniciando...')
-    #bd = Mongo(config('MONGO_USER'), config('MONGO_PASS'), config('MONGO_HOST'), config('MONGO_PORT'), config('MONGO_DB'), config('AMBIENTE'))
-    #mongo = Mongo(config('MONGO_USER'), config('MONGO_PASS'), config('MONGO_HOST'), config('MONGO_PORT'), config('MONGO_DB'), config('AMBIENTE'))
     mongo = Mongo(os.environ['MONGO_USER_PROD'], os.environ['MONGO_PASS_PROD'], os.environ['MONGO_HOST_PROD'], os.environ['MONGO_PORT_PROD'], os.environ['MONGO_DB_PROD'], os.environ['MONGO_AUTH_DB_PROD'])
-    #mongo = Mongo(config('MONGO_USER_PROD'), config('MONGO_PASS_PROD'), config('MONGO_HOST_PROD'), config('MONGO_PORT_PROD'), config('MONGO_DB_PROD'), config('MONGO_AUTH_DB_PROD'))
     erro = Mongo(os.environ['MONGO_USER_PROD'], os.environ['MONGO_PASS_PROD'], os.environ['MONGO_HOST_PROD'], os.environ['MONGO_PORT_PROD'], os.environ['MONGO_DB_PROD'], os.environ['MONGO_AUTH_DB_PROD'])
     mongo._getcoll('certidao')
     id = id_mongo['_id']
     arr = {
         "_id": ObjectId(id)
-    }
-
-    
+    }  
     users  = mongo.returnQuery(arr)
     cap = Solve_Captcha()
     usr = []
@@ -63,7 +108,8 @@ def certidao_initial(id_mongo):
         usr[0]['rg'] = usr[0]['rg'].replace('.','')   
 
     for u in usr:
-        for ext in u['extracted']:
+        for ext in id_mongo['certidao']:
+            #for ext in u['extracted']:
             busca = {'_id': u['_id']}
             modifica = {'$set' :{"extracted": {}}}
             modifica['$set']['extracted'] = u['extracted']
@@ -148,6 +194,7 @@ def certidao_initial(id_mongo):
                         if cont <=2:
                             try:
                                 # USO COM O CHROME
+                                verifica_chrome()
                                 f = Federal(u,os.environ['PAGE_URL_FEDERAL'],mongo,erro,u['cpf'])
                                 resposta,texto = f.login()
                                 if resposta is True:
@@ -192,6 +239,8 @@ def certidao_initial(id_mongo):
                     while True:
                         if cont <=2:
                             try:
+                                # USO COM O CHROME
+                                verifica_chrome()
                                 df1 = Distribuicao_federal(u,os.environ['PAGE_URL_TRF3_JUS'],mongo,erro,cap,u,'1','9- CERTIDÃO DE DISTRIBUIÇÃO FEDERAL DE 1ª INSTANCIA','CIVEL')
                                 df1.login()
                                 del df1
@@ -220,6 +269,8 @@ def certidao_initial(id_mongo):
                     while True:
                         if cont <=2:
                             try:
+                                # USO COM O CHROME
+                                verifica_chrome()
                                 df2 = Distribuicao_federal(u,os.environ['PAGE_URL_TRF3_JUS'],mongo,erro,cap,u,'2','10- CERTIDÃO DE DISTRIBUIÇÃO FEDERAL DE 2ª INSTANCIA','CIVEL')
                                 df2.login()
                                 del df2
@@ -248,6 +299,8 @@ def certidao_initial(id_mongo):
                     while True:
                         if cont <=2:
                             try:
+                                # USO COM O CHROME
+                                verifica_chrome()
                                 df1 = Distribuicao_federal(u,os.environ['PAGE_URL_TRF3_JUS'],mongo,erro,cap,u,'1','9.1- CERTIDÃO DE DISTRIBUIÇÃO FEDERAL DE 1ª INSTANCIA','CRIMINAL')
                                 df1.login()
                                 del df1
@@ -276,6 +329,8 @@ def certidao_initial(id_mongo):
                     while True:
                         if cont <=2:
                             try:
+                                # USO COM O CHROME
+                                verifica_chrome()
                                 df2 = Distribuicao_federal(u,os.environ['PAGE_URL_TRF3_JUS'],mongo,erro,cap,u,'2','10.1- CERTIDÃO DE DISTRIBUIÇÃO FEDERAL DE 2ª INSTANCIA','CRIMINAL')
                                 df2.login()
                                 del df2
@@ -326,24 +381,6 @@ def certidao_initial(id_mongo):
                             print('Erro ao acessar o site, para gerar a certidão _TRTSP')
                             break
                 
-
-                #elif ext == '_TRTSP':
-                #    cont = 0
-                #    while True:
-                #        if cont <=2:
-                #            try:
-                #                t = Trabalhista(u,cap,os.environ['PAGE_URL_TRTSP'])
-                #                t.login()
-                #                del t
-                #                modifica['$set']['extracted']['_TRTSP'] = 1
-                #                break
-                #            except:
-                #                cont += 1
-                #        else:
-                #            modifica['$set']['extracted']['_TRTSP'] = 2
-                #            print('Erro ao acessar o site, para gerar a certidão _TRTSP')
-                #            break
-                    
 
                 elif ext == '_DEBITO_TRABALHISTA':
                     cont = 0
@@ -400,32 +437,32 @@ def certidao_initial(id_mongo):
                             print('Erro ao acessar o site, para gerar a certidão _PROTESTO')
                             break
                 
-                elif ext == '_PROTESTO2':
-                    cont = 0
-                    while True:
-                        if cont <=2:
-                            try:
-                                p = Protesto2(u,os.environ['PAGE_URL_PROTESTO2'],mongo,erro,cap)
-                                p.login()
-                                del p
-                                modifica['$set']['extracted']['_PROTESTO'] = 1
-                                break
-                            except Exception as e:
-                                if cont == 2:
-                                    arr = {
-                                        'created_at': str(datetime.today()).split(' ')[0].replace('-',''),
-                                        'error': str(e),
-                                        'cpf' : cpf_binario,
-                                        'robot' : '_PROTESTO',
-                                        'id_certidao': ObjectId(id),
-                                    }
-                                    erro.getcoll('error_cert')
-                                    erro.addData(arr)
-                                cont += 1
-                        else:
-                            modifica['$set']['extracted']['_PROTESTO'] = 2
-                            print('Erro ao acessar o site, para gerar a certidão _PROTESTO')
-                            break
+                #elif ext == '_PROTESTO2':
+                #    cont = 0
+                #    while True:
+                #        if cont <=2:
+                #            try:
+                #                p = Protesto2(u,os.environ['PAGE_URL_PROTESTO2'],mongo,erro,cap)
+                #                p.login()
+                #                del p
+                #                modifica['$set']['extracted']['_PROTESTO'] = 1
+                #                break
+                #            except Exception as e:
+                #                if cont == 2:
+                #                    arr = {
+                #                        'created_at': str(datetime.today()).split(' ')[0].replace('-',''),
+                #                        'error': str(e),
+                #                        'cpf' : cpf_binario,
+                #                        'robot' : '_PROTESTO',
+                #                        'id_certidao': ObjectId(id),
+                #                    }
+                #                    erro.getcoll('error_cert')
+                #                    erro.addData(arr)
+                #                cont += 1
+                #        else:
+                #            modifica['$set']['extracted']['_PROTESTO'] = 2
+                #            print('Erro ao acessar o site, para gerar a certidão _PROTESTO')
+                #            break
                     
                 elif ext == '_TRT15':
                     cont = 0
@@ -482,23 +519,6 @@ def certidao_initial(id_mongo):
                             print('Erro ao acessar o site, para gerar a certidão _CND_CONTRIBUINTE')
                             break
                     
-
-                #elif ext == '_TJ':
-                #    cont = 0
-                #    while True:
-                #        if cont <=2:
-                #            try:
-                #                tj = Tj(u,os.environ['PAGE_URL_TJ'],mongo,erro,cap)
-                #                tj.login()
-                #                del tj
-                #                modifica['$set']['extracted']['_TJ'] = 1
-                #                break
-                #            except:
-                #                cont += 1
-                #        else:
-                #            modifica['$set']['extracted']['_TJ'] = 2
-                #            print('Erro ao acessar o site, para gerar a certidão _TJ')
-                #            break
                     
                 elif ext == '_PJE_TRF3':
                     cont = 0
@@ -526,23 +546,6 @@ def certidao_initial(id_mongo):
                             modifica['$set']['extracted']['_PJE_TRF3'] = 2
                             print('Erro ao acessar o site, para gerar a certidão _PJE_TRF3')
                             break
-                
-                #elif ext == '_TST_TRABALHISTA':
-                #    cont = 0
-                #    while True:
-                #        if cont <=2:
-                #            try:
-                #                tstt = Tst_trabalhista(u,os.environ['PAGE_URL_TST'],mongo,erro,cap)
-                #                tstt.login()
-                #                del tstt
-                #                modifica['$set']['extracted']['_TST_TRABALHISTA'] = 1
-                #                break
-                #            except:
-                #                cont += 1
-                #        else:
-                #            modifica['$set']['extracted']['_TST_TRABALHISTA'] = 2
-                #            print('Erro ao acessar o site, para gerar a certidão _TST_TRABALHISTA')
-                #            break
                 
 
                 elif ext == '_ESAJ_CERTIDAO_6':
@@ -759,9 +762,15 @@ def certidao_initial(id_mongo):
     response = requests.post('https://f8f37533-9c29-482e-93e9-284804b874b7.pushnotifications.pusher.com/publish_api/v1/instances/f8f37533-9c29-482e-93e9-284804b874b7/publishes', headers=headers, json=json_data)
     print('Programa finalizado...')
 
+# Configuração para teste
+'''
 #dados = {'_id':'63ff68d8128182d5699998d0'}
-#certidao_initial(dados)
-# Executa as filas do RabbitMQ
+dados = {"_id": "6405ec5128f620c3ddd9fb35", "certidao": "_TRT15"}
+certidao_initial(dados)
+'''
+
+# Executa a conexão com o Rabbit e armazena em uma variavel os dados existentes na fila
+# Caso não tenha dados na fila o programa espera 3 minutos
 while True:
     
     rabbit = rabbitmq.RabbitMQ(os.environ['RABBIT_QUEUE'])
@@ -777,4 +786,4 @@ while True:
             }
         certidao_initial(dados)
     else:
-        time.sleep(100)
+        time.sleep(60)

@@ -191,7 +191,7 @@ class Federal:
     def get_download(self):
         WebDriverWait(self._driver, 10).until(EC.presence_of_element_located((By.ID, "main")))
         if self._driver.find_element(By.ID,'main').text.find('A certidão foi emitida com sucesso') >= 0:
-            time.sleep(2)
+            time.sleep(6)
             self._download()
             archive_name = os.listdir(self._save)[0]
             shutil.move(f"{self._save}/{archive_name}", f"{self._pasta}4- CND FEDERAL.pdf")
