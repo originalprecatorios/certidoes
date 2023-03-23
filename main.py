@@ -194,7 +194,7 @@ def certidao_initial(id_mongo):
                         if cont <=2:
                             try:
                                 # USO COM O CHROME
-                                verifica_chrome()
+                                #verifica_chrome()
                                 f = Federal(u,os.environ['PAGE_URL_FEDERAL'],mongo,erro,u['cpf'])
                                 resposta,texto = f.login()
                                 if resposta is True:
@@ -240,7 +240,7 @@ def certidao_initial(id_mongo):
                         if cont <=2:
                             try:
                                 # USO COM O CHROME
-                                verifica_chrome()
+                                #verifica_chrome()
                                 df1 = Distribuicao_federal(u,os.environ['PAGE_URL_TRF3_JUS'],mongo,erro,cap,u,'1','9- CERTIDÃO DE DISTRIBUIÇÃO FEDERAL DE 1ª INSTANCIA','CIVEL')
                                 df1.login()
                                 del df1
@@ -270,7 +270,7 @@ def certidao_initial(id_mongo):
                         if cont <=2:
                             try:
                                 # USO COM O CHROME
-                                verifica_chrome()
+                                #verifica_chrome()
                                 df2 = Distribuicao_federal(u,os.environ['PAGE_URL_TRF3_JUS'],mongo,erro,cap,u,'2','10- CERTIDÃO DE DISTRIBUIÇÃO FEDERAL DE 2ª INSTANCIA','CIVEL')
                                 df2.login()
                                 del df2
@@ -300,7 +300,7 @@ def certidao_initial(id_mongo):
                         if cont <=2:
                             try:
                                 # USO COM O CHROME
-                                verifica_chrome()
+                                #verifica_chrome()
                                 df1 = Distribuicao_federal(u,os.environ['PAGE_URL_TRF3_JUS'],mongo,erro,cap,u,'1','9.1- CERTIDÃO DE DISTRIBUIÇÃO FEDERAL DE 1ª INSTANCIA','CRIMINAL')
                                 df1.login()
                                 del df1
@@ -330,7 +330,7 @@ def certidao_initial(id_mongo):
                         if cont <=2:
                             try:
                                 # USO COM O CHROME
-                                verifica_chrome()
+                                #verifica_chrome()
                                 df2 = Distribuicao_federal(u,os.environ['PAGE_URL_TRF3_JUS'],mongo,erro,cap,u,'2','10.1- CERTIDÃO DE DISTRIBUIÇÃO FEDERAL DE 2ª INSTANCIA','CRIMINAL')
                                 df2.login()
                                 del df2
