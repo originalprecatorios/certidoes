@@ -172,20 +172,21 @@ class Federal:
 
     ########## looping até o download concluir 
     def _download(self):
-        
         while True:
             cont = 0
             path = Path(self._save)
-
-            for conteudo in path.glob('*'):
-                print ("Aguardando termino do download!")
-                ext = (conteudo.suffix)
-                if ext == '.crdownload' or cont >= 15:
-                    time.sleep(5)
-                    cont += 1
-                else:
-                    return  
-            return
+            if cont <=2:
+               for conteudo in path.glob('*'):
+                   print ("Aguardando termino do download!")
+                   ext = (conteudo.suffix)
+                   if ext == '.crdownload':
+                      time.sleep(5)
+                      cont += 1
+                   else:
+                      return
+               cont +=1
+            else:
+                return
     
     def get_download(self):
         WebDriverWait(self._driver, 10).until(EC.presence_of_element_located((By.ID, "main")))
@@ -201,7 +202,7 @@ class Federal:
             time.sleep(2)
             WebDriverWait(self._driver, 5).until(EC.presence_of_element_located((By.ID, "NI"))).send_keys(self._cnpj)
             WebDriverWait(self._driver, 5).until(EC.presence_of_element_located((By.ID, "validar"))).click()
-            time.sleep(3)
+            time.sleep(6)
             self._download()
             if len(os.listdir(self._save)) > 1:
                 for l in os.listdir(self._save):

@@ -60,9 +60,15 @@ class Trt15:
             while True:
                 if cont >= 5:
                     break
-                WebDriverWait(self._driver, 5).until(EC.presence_of_element_located((By.CLASS_NAME, "eu-cookie-compliance-default-button"))).click()
+                try:
+                    WebDriverWait(self._driver, 5).until(EC.presence_of_element_located((By.CLASS_NAME, "eu-cookie-compliance-default-button"))).click()
+                except:
+                    pass 
                 iframe = self._driver.find_element(By.XPATH,'/html/body/div[1]/div[3]/div[1]/div[2]/div[1]/div/div/div/article/div/div/p[6]/iframe')
                 self._driver.switch_to.frame(iframe)
+                time.sleep(2)
+                element=self._driver.find_element(By.ID,'certidaoActionForm:j_id23:doctoPesquisa')
+                element.location_once_scrolled_into_view
                 WebDriverWait(self._driver, 5).until(EC.presence_of_element_located((By.ID, "certidaoActionForm:j_id23:doctoPesquisa"))).send_keys(self._data['cpf'])
                 time.sleep(1)
                 img = self._driver.find_elements(By.TAG_NAME,'img')[0]
@@ -91,7 +97,9 @@ class Trt15:
                 element=self._driver.find_element(By.ID,'menuCertidaoActionId')
                 element.location_once_scrolled_into_view
                 self._driver.find_elements(By.TAG_NAME,'input')[6].send_keys(str(soma))
-                time.sleep(1)
+                time.sleep(3)
+                element=self._driver.find_element(By.ID,'menuCertidaoActionId')
+                element.location_once_scrolled_into_view
                 self._driver.find_elements(By.TAG_NAME,'input')[7].click()
                 time.sleep(5)
                 try:
@@ -103,13 +111,17 @@ class Trt15:
                         break
                 except:
                     break
-            self._driver.find_elements(By.TAG_NAME,'input')[1].click()
-            time.sleep(5)
+            try:
+               self._driver.find_element(By.ID,'certidaoActionForm:certidaoActionImprimir').click()
+               time.sleep(5)
+            except:
+                self._driver.close()
+                self._driver.find_elements(By.TAG_NAME,'input')[1].click()
             try:
                 self._driver.find_elements(By.TAG_NAME,'input')[1].click()
             except:
                 pass
-            time.sleep(2)
+            time.sleep(6)
             self._download()
             archive_name = os.listdir(self._save)[0]
             shutil.move(f"{self._save}/{archive_name}", f"{self._pasta}14- TRT15ª.pdf")
@@ -130,17 +142,18 @@ class Trt15:
     
     ########## looping até o download concluir 
     def _download(self):
-    
         while True:
             cont = 0
             path = Path(self._save)
-
-            for conteudo in path.glob('*'):
-                print ("Aguardando termino do download!")
-                ext = (conteudo.suffix)
-                if ext == '.crdownload' or cont >= 15:
-                    time.sleep(5)
-                    cont += 1
-                else:
-                    return  
-            return
+            if cont <=2:
+               for conteudo in path.glob('*'):
+                   print ("Aguardando termino do download!")
+                   ext = (conteudo.suffix)
+                   if ext == '.crdownload':
+                      time.sleep(5)
+                      cont += 1
+                   else:
+                      return
+               cont +=1
+            else:
+                return
