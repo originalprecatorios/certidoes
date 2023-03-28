@@ -12,6 +12,7 @@ import time, os, shutil
 import img2pdf
 from PIL import Image
 import undetected_chromedriver as uc
+from decouple import config
 
 
 class Protesto:
