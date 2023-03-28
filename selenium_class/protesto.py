@@ -191,3 +191,4 @@ class Protesto:
                     cont += 1
                 else:
                     return
+            return
