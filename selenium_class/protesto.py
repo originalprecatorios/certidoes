@@ -129,7 +129,7 @@ class Protesto:
                 time.sleep(3)
                 archive_name = os.listdir(self._save)[0]
                 time.sleep(3)
-                self._download()
+                #self._download()
                 shutil.move(f"{self._save}/{archive_name}", f"{self._pasta}{archive_name}")
                 time.sleep(3)
                 shutil.rmtree(self._save)
@@ -185,7 +185,7 @@ class Protesto:
         while True:
             cont = 0
             for arquivo in os.listdir(self._save):
-                if arquivo.find('crdownload') > -1 and cont <= 15:
+                if arquivo.find('crdownload') > -1 and cont <= 6:
                     print('Aguardando término do download')
                     time.sleep(5)
                     cont += 1
