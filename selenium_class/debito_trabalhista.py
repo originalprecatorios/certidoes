@@ -157,16 +157,20 @@ class Debito_trabalhista:
     ########## looping até o download concluir 
     def _download(self):
         
+        cont = 0
         while True:
-            cont = 0
+            
             path = Path(self._save)
-
-            for conteudo in path.glob('*'):
-                print ("Aguardando termino do download!")
-                ext = (conteudo.suffix)
-                if ext == '.crdownload' or cont >= 15:
-                    time.sleep(5)
-                    cont += 1
-                else:
-                    return
-            return
+            if cont <=2:
+                for conteudo in path.glob('*'):
+                    print ("Aguardando termino do download!")
+                    ext = (conteudo.suffix)
+                    if ext == '.crdownload':
+                        time.sleep(5)
+                        cont += 1
+                    else:
+                        return  
+                cont +=1
+                time.sleep(3)
+            else:
+                return
