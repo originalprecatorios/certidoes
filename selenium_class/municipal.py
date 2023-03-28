@@ -168,15 +168,11 @@ class Municipal:
         while True:
             cont = 0
             path = Path(self._save)
-            if cont <=2:
-               for conteudo in path.glob('*'):
-                   print ("Aguardando termino do download!")
-                   ext = (conteudo.suffix)
-                   if ext == '.crdownload':
-                      time.sleep(5)
-                      cont += 1
-                   else:
-                      return
-               cont +=1
-            else:
-                return
+
+            for conteudo in path.glob('*'):
+                print ("Aguardando termino do download!")
+                if conteudo.find('crdownload') > -1 and cont <= 15:
+                    time.sleep(5)
+                    cont += 1
+                else:
+                    return

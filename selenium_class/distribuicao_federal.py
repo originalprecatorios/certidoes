@@ -186,11 +186,8 @@ class Distribuicao_federal:
 
             for conteudo in path.glob('*'):
                 print ("Aguardando termino do download!")
-                ext = (conteudo.suffix)
-                if ext == '.crdownload' or cont >= 15:
+                if conteudo.find('crdownload') > -1 and cont <= 15:
                     time.sleep(5)
                     cont += 1
                 else:
-                    return 
-            return
-    
+                    return
