@@ -13,6 +13,7 @@ import img2pdf
 from PIL import Image
 import undetected_chromedriver as uc
 from decouple import config
+from selenium.webdriver.common.action_chains import ActionChains
 
 
 class Protesto:
@@ -43,7 +44,7 @@ class Protesto:
             
 
         
-        '''fp = webdriver.FirefoxProfile()
+        fp = webdriver.FirefoxProfile()
         fp.set_preference("general.useragent.override", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.45 Safari/537.36")
         fp.set_preference("browser.download.folderList", 2)
         fp.set_preference("browser.download.manager.showWhenStarting", False)
@@ -57,8 +58,8 @@ class Protesto:
         options.add_argument("--headless")
         self._driver = webdriver.Firefox(firefox_profile=fp)
         self._driver.get(self._link)
-        time.sleep(2)'''
-
+        time.sleep(2)
+        '''
         options = uc.ChromeOptions()
         options.add_argument('--no-first-run')
         options.add_argument("--window-size=2560,1440")
@@ -90,7 +91,7 @@ class Protesto:
                                                                      'Chrome/85.0.4183.102 Safari/537.36'})
         self._driver.get(self._link)
         time.sleep(2)
-        
+        '''
         
     
     def login(self):
@@ -100,10 +101,17 @@ class Protesto:
             WebDriverWait(self._driver, 3).until(EC.presence_of_element_located((By.ID, "AbrangenciaNacional"))).click()
             select = Select(self._driver.find_element(By.ID, 'TipoDocumento'))
             select.select_by_visible_text('CPF')
-            WebDriverWait(self._driver, 3).until(EC.presence_of_element_located((By.ID, "Documento"))).send_keys(self._data['cpf'])
+            cpf = self._data['cpf']
+            element = WebDriverWait(self._driver, 3).until(EC.presence_of_element_located((By.ID, "Documento")))
+            actions = ActionChains(self._driver)
+            for letter in cpf:
+                actions = actions.send_keys(letter).pause(0.5)
+            actions.perform()
+            #element.submit()
+            #WebDriverWait(self._driver, 3).until(EC.presence_of_element_located((By.ID, "Documento"))).send_keys(self._data['cpf'])
             WebDriverWait(self._driver, 3).until(EC.presence_of_element_located((By.ID, "frmConsulta"))).find_elements(By.TAG_NAME,'input')
             self._driver.execute_script("ValidarConsulta(this)")
-            time.sleep(5)
+            time.sleep(1000)
             texto = WebDriverWait(self._driver, 3).until(EC.presence_of_element_located((By.CLASS_NAME, "resultado-pesquisa"))).text
             if texto.find('Protocolo da Consulta') >= 0:
                 self._driver.execute_script("document.getElementById('cookiefirst-root').style.display = 'none'")
