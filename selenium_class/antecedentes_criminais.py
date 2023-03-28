@@ -173,14 +173,10 @@ class Antecedentes_criminais:
         
         while True:
             cont = 0
-            path = Path(self._save)
-
-            for conteudo in path.glob('*'):
-                print ("Aguardando termino do download!")
-                ext = (conteudo.suffix)
-                if ext == '.crdownload' or cont >= 15:
+            for arquivo in os.listdir(self._save):
+                if arquivo.find('crdownload') > -1 and cont <= 15:
+                    print('Aguardando término do download')
                     time.sleep(5)
                     cont += 1
                 else:
                     return
-            return  

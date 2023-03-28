@@ -84,12 +84,14 @@ class Protesto:
                 name = os.path.join(self._save,'13- CENPROT.png')
                 time.sleep(3)
                 self._driver.get_full_page_screenshot_as_file('{}'.format(name))
-                time.sleep(1)
+                time.sleep(3)
                 self.convert(name)
-                time.sleep(1)
+                time.sleep(3)
                 archive_name = os.listdir(self._save)[0]
-                time.sleep(1)
+                time.sleep(3)
+                self._download()
                 shutil.move(f"{self._save}/{archive_name}", f"{self._pasta}{archive_name}")
+                time.sleep(3)
                 shutil.rmtree(self._save)
                 print('Download concluido para o cpf {}'.format(self._data['cpf']))
                 self._driver.close()
@@ -99,6 +101,7 @@ class Protesto:
 
         except Exception as e:
             self._driver.close()
+            WebDriverWait(self._driver, 3).until(EC.presence_of_element_located((By.CLASS_NAME, "resultado-pesquisa"))).text
             err = {'data':str(datetime.today()).split(' ')[0].replace('-',''),
                     'dado_utilizado': self._data['nome'],
                     'sistema': 'municipal',
@@ -141,15 +144,10 @@ class Protesto:
         
         while True:
             cont = 0
-            path = Path(self._save)
-            if cont <=2:
-                for conteudo in path.glob('*'):
-                    print ("Aguardando termino do download!")
-                    ext = (conteudo.suffix)
-                    if ext.find('crdownload') > -1 and cont <= 15:
-                        print('Aguardando término do download')
-                        time.sleep(5)
-                        cont += 1
-                    else:
-                        return 
-            return
+            for arquivo in os.listdir(self._save):
+                if arquivo.find('crdownload') > -1 and cont <= 15:
+                    print('Aguardando término do download')
+                    time.sleep(5)
+                    cont += 1
+                else:
+                    return

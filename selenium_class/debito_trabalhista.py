@@ -159,15 +159,10 @@ class Debito_trabalhista:
         
         while True:
             cont = 0
-            path = Path(self._save)
-            if cont <=2:
-                for conteudo in path.glob('*'):
-                    print ("Aguardando termino do download!")
-                    ext = (conteudo.suffix)
-                    if ext.find('crdownload') > -1 and cont <= 15:
-                        print('Aguardando término do download')
-                        time.sleep(5)
-                        cont += 1
-                    else:
-                        return 
-            return
+            for arquivo in os.listdir(self._save):
+                if arquivo.find('crdownload') > -1 and cont <= 15:
+                    print('Aguardando término do download')
+                    time.sleep(5)
+                    cont += 1
+                else:
+                    return
