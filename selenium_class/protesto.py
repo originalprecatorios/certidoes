@@ -107,7 +107,7 @@ class Protesto:
             for letter in cpf:
                 actions = actions.send_keys(letter).pause(0.5)
             actions.perform()
-            #element.submit()
+            element.submit()
             #WebDriverWait(self._driver, 3).until(EC.presence_of_element_located((By.ID, "Documento"))).send_keys(self._data['cpf'])
             WebDriverWait(self._driver, 3).until(EC.presence_of_element_located((By.ID, "frmConsulta"))).find_elements(By.TAG_NAME,'input')
             self._driver.execute_script("ValidarConsulta(this)")
