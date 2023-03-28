@@ -176,12 +176,13 @@ class Federal:
         while True:
             cont = 0
             for arquivo in os.listdir(self._save):
-                if arquivo.find('crdownload') > -1 and cont <= 15:
+                if arquivo.find('crdownload') > -1 and cont <= 6:
                     print('Aguardando término do download')
                     time.sleep(5)
                     cont += 1
                 else:
                     return
+            return
     
     def get_download(self):
         WebDriverWait(self._driver, 10).until(EC.presence_of_element_located((By.ID, "main")))
