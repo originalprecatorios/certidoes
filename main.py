@@ -202,6 +202,10 @@ def certidao_initial(id_mongo):
                                     modifica['$set']['extracted']['_CND_FEDERAL'] = 1
                                     break
                                 else:
+                                    try:
+                                        f._close()
+                                    except:
+                                        pass
                                     modifica['$set']['extracted']['_CND_FEDERAL'] = 2
                                     print('Certidão de Débitos Relativos a Créditos Tributários Federais e à Dívida Ativa da União\nResultado da Consulta\n\nAs informações disponíveis na Secretaria da Receita Federal do Brasil - RFB sobre o contribuinte 138.525.098-40 são insuficientes para a emissão de certidão por meio da Internet.\nPara consultar sua situação fiscal, acesse Centro Virtual de Atendimento e-CAC.\nPara maiores esclarecimentos, consulte a página Orientações para emissão de Certidão nas unidades da RFB.')
                                     arr = {

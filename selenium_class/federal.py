@@ -210,4 +210,7 @@ class Federal:
             shutil.move(f"{self._save}/{archive_name}", f"{self._pasta}4- CND FEDERAL.pdf")
             shutil.rmtree(self._save)
             print('Download concluido para o cpf {}'.format(self._cnpj))
+    
+    def _close(self):
+        self._driver.close()
                     
