@@ -85,7 +85,23 @@ class Debito_trabalhista:
                             shutil.move(f"{self._save}/{archive_name}", f"{self._pasta}12- CERTIDÃO DE DÉBITOS TRABALHISTAS.pdf")
                             self._driver.close()
                             shutil.rmtree(self._save)
-                            print('Download do arquivo gerado para o cliente {}'.format(self._data['nome']))
+                            
+                            time.sleep(2)
+                            for arquivo in os.listdir(self._pasta):
+                                if arquivo.find('pdf') > -1:
+                                    print('Download do arquivo gerado para o cliente {}'.format(self._data['nome']))
+                                    self._driver.close()
+                                    return
+                                else:
+                                    print('arquivo não é pdf')
+                                    self._driver.close()
+                                    WebDriverWait(self._driver, 5).until(EC.presence_of_element_located((By.ID, "submit")))
+                                    self._driver.find_element(By.ID,'submit').click()
+                            print('arquivo não foi gerado')
+                            self._driver.close()
+                            WebDriverWait(self._driver, 5).until(EC.presence_of_element_located((By.ID, "submit")))
+                            self._driver.find_element(By.ID,'submit').click()
+
                             break
                         else:
                             time.sleep(3)

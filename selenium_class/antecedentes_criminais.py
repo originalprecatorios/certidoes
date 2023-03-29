@@ -22,7 +22,7 @@ class Antecedentes_criminais:
         self._error = pError
         self._captcha = pCaptcha
         self._error._getcoll('error')
-        self._save = '/opt/certidao/download/antecedentes_criminais'
+        self._save = '/opt/certidao/download/antecedentes_criminais{}'.format(self._data['cpf'])
         try:
             if os.path.isdir(f'{self._save}') is False:
                 os.makedirs(f'{self._save}')
@@ -125,18 +125,28 @@ class Antecedentes_criminais:
             self._driver.get_full_page_screenshot_as_file('{}'.format(name))
             self.convert(name)
             self._driver.close()
-            print('Download do arquivo gerado para o cliente {}'.format(self._data['nome']))
-            
+            shutil.rmtree(self._save)
+            time.sleep(2)
+            for arquivo in os.listdir(self._pasta):
+                if arquivo.find('pdf') > -1:
+                    print('Download do arquivo gerado para o cliente {}'.format(self._data['nome']))
+                    self._driver.close()
+                    return
+                else:
+                    print('arquivo não é pdf')
+                    self._driver.close()
+                    WebDriverWait(self._driver, 5).until(EC.presence_of_element_located((By.ID, "submit")))
+                    self._driver.find_element(By.ID,'submit').click()
+            print('arquivo não foi gerado')
+            self._driver.close()
+            WebDriverWait(self._driver, 5).until(EC.presence_of_element_located((By.ID, "submit")))
+            self._driver.find_element(By.ID,'submit').click()
+
 
         except Exception as e:
             self._driver.close()
-            err = {'data':str(datetime.today()).split(' ')[0].replace('-',''),
-                    'dado_utilizado': self._data['nome'],
-                    'sistema': 'estadual',
-                    'funcao' : 'erro na função login',
-            }
-            self._error.addData(err)
-            return
+            WebDriverWait(self._driver, 5).until(EC.presence_of_element_located((By.ID, "submit")))
+            self._driver.find_element(By.ID,'submit').click()
     
 
     def convert(self,pName):

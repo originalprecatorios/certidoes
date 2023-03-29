@@ -18,7 +18,7 @@ class Trabalhista:
         self._captcha = pCaptcha
         self._error._getcoll('error')
 
-        self._save = '/opt/certidao/download/trabalhista'
+        self._save = '/opt/certidao/download/trabalhista{}'.format(self._data['cpf'])
         try:
             shutil.rmtree(self._save)
             os.makedirs(f'{self._save}')
@@ -80,7 +80,25 @@ class Trabalhista:
                             print(archive_name)
                             shutil.move(f"{self._save}/{archive_name}", f"{self._pasta}11- TRT2ª.pdf")
                             self._driver.close()
-                            print('Download do arquivo gerado para o cliente {}'.format(self._data['nome']))
+                            shutil.rmtree(self._save)
+                            time.sleep(2)
+                            for arquivo in os.listdir(self._pasta):
+                                if arquivo.find('pdf') > -1:
+                                    print('Download do arquivo gerado para o cliente {}'.format(self._data['nome']))
+                                    self._driver.close()
+                                    return
+                                else:
+                                    print('arquivo não é pdf')
+                                    self._driver.close()
+                                    WebDriverWait(self._driver, 5).until(EC.presence_of_element_located((By.ID, "submit")))
+                                    self._driver.find_element(By.ID,'submit').click()
+                            print('arquivo não foi gerado')
+                            self._driver.close()
+                            WebDriverWait(self._driver, 5).until(EC.presence_of_element_located((By.ID, "submit")))
+                            self._driver.find_element(By.ID,'submit').click()
+
+
+
                             break
                         else:
                             print('iniciando download')

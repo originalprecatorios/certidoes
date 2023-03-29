@@ -23,7 +23,7 @@ class Esaj_busca:
         self._captcha = pCaptcha
         self._definicao = pName
         self._error._getcoll('error')
-        self._save = '/opt/certidao/download/esaj_busca'
+        self._save = '/opt/certidao/download/esaj_busca{}'.format(self._data['cpf'])
         try:
             if os.path.isdir(f'{self._save}') is False:
                 os.makedirs(f'{self._save}')
@@ -97,20 +97,28 @@ class Esaj_busca:
             time.sleep(3)
             self._driver.get_full_page_screenshot_as_file('{}'.format(name))
             self.convert(name)
-            print('Download concluido para o cpf {}'.format(self._data['cpf']))
+            shutil.rmtree(self._save)
+            time.sleep(2)
+            for arquivo in os.listdir(self._pasta):
+                if arquivo.find('pdf') > -1:
+                    print('Download concluido para o cpf {}'.format(self._data['cpf']))
+                    self._driver.close()
+                    return
+                else:
+                    print('arquivo não é pdf')
+                    self._driver.close()
+                    WebDriverWait(self._driver, 5).until(EC.presence_of_element_located((By.ID, "submit")))
+                    self._driver.find_element(By.ID,'submit').click()
+            print('arquivo não foi gerado')
             self._driver.close()
-            time.sleep(6)
+            WebDriverWait(self._driver, 5).until(EC.presence_of_element_located((By.ID, "submit")))
+            self._driver.find_element(By.ID,'submit').click()
+
 
         except Exception as e:
             self._driver.close()
-            err = {'data':str(datetime.today()).split(' ')[0].replace('-',''),
-                    'dado_utilizado': self._data['nome'],
-                    'sistema': 'municipal',
-                    'funcao' : 'erro na função login',
-            }
-            self._error.addData(err)
-            
-            return
+            WebDriverWait(self._driver, 5).until(EC.presence_of_element_located((By.ID, "submit")))
+            self._driver.find_element(By.ID,'submit').click()
     
     def convert(self,pName):
         # storing image path

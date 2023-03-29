@@ -25,7 +25,7 @@ class Distribuicao_federal:
         self._tipo = pTipo
         
         self._error._getcoll('error')
-        self._save = '/opt/certidao/download/distribuicao_federal'
+        self._save = '/opt/certidao/download/distribuicao_federal{}'.format(self._data['cpf'])
         try:
             if os.path.isdir(f'{self._save}') is False:
                 os.makedirs(f'{self._save}')
@@ -162,19 +162,29 @@ class Distribuicao_federal:
             im_1 = image_1.convert('RGB')
             im_1.save(os.path.join(self._pasta,self._definicao+'.pdf'))
             shutil.rmtree(self._save)
+
             time.sleep(2)
-            print('Download concluido para o cpf {}'.format(self._info['cpf']))
+            for arquivo in os.listdir(self._pasta):
+                if arquivo.find('pdf') > -1:
+                    print('Download concluido para o cpf {}'.format(self._data['cpf']))
+                    self._driver.close()
+                    return
+                else:
+                    print('arquivo não é pdf')
+                    self._driver.close()
+                    WebDriverWait(self._driver, 5).until(EC.presence_of_element_located((By.ID, "submit")))
+                    self._driver.find_element(By.ID,'submit').click()
+            print('arquivo não foi gerado')
             self._driver.close()
+            WebDriverWait(self._driver, 5).until(EC.presence_of_element_located((By.ID, "submit")))
+            self._driver.find_element(By.ID,'submit').click()
+
 
         except Exception as e:
             self._driver.close()
-            err = {'data':str(datetime.today()).split(' ')[0].replace('-',''),
-                    'dado_utilizado': self._data['nome'],
-                    'sistema': 'municipal',
-                    'funcao' : 'erro na função login',
-            }
-            self._error.addData(err)
-            return
+            WebDriverWait(self._driver, 5).until(EC.presence_of_element_located((By.ID, "submit")))
+            self._driver.find_element(By.ID,'submit').click()
+
 
     
     ########## looping até o download concluir 

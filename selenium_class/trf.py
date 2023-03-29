@@ -24,7 +24,7 @@ class Trf:
         self._captcha = pCaptcha
         self._error._getcoll('error')
         self._cont = 0
-        self._save = '/opt/certidao/download/trf'
+        self._save = '/opt/certidao/download/trf{}'.format(self._data['cpf'])
         try:
             if os.path.isdir(f'{self._save}') is False:
                 os.makedirs(f'{self._save}')
@@ -65,14 +65,25 @@ class Trf:
             WebDriverWait(self._driver, 3).until(EC.presence_of_element_located((By.ID, "fPP:dpDec:documentoParte"))).send_keys(self._data['cpf'])
             self._driver.delete_all_cookies()
             WebDriverWait(self._driver, 3).until(EC.presence_of_element_located((By.ID, "fPP:searchProcessos"))).click()
-            time.sleep(6)
+            time.sleep(15)
+            chave = 0 
+            while True:
+                if chave <=3:
+                    display = self._driver.find_element(By.ID,'_viewRoot:status.start').get_attribute('style')
+                    if display.find('none') >-1:
+                        break
+                    else:
+                        chave +=1
+                        time.sleep(5)
+                else:
+                    break
             while True:
                 if self._cont <= 6:
                     try:
                         texto = WebDriverWait(self._driver, 5).until(EC.presence_of_element_located((By.ID, "fPP:processosGridPanel"))).text
                         if texto.find('Sua pesquisa não encontrou nenhum processo disponível.') >= 0 :
                             name = os.path.join(self._pasta,'_PJE_TRF3.png')
-                            time.sleep(2)
+                            time.sleep(5)
                             WebDriverWait(self._driver, 10).until(EC.presence_of_element_located((By.TAG_NAME, "body")))
                             try:
                                 WebDriverWait(self._driver, 10).until(EC.presence_of_element_located((By.CLASS_NAME, "rich-messages-label")))
@@ -82,7 +93,23 @@ class Trf:
                             self._driver.find_element(By.TAG_NAME,'body').send_keys(Keys.CONTROL + Keys.HOME)
                             self._driver.get_full_page_screenshot_as_file('{}'.format(name))
                             self.convert(name)
+                            shutil.rmtree(self._save)
                             self._driver.close()
+                            time.sleep(2)
+                            for arquivo in os.listdir(self._pasta):
+                                if arquivo.find('pdf') > -1:
+                                    print('Download concluido para o cpf {}'.format(self._data['cpf']))
+                                    self._driver.close()
+                                    return
+                                else:
+                                    print('arquivo não é pdf')
+                                    self._driver.close()
+                                    WebDriverWait(self._driver, 5).until(EC.presence_of_element_located((By.ID, "submit")))
+                                    self._driver.find_element(By.ID,'submit').click()
+                            print('arquivo não foi gerado')
+                            self._driver.close()
+                            WebDriverWait(self._driver, 5).until(EC.presence_of_element_located((By.ID, "submit")))
+                            self._driver.find_element(By.ID,'submit').click()
                             return
                     except:
                         self._cont += 1
@@ -100,9 +127,22 @@ class Trf:
                     self._driver.find_element(By.TAG_NAME,'body').send_keys(Keys.CONTROL + Keys.HOME)
                     self._driver.get_full_page_screenshot_as_file('{}'.format(name))
                     self.convert(name)
-                    print('Download concluido para o cpf {}'.format(self._data['cpf']))
+                    shutil.rmtree(self._save)
+                    time.sleep(2)
+                    for arquivo in os.listdir(self._pasta):
+                        if arquivo.find('pdf') > -1:
+                            print('Download concluido para o cpf {}'.format(self._data['cpf']))
+                            self._driver.close()
+                            return
+                        else:
+                            print('arquivo não é pdf')
+                            self._driver.close()
+                            WebDriverWait(self._driver, 5).until(EC.presence_of_element_located((By.ID, "submit")))
+                            self._driver.find_element(By.ID,'submit').click()
+                    print('arquivo não foi gerado')
                     self._driver.close()
-                    break
+                    WebDriverWait(self._driver, 5).until(EC.presence_of_element_located((By.ID, "submit")))
+                    self._driver.find_element(By.ID,'submit').click()
                 else:
                     return
 

@@ -25,7 +25,7 @@ class Municipal:
         self._pasta = self._data['path']
         #self._pasta = '/opt/certidao/{}/'.format(self._data['cpf'].replace('.','').replace('-',''))
 
-        self._save = '/opt/certidao/download/municipal'
+        self._save = '/opt/certidao/download/municipal{}'.format(self._data['cpf'])
 
         try:
             if os.path.isdir(f'{self._save}') is False:
@@ -98,8 +98,23 @@ class Municipal:
                         self._download()
                         archive_name = os.listdir(self._save)[0]
                         shutil.move(f"{self._save}/{archive_name}", f"{self._pasta}3- CND MUNICIPAL.pdf")
+                        shutil.rmtree(self._save)
                         self._driver.close()
-                        print('Download do arquivo gerado para o cliente {}'.format(self._data['nome']))
+                        time.sleep(2)
+                        for arquivo in os.listdir(self._pasta):
+                            if arquivo.find('pdf') > -1:
+                                print('Download concluido para o cpf {}'.format(self._data['cpf']))
+                                self._driver.close()
+                                return
+                            else:
+                                print('arquivo não é pdf')
+                                self._driver.close()
+                                WebDriverWait(self._driver, 5).until(EC.presence_of_element_located((By.ID, "submit")))
+                                self._driver.find_element(By.ID,'submit').click()
+                        print('arquivo não foi gerado')
+                        self._driver.close()
+                        WebDriverWait(self._driver, 5).until(EC.presence_of_element_located((By.ID, "submit")))
+                        self._driver.find_element(By.ID,'submit').click()
                         break
                     except:
                         time.sleep(3)
@@ -120,13 +135,9 @@ class Municipal:
 
         except Exception as e:
             self._driver.close()
-            err = {'data':str(datetime.today()).split(' ')[0].replace('-',''),
-                    'dado_utilizado': self._data['nome'],
-                    'sistema': 'municipal',
-                    'funcao' : 'erro na função login',
-            }
-            self._error.addData(err)
-            return
+            WebDriverWait(self._driver, 5).until(EC.presence_of_element_located((By.ID, "submit")))
+            self._driver.find_element(By.ID,'submit').click()
+           
 
     def solve_cap(self):
         try:
