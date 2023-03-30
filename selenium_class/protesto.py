@@ -108,6 +108,9 @@ class Protesto:
                 time.sleep(0.5)
             #WebDriverWait(self._driver, 3).until(EC.presence_of_element_located((By.ID, "Documento"))).send_keys(self._data['cpf'])
             WebDriverWait(self._driver, 3).until(EC.presence_of_element_located((By.ID, "frmConsulta"))).find_elements(By.TAG_NAME,'input')
+            site_key = self._driver.find_element(By.XPATH,'/html/body/div[59]/div/div[1]/iframe').get_attribute('src').split('=')[2].split('&')[0]
+            response = self._captcha.recaptcha(site_key,self._link)
+            self._driver.execute_script('document.getElementById("g-recaptcha-response").innerHTML = "%s"' % response)
             self._driver.execute_script("ValidarConsulta(this)")
             time.sleep(10)
             texto = WebDriverWait(self._driver, 3).until(EC.presence_of_element_located((By.CLASS_NAME, "resultado-pesquisa"))).text
