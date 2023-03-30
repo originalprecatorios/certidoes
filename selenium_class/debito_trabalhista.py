@@ -82,21 +82,14 @@ class Debito_trabalhista:
                             time.sleep(6)
                             self._download()
                             archive_name = os.listdir(self._save)[0]
-                            shutil.move(f"{self._save}/{archive_name}", f"{self._pasta}12- CERTIDÃO DE DÉBITOS TRABALHISTAS.pdf")
-                            self._driver.close()
+                            shutil.move(f"{self._save}/{archive_name}", f"{self._pasta}12- CERTIDÃO DE DÉBITOS TRABALHISTAS.pdf")       
                             shutil.rmtree(self._save)
-                            
                             time.sleep(2)
+                            self._driver.close()
                             for arquivo in os.listdir(self._pasta):
-                                if arquivo.find('pdf') > -1:
+                                if arquivo.find('12- CERTIDÃO DE DÉBITOS TRABALHISTAS.pdf') > -1:
                                     print('Download do arquivo gerado para o cliente {}'.format(self._data['nome']))
-                                    self._driver.close()
                                     return
-                                else:
-                                    print('arquivo não é pdf')
-                                    self._driver.close()
-                                    WebDriverWait(self._driver, 5).until(EC.presence_of_element_located((By.ID, "submit")))
-                                    self._driver.find_element(By.ID,'submit').click()
                             print('arquivo não foi gerado')
                             self._driver.close()
                             WebDriverWait(self._driver, 5).until(EC.presence_of_element_located((By.ID, "submit")))
@@ -144,7 +137,6 @@ class Debito_trabalhista:
             time.sleep(1)
             self._driver.switch_to.frame(iframe)         
             response = self._captcha.resolve_normal(os.path.join(self._capt,'captcha.png'))
-            #response = ''
             if response is None:
                 response = self._captcha.resolve_normal(os.path.join(self._capt,'captcha.png'))
             #response = ''

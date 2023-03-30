@@ -133,18 +133,13 @@ class Protesto:
                 shutil.move(f"{self._save}/{archive_name}", f"{self._pasta}{archive_name}")
                 time.sleep(3)
                 shutil.rmtree(self._save)
-                
                 time.sleep(2)
+                self._driver.close()
                 for arquivo in os.listdir(self._pasta):
-                    if arquivo.find('pdf') > -1:
+                    if arquivo.find('13- CENPROT.pdf') > -1:
                         print('Download concluido para o cpf {}'.format(self._data['cpf']))
-                        self._driver.close()
+                        
                         return
-                    else:
-                        print('arquivo não é pdf')
-                        self._driver.close()
-                        WebDriverWait(self._driver, 5).until(EC.presence_of_element_located((By.ID, "submit")))
-                        self._driver.find_element(By.ID,'submit').click()
                 print('arquivo não foi gerado')
                 self._driver.close()
                 WebDriverWait(self._driver, 5).until(EC.presence_of_element_located((By.ID, "submit")))

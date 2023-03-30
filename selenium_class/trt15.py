@@ -79,10 +79,10 @@ class Trt15:
                     file.write(self._driver.find_element(By.XPATH,'//*[@id="certidaoActionForm:j_id51"]/div/span[1]/img').screenshot_as_png)
                 response = self._captcha.resolve_normal(os.path.join(self._pasta,'captcha.png'))
                 time.sleep(1)
-                #response = ''
+                
                 if response is None:
                     response = self._captcha.resolve_normal(os.path.join(self._pasta,'captcha.png'))
-                
+                #response = ''
                 response = response.replace('=','')
                 if '+' in response:
                     soma = int(response.split('+')[0]) + int(response.split('+')[1])
@@ -124,19 +124,13 @@ class Trt15:
             self._download()
             archive_name = os.listdir(self._save)[0]
             shutil.move(f"{self._save}/{archive_name}", f"{self._pasta}14- TRT15ª.pdf")
-            self._driver.close()
             shutil.rmtree(self._save)
             time.sleep(2)
+            self._driver.close()
             for arquivo in os.listdir(self._pasta):
-                if arquivo.find('pdf') > -1:
+                if arquivo.find('14- TRT15ª.pdf') > -1:
                     print('Download concluido para o cpf {}'.format(self._data['cpf']))
-                    self._driver.close()
                     return
-                else:
-                    print('arquivo não é pdf')
-                    self._driver.close()
-                    WebDriverWait(self._driver, 5).until(EC.presence_of_element_located((By.ID, "submit")))
-                    self._driver.find_element(By.ID,'submit').click()
             print('arquivo não foi gerado')
             self._driver.close()
             WebDriverWait(self._driver, 5).until(EC.presence_of_element_located((By.ID, "submit")))

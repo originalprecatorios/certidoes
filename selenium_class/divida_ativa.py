@@ -61,25 +61,20 @@ class Divida_ativa:
             WebDriverWait(self._driver, 3).until(EC.presence_of_element_located((By.ID, "emitirCrda:crdaInputCpf"))).send_keys(self._data['cpf'])
             site_key = self._driver.find_element(By.TAG_NAME,'iframe').get_attribute('src').split('=')[2].split('&')[0]
             response = self._captcha.recaptcha(site_key,self._link)
+            #response = ''
             self._driver.execute_script("document.getElementById('g-recaptcha-response').innerHTML = '"+response+"';")
             WebDriverWait(self._driver, 3).until(EC.presence_of_element_located((By.XPATH, "/html/body/div[1]/div/div/div/div[2]/div/div[3]/div/div[2]/div[2]/span/form/div/div[2]/div[2]/input[2]"))).click()
             time.sleep(6)
             self._download()
             archive_name = os.listdir(self._save)[0]
             shutil.move(f"{self._save}/{archive_name}", f"{self._pasta}17- DIVIDA ATIVA.pdf")
-            self._driver.close()
             shutil.rmtree(self._save)
             time.sleep(2)
+            self._driver.close()
             for arquivo in os.listdir(self._pasta):
-                if arquivo.find('pdf') > -1:
+                if arquivo.find('17- DIVIDA ATIVA.pdf') > -1:
                     print('Download do arquivo gerado para o cliente {}'.format(self._data['nome']))
-                    self._driver.close()
                     return
-                else:
-                    print('arquivo não é pdf')
-                    self._driver.close()
-                    WebDriverWait(self._driver, 5).until(EC.presence_of_element_located((By.ID, "submit")))
-                    self._driver.find_element(By.ID,'submit').click()
             print('arquivo não foi gerado')
             self._driver.close()
             WebDriverWait(self._driver, 5).until(EC.presence_of_element_located((By.ID, "submit")))

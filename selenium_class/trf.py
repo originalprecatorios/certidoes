@@ -67,22 +67,26 @@ class Trf:
             WebDriverWait(self._driver, 3).until(EC.presence_of_element_located((By.ID, "fPP:searchProcessos"))).click()
             time.sleep(15)
             chave = 0 
-            while True:
-                if chave <=3:
-                    display = self._driver.find_element(By.ID,'_viewRoot:status.start').get_attribute('style')
-                    if display.find('none') >-1:
-                        break
+            try:
+                while True:
+                    if chave <=3:
+                        display = self._driver.find_element(By.ID,'_viewRoot:status.start').get_attribute('style')
+                        if display.find('none') >-1:
+                            break
+                        else:
+                            chave +=1
+                            time.sleep(5)
                     else:
-                        chave +=1
-                        time.sleep(5)
-                else:
-                    break
+                        break
+            except:
+                time.sleep(2)
+                pass
             while True:
                 if self._cont <= 6:
                     try:
                         texto = WebDriverWait(self._driver, 5).until(EC.presence_of_element_located((By.ID, "fPP:processosGridPanel"))).text
                         if texto.find('Sua pesquisa não encontrou nenhum processo disponível.') >= 0 :
-                            name = os.path.join(self._pasta,'_PJE_TRF3.png')
+                            name = os.path.join(self._pasta,'16- PESQUISA ONLINE TRF3.png')
                             time.sleep(5)
                             WebDriverWait(self._driver, 10).until(EC.presence_of_element_located((By.TAG_NAME, "body")))
                             try:
@@ -97,15 +101,9 @@ class Trf:
                             self._driver.close()
                             time.sleep(2)
                             for arquivo in os.listdir(self._pasta):
-                                if arquivo.find('pdf') > -1:
+                                if arquivo.find('16- PESQUISA ONLINE TRF3.pdf') > -1:
                                     print('Download concluido para o cpf {}'.format(self._data['cpf']))
-                                    self._driver.close()
                                     return
-                                else:
-                                    print('arquivo não é pdf')
-                                    self._driver.close()
-                                    WebDriverWait(self._driver, 5).until(EC.presence_of_element_located((By.ID, "submit")))
-                                    self._driver.find_element(By.ID,'submit').click()
                             print('arquivo não foi gerado')
                             self._driver.close()
                             WebDriverWait(self._driver, 5).until(EC.presence_of_element_located((By.ID, "submit")))
@@ -129,16 +127,11 @@ class Trf:
                     self.convert(name)
                     shutil.rmtree(self._save)
                     time.sleep(2)
+                    self._driver.close()
                     for arquivo in os.listdir(self._pasta):
-                        if arquivo.find('pdf') > -1:
+                        if arquivo.find('16- PESQUISA ONLINE TRF3.pdf') > -1:
                             print('Download concluido para o cpf {}'.format(self._data['cpf']))
-                            self._driver.close()
                             return
-                        else:
-                            print('arquivo não é pdf')
-                            self._driver.close()
-                            WebDriverWait(self._driver, 5).until(EC.presence_of_element_located((By.ID, "submit")))
-                            self._driver.find_element(By.ID,'submit').click()
                     print('arquivo não foi gerado')
                     self._driver.close()
                     WebDriverWait(self._driver, 5).until(EC.presence_of_element_located((By.ID, "submit")))
