@@ -127,14 +127,32 @@ class Distribuicao_federal:
                 select.select_by_value('TRF')
                 
             site_key = self._driver.find_element(By.TAG_NAME,'iframe').get_attribute('src').split('=')[2].split('&')[0]
-            response = self._captcha.recaptcha(site_key,self._link)
-            #response = ''
+            #response = self._captcha.recaptcha(site_key,self._link)
+            response = ''
             #self._driver.execute_script("document.getElementById('g-recaptcha-response').innerHTML = #'"+response+"';")
             self._driver.execute_script('document.getElementById("g-recaptcha-response").innerHTML = "%s"' % response)
 
             WebDriverWait(self._driver, 5).until(EC.presence_of_element_located((By.ID, "submit")))
             self._driver.find_element(By.ID,'submit').click()
-           
+            time.sleep(2)
+            try:
+                WebDriverWait(self._driver, 10).until(EC.presence_of_element_located((By.ID, "NomeMae")))
+                self._driver.find_element(By.ID,'NomeMae').send_keys(self._data['mae'])
+                dia = self._data['nascimento'][8:]
+                mes = self._data['nascimento'][5:7]
+                ano = self._data['nascimento'][:4]
+                WebDriverWait(self._driver, 10).until(EC.presence_of_element_located((By.ID, "DataNascimento")))
+                self._driver.find_element(By.ID,'DataNascimento').send_keys(dia+'/'+mes+'/'+ano)
+                WebDriverWait(self._driver, 3).until(EC.presence_of_element_located((By.ID, "TipoDocumento")))
+                select = Select(self._driver.find_element(By.ID, 'TipoDocumento'))
+                select.select_by_value('RG')
+                WebDriverWait(self._driver, 10).until(EC.presence_of_element_located((By.ID, "DocumentoComplementar")))
+                self._driver.find_element(By.ID,'DocumentoComplementar').send_keys(self._data['rg'])
+                WebDriverWait(self._driver, 10).until(EC.presence_of_element_located((By.TAG_NAME, "form")))
+                self._driver.find_element(By.TAG_NAME,'form').find_elements(By.TAG_NAME,'div')[4].find_element(By.TAG_NAME,'button').click()
+            except:
+                pass
+
             WebDriverWait(self._driver, 10).until(EC.presence_of_element_located((By.ID, "botaoImprimirCertidao")))
             #self._driver.find_element(By.ID,'botaoImprimirCertidao').click()
             cont = 0
