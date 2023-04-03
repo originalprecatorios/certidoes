@@ -127,8 +127,8 @@ class Distribuicao_federal:
                 select.select_by_value('TRF')
                 
             site_key = self._driver.find_element(By.TAG_NAME,'iframe').get_attribute('src').split('=')[2].split('&')[0]
-            #response = self._captcha.recaptcha(site_key,self._link)
-            response = ''
+            response = self._captcha.recaptcha(site_key,self._link)
+            #response = ''
             #self._driver.execute_script("document.getElementById('g-recaptcha-response').innerHTML = #'"+response+"';")
             self._driver.execute_script('document.getElementById("g-recaptcha-response").innerHTML = "%s"' % response)
 
