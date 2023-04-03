@@ -113,6 +113,11 @@ class Protesto:
             #self._driver.execute_script('document.getElementById("g-recaptcha-response").innerHTML = "%s"' % response)
             self._driver.execute_script("ValidarConsulta(this)")
             time.sleep(10)
+            try:
+                WebDriverWait(self._driver, 3).until(EC.presence_of_element_located((By.ID, "Celular")))
+                time.sleep(25)
+            except:
+                pass
             texto = WebDriverWait(self._driver, 3).until(EC.presence_of_element_located((By.CLASS_NAME, "resultado-pesquisa"))).text
             if texto.find('Protocolo da Consulta') >= 0:
                 self._driver.execute_script("document.getElementById('cookiefirst-root').style.display = 'none'")
