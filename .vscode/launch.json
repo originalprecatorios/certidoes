@@ -33,7 +33,7 @@
             "name": "TESTES",
             "type": "python",
             "request": "launch",
-            "program": "${workspaceFolder}/t.py",
+            "program": "${workspaceFolder}/teste.py",
             "console": "integratedTerminal",
             "envFile": "${workspaceFolder}/.env",
             "env": {

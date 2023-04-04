@@ -80,7 +80,7 @@ class Esaj:
                 self._driver.find_element(By.ID,"dataNascimento").send_keys(data)
 
             WebDriverWait(self._driver, 3).until(EC.presence_of_element_located((By.ID, "identity.solicitante.deEmail")))
-            self._driver.find_element(By.ID,"identity.solicitante.deEmail").send_keys(self._data['email'])
+            self._driver.find_element(By.ID,"identity.solicitante.deEmail").send_keys(self._data['email'].strip())
             WebDriverWait(self._driver, 3).until(EC.presence_of_element_located((By.ID, "confirmacaoInformacoes")))
             self._driver.find_element(By.ID,"confirmacaoInformacoes").click()
             time.sleep(1)
