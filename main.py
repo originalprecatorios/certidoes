@@ -4,7 +4,8 @@ from selenium_class.estadual import Estadual
 from selenium_class.municipal import Municipal
 from selenium_class.federal import Federal
 from selenium_class.trt15 import Trt15
-from selenium_class.distribuicao_federal import Distribuicao_federal
+#from selenium_class.distribuicao_federal import Distribuicao_federal
+from request.distribuicao_federal import Distribuicao_federal
 from selenium_class.debito_trabalhista import Debito_trabalhista
 from selenium_class.protesto import Protesto
 from selenium_class.protesto2 import Protesto2
@@ -243,10 +244,10 @@ def certidao_initial(id_mongo):
                     while True:
                         if cont <=2:
                             try:
-                                # USO COM O CHROME
-                                #verifica_chrome()
-                                df1 = Distribuicao_federal(u,os.environ['PAGE_URL_TRF3_JUS'],mongo,erro,cap,u,'1','9- CERTIDÃO DE DISTRIBUIÇÃO FEDERAL DE 1ª INSTANCIA','CIVEL')
-                                df1.login()
+                                df1 = Distribuicao_federal(u,mongo,cap,'1','9- CERTIDÃO DE DISTRIBUIÇÃO FEDERAL DE 1ª INSTANCIA','CIVEL')
+                                df1.initial()
+                                df1.creat_html()
+                                df1.creat_document()
                                 del df1
                                 modifica['$set']['extracted']['_TRF3_JUS_SJSP'] = 1
                                 break
@@ -273,10 +274,10 @@ def certidao_initial(id_mongo):
                     while True:
                         if cont <=2:
                             try:
-                                # USO COM O CHROME
-                                #verifica_chrome()
-                                df2 = Distribuicao_federal(u,os.environ['PAGE_URL_TRF3_JUS'],mongo,erro,cap,u,'2','10- CERTIDÃO DE DISTRIBUIÇÃO FEDERAL DE 2ª INSTANCIA','CIVEL')
-                                df2.login()
+                                df2 = Distribuicao_federal(u,mongo,cap,'2','10- CERTIDÃO DE DISTRIBUIÇÃO FEDERAL DE 2ª INSTANCIA','CIVEL')
+                                df2.initial()
+                                df2.creat_html()
+                                df2.creat_document()
                                 del df2
                                 modifica['$set']['extracted']['_TRF3_JUS_TRF'] = 1
                                 break
@@ -303,10 +304,10 @@ def certidao_initial(id_mongo):
                     while True:
                         if cont <=2:
                             try:
-                                # USO COM O CHROME
-                                #verifica_chrome()
-                                df1 = Distribuicao_federal(u,os.environ['PAGE_URL_TRF3_JUS'],mongo,erro,cap,u,'1','9.1- CERTIDÃO DE DISTRIBUIÇÃO FEDERAL DE 1ª INSTANCIA','CRIMINAL')
-                                df1.login()
+                                df1 = Distribuicao_federal(u,mongo,cap,'1','9.1- CERTIDÃO DE DISTRIBUIÇÃO FEDERAL DE 1ª INSTANCIA','CRIMINAL')
+                                df1.initial()
+                                df1.creat_html()
+                                df1.creat_document()
                                 del df1
                                 modifica['$set']['extracted']['_DISTRIBUICAO_FEDERAL_1_INSTANCIA'] = 1
                                 break
@@ -333,10 +334,10 @@ def certidao_initial(id_mongo):
                     while True:
                         if cont <=2:
                             try:
-                                # USO COM O CHROME
-                                #verifica_chrome()
-                                df2 = Distribuicao_federal(u,os.environ['PAGE_URL_TRF3_JUS'],mongo,erro,cap,u,'2','10.1- CERTIDÃO DE DISTRIBUIÇÃO FEDERAL DE 2ª INSTANCIA','CRIMINAL')
-                                df2.login()
+                                df2 = Distribuicao_federal(u,mongo,cap,'2','10.1- CERTIDÃO DE DISTRIBUIÇÃO FEDERAL DE 2ª INSTANCIA','CRIMINAL')
+                                df2.initial()
+                                df2.creat_html()
+                                df2.creat_document()
                                 del df2
                                 modifica['$set']['extracted']['_DISTRIBUICAO_FEDERAL_2_INSTANCIA'] = 1
                                 break
@@ -356,6 +357,126 @@ def certidao_initial(id_mongo):
                             modifica['$set']['extracted']['_DISTRIBUICAO_FEDERAL_2_INSTANCIA'] = 2
                             print('Erro ao acessar o site, para gerar a certidão _DISTRIBUICAO_FEDERAL_2_INSTANCIA')
                             break
+                
+
+                #elif ext == '_TRF3_JUS_SJSP':
+                #    cont = 0
+                #    while True:
+                #        if cont <=2:
+                #            try:
+                #                # USO COM O CHROME
+                #                #verifica_chrome()
+                #                df1 = Distribuicao_federal(u,os.environ['PAGE_URL_TRF3_JUS'],mongo,erro,cap,u,'1','9- CERTIDÃO DE DISTRIBUIÇÃO FEDERAL DE 1ª INSTANCIA','CIVEL')
+                #                df1.login()
+                #                del df1
+                #                modifica['$set']['extracted']['_TRF3_JUS_SJSP'] = 1
+                #                break
+                #            except Exception as e:
+                #                if cont == 2:
+                #                    arr = {
+                #                        'created_at': str(datetime.today()).split(' ')[0].replace('-',''),
+                #                        'error': str(e),
+                #                        'cpf' : cpf_binario,
+                #                        'robot' : '_TRF3_JUS_SJSP',
+                #                        'id_certidao': ObjectId(id),
+                #                    }
+                #                    erro.getcoll('error_cert')
+                #                    erro.addData(arr)
+                #                cont += 1
+                #        else:
+                #            modifica['$set']['extracted']['_TRF3_JUS_SJSP'] = 2
+                #            print('Erro ao acessar o site, para gerar a certidão _TRF3_JUS_SJSP')
+                #            break
+                    
+
+                #elif ext == '_TRF3_JUS_TRF':
+                #    cont = 0
+                #    while True:
+                #        if cont <=2:
+                #            try:
+                #                # USO COM O CHROME
+                #                #verifica_chrome()
+                #                df2 = Distribuicao_federal(u,os.environ['PAGE_URL_TRF3_JUS'],mongo,erro,cap,u,'2','10- CERTIDÃO DE DISTRIBUIÇÃO FEDERAL DE 2ª INSTANCIA','CIVEL')
+                #                df2.login()
+                #                del df2
+                #                modifica['$set']['extracted']['_TRF3_JUS_TRF'] = 1
+                #                break
+                #            except Exception as e:
+                #                if cont == 2:
+                #                    arr = {
+                #                        'created_at': str(datetime.today()).split(' ')[0].replace('-',''),
+                #                        'error': str(e),
+                #                        'cpf' : cpf_binario,
+                #                        'robot' : '_TRF3_JUS_TRF',
+                #                        'id_certidao': ObjectId(id),
+                #                    }
+                #                    erro.getcoll('error_cert')
+                #                    erro.addData(arr)
+                #                cont += 1
+                #        else:
+                #            modifica['$set']['extracted']['_TRF3_JUS_TRF'] = 2
+                #            print('Erro ao acessar o site, para gerar a certidão _TRF3_JUS_TRF')
+                #            break
+                
+
+                #elif ext == '_DISTRIBUICAO_FEDERAL_1_INSTANCIA':
+                #    cont = 0
+                #    while True:
+                #        if cont <=2:
+                #            try:
+                #                # USO COM O CHROME
+                #                #verifica_chrome()
+                #                df1 = Distribuicao_federal(u,os.environ['PAGE_URL_TRF3_JUS'],mongo,erro,cap,u,'1','9.1- CERTIDÃO DE DISTRIBUIÇÃO FEDERAL DE 1ª INSTANCIA','CRIMINAL')
+                #                df1.login()
+                #                del df1
+                #                modifica['$set']['extracted']['_DISTRIBUICAO_FEDERAL_1_INSTANCIA'] = 1
+                #                break
+                #            except Exception as e:
+                #                if cont == 2:
+                #                    arr = {
+                #                        'created_at': str(datetime.today()).split(' ')[0].replace('-',''),
+                #                        'error': str(e),
+                #                        'cpf' : cpf_binario,
+                #                        'robot' : '_DISTRIBUICAO_FEDERAL_1_INSTANCIA',
+                #                        'id_certidao': ObjectId(id),
+                #                    }
+                #                    erro.getcoll('error_cert')
+                #                    erro.addData(arr)
+                #                cont += 1
+                #        else:
+                #            modifica['$set']['extracted']['_DISTRIBUICAO_FEDERAL_1_INSTANCIA'] = 2
+                #            print('Erro ao acessar o site, para gerar a certidão _DISTRIBUICAO_FEDERAL_1_INSTANCIA')
+                #            break
+                    
+
+                #elif ext == '_DISTRIBUICAO_FEDERAL_2_INSTANCIA':
+                #    cont = 0
+                #    while True:
+                #        if cont <=2:
+                #            try:
+                #                # USO COM O CHROME
+                #                #verifica_chrome()
+                #                df2 = Distribuicao_federal(u,os.environ['PAGE_URL_TRF3_JUS'],mongo,erro,cap,u,'2','10.1- CERTIDÃO DE DISTRIBUIÇÃO FEDERAL DE 2ª INSTANCIA','CRIMINAL')
+                #                df2.login()
+                #                del df2
+                #                modifica['$set']['extracted']['_DISTRIBUICAO_FEDERAL_2_INSTANCIA'] = 1
+                #                break
+                #            except Exception as e:
+                #                if cont == 2:
+                #                    arr = {
+                #                        'created_at': str(datetime.today()).split(' ')[0].replace('-',''),
+                #                        'error': str(e),
+                #                        'cpf' : cpf_binario,
+                #                        'robot' : '_DISTRIBUICAO_FEDERAL_2_INSTANCIA',
+                #                        'id_certidao': ObjectId(id),
+                #                    }
+                #                    erro.getcoll('error_cert')
+                #                    erro.addData(arr)
+                #                cont += 1
+                #        else:
+                #            modifica['$set']['extracted']['_DISTRIBUICAO_FEDERAL_2_INSTANCIA'] = 2
+                #            print('Erro ao acessar o site, para gerar a certidão _DISTRIBUICAO_FEDERAL_2_INSTANCIA')
+                #            break
                     
                 
                 elif ext == '_TRTSP':
@@ -768,8 +889,8 @@ def certidao_initial(id_mongo):
 
 # Configuração para teste
 '''
-#dados = {'_id':'63ff68d8128182d5699998d0'}
-dados = {"_id": "6405ec5128f620c3ddd9fb35", "certidao": {"_TRT15"}}
+dados = {'_id':'63ff68d8128182d5699998d0'}
+#dados = {"_id": "6405ec5128f620c3ddd9fb35", "certidao": {"_TRT15"}}
 certidao_initial(dados)
 '''
 
