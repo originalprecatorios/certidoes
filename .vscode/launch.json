@@ -21,7 +21,7 @@
             "name": "CERTIDOES2",
             "type": "python",
             "request": "launch",
-            "program": "${workspaceFolder}/index2.py",
+            "program": "${workspaceFolder}/process.py",
             "console": "integratedTerminal",
             "envFile": "${workspaceFolder}/.env",
             "env": {

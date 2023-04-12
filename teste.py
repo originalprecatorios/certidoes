@@ -6,68 +6,67 @@ import os
 from PIL import Image
 import img2pdf
 import requests
-from bs4 import BeautifulSoup
-import time
+import json
 
 captcha = Solve_Captcha()
+response = captcha.recaptcha('6LdBDtkUAAAAAPWtjfRT93OAzGSZojdvLA22RkNK','https://pje.trt2.jus.br/pje-certidoes-api/api/certidoes/trabalhistas/emissao')
+url = "https://pje.trt2.jus.br/pje-certidoes-api/api/certidoes/trabalhistas/emissao"
 
-fp = webdriver.FirefoxProfile()
-fp.set_preference("general.useragent.override", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.45 Safari/537.36")
-driver = webdriver.Firefox(firefox_profile=fp)
-driver.get('https://esaj.tjsp.jus.br/sco/abrirCadastro.do')
-time.sleep(2)
-uuidcaptcha = driver.find_element(By.ID,'uuidCaptcha').get_attribute('value')
-id_recaptcha = driver.find_element(By.ID,'id_recaptcha_response_token').get_attribute('value')
-jsessionid = driver.get_cookies()[0]['value']
-kjsessionis = driver.get_cookies()[1]['value']
-utma = driver.get_cookies()[2]['value']
-utmc = driver.get_cookies()[3]['value']
-utmz = driver.get_cookies()[4]['value']
-utmt = driver.get_cookies()[5]['value']
-utmb = driver.get_cookies()[6]['value']
-
-
-
-url = "https://esaj.tjsp.jus.br/sco/salvarCadastro.do"
-
-payload='pedidoIntranet=false&entity.cdModelo=6&entity.tpPessoa=F&entity.tpPessoa=F&entity.nmPesquisa=Wesley Silva Cabral de Oliveira&entity.nuCpfFormatado=403.154.468-54&entity.nuRgFormatado=487882398&entity.nuRgDig=&entity.flGenero=M&entity.nmMae=Juliene Maria da Silva&entity.nmPai=&entity.dtNascimento=14%2F11%2F1992&entity.naturalidade.cdMunicipio=&entity.naturalidade.nmMunicipio=&entity.naturalidade.cdUf=&recaptcha_response_token={}&uuidCaptcha={}&entity.solicitante.deEmail=wesley.silva.cabral%40hotmail.com&confirmacaoInformacoes=true'.format(id_recaptcha,uuidcaptcha)
+payload = json.dumps({
+  "criterioDeEmissao": "CPF",
+  "nome": "",
+  "numeroDoDocumento": "403.154.468-54",
+  "respostaDoCaptcha": "{}".format(response)
+})
 headers = {
-  'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7',
-  'Accept-Language': 'pt-BR,pt;q=0.9,en-US;q=0.8,en;q=0.7',
-  'Cache-Control': 'max-age=0',
-  'Connection': 'keep-alive',
-  'Content-Type': 'application/x-www-form-urlencoded',
-  'Cookie': f'JSESSIONID={jsessionid}; K-JSESSIONID-bocbpjmm={kjsessionis}; __utmz={utmz}; __utma={utma}; __utmc={utmc}; __utmt={utmt}; __utmb={utmb}',
-  'Origin': 'https://esaj.tjsp.jus.br',
-  'Referer': 'https://esaj.tjsp.jus.br/sco/abrirCadastro.do',
-  'Sec-Fetch-Dest': 'document',
-  'Sec-Fetch-Mode': 'navigate',
-  'Sec-Fetch-Site': 'same-origin',
-  'Sec-Fetch-User': '?1',
-  'Upgrade-Insecure-Requests': '1',
-  'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/111.0.0.0 Safari/537.36',
+  'authority': 'pje.trt2.jus.br',
+  'accept': 'application/json, text/plain, */*',
+  'accept-language': 'pt-BR,pt;q=0.9,en-US;q=0.8,en;q=0.7',
+  'content-type': 'application/json',
+  'cookie': '_ga=GA1.3.371081492.1678111699',
+  'origin': 'https://pje.trt2.jus.br',
+  'referer': 'https://pje.trt2.jus.br/certidoes/trabalhista/emissao',
   'sec-ch-ua': '"Google Chrome";v="111", "Not(A:Brand";v="8", "Chromium";v="111"',
   'sec-ch-ua-mobile': '?0',
-  'sec-ch-ua-platform': '"Linux"'
+  'sec-ch-ua-platform': '"Linux"',
+  'sec-fetch-dest': 'empty',
+  'sec-fetch-mode': 'cors',
+  'sec-fetch-site': 'same-origin',
+  'user-agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/111.0.0.0 Safari/537.36'
 }
 
 response = requests.request("POST", url, headers=headers, data=payload)
 
 print(response.text)
 
+url = "https://pje.trt2.jus.br/pje-certidoes-api/api/certidoes/trabalhistas/{}".format(response.text.split(':')[1].replace('}',''))
 
+payload={}
+headers = {
+  'authority': 'pje.trt2.jus.br',
+  'accept': 'application/json, text/plain, */*',
+  'accept-language': 'pt-BR,pt;q=0.9,en-US;q=0.8,en;q=0.7',
+  'cookie': '_ga=GA1.3.371081492.1678111699',
+  'referer': 'https://pje.trt2.jus.br/certidoes/trabalhista/certidao/8189745320',
+  'sec-ch-ua': '"Google Chrome";v="111", "Not(A:Brand";v="8", "Chromium";v="111"',
+  'sec-ch-ua-mobile': '?0',
+  'sec-ch-ua-platform': '"Linux"',
+  'sec-fetch-dest': 'empty',
+  'sec-fetch-mode': 'cors',
+  'sec-fetch-site': 'same-origin',
+  'user-agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/111.0.0.0 Safari/537.36'
+}
 
+response = requests.request("GET", url, headers=headers, data=payload)
 
+print(response.text)
 
-
-
-
-
-
-
-
+texto_formatado = response.text.replace('src="assets/imagens/brasao.png\"','src="/opt/projetos/original/certidoes/templates/brasao.png"')
+with open('/opt/projetos/original/certidoes/templates/response_css.text') as arquivo:
+  dado = arquivo.read()
 with open('arquivo.html', 'w') as f:
-    f.write(response.text)
+    f.write(texto_formatado)
+    f.write(f'<style>{dado}</style>')
 fp = webdriver.FirefoxProfile()
 fp.set_preference("general.useragent.override", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.45 Safari/537.36")
 driver = webdriver.Firefox(firefox_profile=fp)

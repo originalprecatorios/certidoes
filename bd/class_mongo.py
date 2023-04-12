@@ -106,6 +106,9 @@ class Mongo:
     def updateOne_Query(self, pDataBefore, pDataAfter):
         return self.col.update_one(pDataBefore, pDataAfter)
     
+    def _upsert(self, p_dados, p_criterio):
+        return self.col.update_one(p_criterio, p_dados, upsert=True)
+    
     def close(self):
         return self.col.close()
 

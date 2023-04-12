@@ -20,6 +20,7 @@ from selenium_class.esaj import Esaj
 from selenium_class.esaj_busca import Esaj_busca
 from create_certificate.create import Creat
 from selenium_class.antecedentes_criminais import Antecedentes_criminais
+from selenium_class.pje_trt import Pje_trt
 from bd.class_mongo import Mongo
 from decouple import config
 from recaptcha.captcha import Solve_Captcha
@@ -246,11 +247,16 @@ def certidao_initial(id_mongo):
                             try:
                                 df1 = Distribuicao_federal(u,mongo,cap,'1','9- CERTIDÃO DE DISTRIBUIÇÃO FEDERAL DE 1ª INSTANCIA','CIVEL')
                                 df1.initial()
-                                df1.creat_html()
-                                df1.creat_document()
-                                del df1
-                                modifica['$set']['extracted']['_TRF3_JUS_SJSP'] = 1
-                                break
+                                retorno = df1.creat_html()
+                                if retorno is True:
+                                    df1.creat_document()
+                                    del df1
+                                    modifica['$set']['extracted']['_TRF3_JUS_SJSP'] = 1
+                                    break
+                                else:
+                                    del df1
+                                    modifica['$set']['extracted']['_TRF3_JUS_SJSP'] = 3
+                                    break
                             except Exception as e:
                                 if cont == 2:
                                     arr = {
@@ -276,11 +282,16 @@ def certidao_initial(id_mongo):
                             try:
                                 df2 = Distribuicao_federal(u,mongo,cap,'2','10- CERTIDÃO DE DISTRIBUIÇÃO FEDERAL DE 2ª INSTANCIA','CIVEL')
                                 df2.initial()
-                                df2.creat_html()
-                                df2.creat_document()
-                                del df2
-                                modifica['$set']['extracted']['_TRF3_JUS_TRF'] = 1
-                                break
+                                retorno = df2.creat_html()
+                                if retorno is True:
+                                    df2.creat_document()
+                                    del df2
+                                    modifica['$set']['extracted']['_TRF3_JUS_TRF'] = 1
+                                    break
+                                else:
+                                    del df2
+                                    modifica['$set']['extracted']['_TRF3_JUS_TRF'] = 3
+                                    break
                             except Exception as e:
                                 if cont == 2:
                                     arr = {
@@ -306,11 +317,16 @@ def certidao_initial(id_mongo):
                             try:
                                 df1 = Distribuicao_federal(u,mongo,cap,'1','9.1- CERTIDÃO DE DISTRIBUIÇÃO FEDERAL DE 1ª INSTANCIA','CRIMINAL')
                                 df1.initial()
-                                df1.creat_html()
-                                df1.creat_document()
-                                del df1
-                                modifica['$set']['extracted']['_DISTRIBUICAO_FEDERAL_1_INSTANCIA'] = 1
-                                break
+                                retorno = df1.creat_html()
+                                if retorno is True:
+                                    df1.creat_document()
+                                    del df1
+                                    modifica['$set']['extracted']['_DISTRIBUICAO_FEDERAL_1_INSTANCIA'] = 1
+                                    break
+                                else:
+                                    del df1
+                                    modifica['$set']['extracted']['_DISTRIBUICAO_FEDERAL_1_INSTANCIA'] = 3
+                                    break
                             except Exception as e:
                                 if cont == 2:
                                     arr = {
@@ -336,11 +352,16 @@ def certidao_initial(id_mongo):
                             try:
                                 df2 = Distribuicao_federal(u,mongo,cap,'2','10.1- CERTIDÃO DE DISTRIBUIÇÃO FEDERAL DE 2ª INSTANCIA','CRIMINAL')
                                 df2.initial()
-                                df2.creat_html()
-                                df2.creat_document()
-                                del df2
-                                modifica['$set']['extracted']['_DISTRIBUICAO_FEDERAL_2_INSTANCIA'] = 1
-                                break
+                                retorno = df2.creat_html()
+                                if retorno is True:
+                                    df2.creat_document()
+                                    del df2
+                                    modifica['$set']['extracted']['_DISTRIBUICAO_FEDERAL_2_INSTANCIA'] = 1
+                                    break
+                                else:
+                                    del df2
+                                    modifica['$set']['extracted']['_DISTRIBUICAO_FEDERAL_2_INSTANCIA'] = 3
+                                    break
                             except Exception as e:
                                 if cont == 2:
                                     arr = {
@@ -842,6 +863,33 @@ def certidao_initial(id_mongo):
                             modifica['$set']['extracted']['_ANTECEDENTES_CRIMINAIS'] = 2
                             print('Erro ao acessar o site, para gerar a certidão _ANTECEDENTES_CRIMINAIS')
                             break
+                
+                elif ext == '_PJE_TRT':
+                    cont = 0
+                    while True:
+                        if cont <=2:
+                            try:
+                                pj = Pje_trt(u,os.environ['PAGE_URL_PJE_TRT'],mongo,erro,cap)
+                                pj.login()
+                                del pj
+                                modifica['$set']['extracted']['_PJE_TRT'] = 1
+                                break
+                            except Exception as e:
+                                if cont == 2:
+                                    arr = {
+                                        'created_at': str(datetime.today()).split(' ')[0].replace('-',''),
+                                        'error': str(e),
+                                        'cpf' : cpf_binario,
+                                        'robot' : '_PJE_TRT',
+                                        'id_certidao': ObjectId(id),
+                                    }
+                                    erro.getcoll('error_cert')
+                                    erro.addData(arr)
+                                cont += 1
+                        else:
+                            modifica['$set']['extracted']['_PJE_TRT'] = 2
+                            print('Erro ao acessar o site, para gerar a certidão _PJE_TRT')
+                            break
                     
 
         modifica['$set']['status_process'] = True
@@ -889,7 +937,7 @@ def certidao_initial(id_mongo):
 
 # Configuração para teste
 '''
-dados = {'_id':'63ff68d8128182d5699998d0'}
+dados = {'_id':'642c2d366bdd5fa468e97c88'}
 #dados = {"_id": "6405ec5128f620c3ddd9fb35", "certidao": {"_TRT15"}}
 certidao_initial(dados)
 '''

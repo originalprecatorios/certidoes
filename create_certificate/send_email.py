@@ -15,14 +15,12 @@ class Email_enviar:
         self._login = login
         self._pwd = pwd
 
-    def send_email_ruralservice(self,path_temp):
+    def send_email_ruralservice(self,path_temp,texto,nome_arquivo = 'certidao.pdf'):
         print("send_email_ruralservice")
         address = self._config['user']
         passwd = self._config['passwd']
         receiver = self._to
-        mail_content = """
-            Segue pdf com os dados para solicitação de certificado
-        """
+        mail_content = texto
         message = MIMEMultipart()
         message['From'] = address
         message['To'] = ", ".join(receiver)
@@ -30,13 +28,14 @@ class Email_enviar:
         message.attach(MIMEText(mail_content))
         print(message)
         # Anexando o PDF
-        pdfname=self._attach
-        fp=open(pdfname,'rb')
-        anexo = MIMEApplication(fp.read(),_subtype="pdf")
-        fp.close()
-        anexo.add_header('Content-Disposition','attachment',filename='certidao.pdf')
-        message.attach(anexo)
-        print('pdf anexado')
+        if self._attach != '':
+            pdfname=self._attach
+            fp=open(pdfname,'rb')
+            anexo = MIMEApplication(fp.read(),_subtype="pdf")
+            fp.close()
+            anexo.add_header('Content-Disposition','attachment',filename=nome_arquivo)
+            message.attach(anexo)
+            print('pdf anexado')
         server = smtplib.SMTP('smtp.office365.com',587)
         server.ehlo()
         server.starttls()
