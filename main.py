@@ -869,12 +869,16 @@ def certidao_initial(id_mongo):
                     while True:
                         if cont <=2:
                             try:
+                                print('_PJE_TRT')
                                 pj = Pje_trt(u,os.environ['PAGE_URL_PJE_TRT'],mongo,erro,cap)
+                                print('abriu')
                                 pj.login()
+                                print('login')
                                 del pj
                                 modifica['$set']['extracted']['_PJE_TRT'] = 1
                                 break
                             except Exception as e:
+                                print(str(e))
                                 if cont == 2:
                                     arr = {
                                         'created_at': str(datetime.today()).split(' ')[0].replace('-',''),
