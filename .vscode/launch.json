@@ -33,7 +33,7 @@
             "name": "TESTES",
             "type": "python",
             "request": "launch",
-            "program": "${workspaceFolder}/teste.py",
+            "program": "${workspaceFolder}/verifica_cpf.py",
             "console": "integratedTerminal",
             "envFile": "${workspaceFolder}/.env",
             "env": {
