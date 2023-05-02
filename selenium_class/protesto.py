@@ -43,7 +43,7 @@ class Protesto:
             os.makedirs(f'{self._pasta}')
             
 
-        '''
+        
         fp = webdriver.FirefoxProfile()
         fp.set_preference("general.useragent.override", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.45 Safari/537.36")
         fp.set_preference("browser.download.folderList", 2)
@@ -61,8 +61,6 @@ class Protesto:
         '''
         options = uc.ChromeOptions()
         options.set_preference("pdfjs.disabled", True)
-        options.add_argument('--proxy-server=socks5://localhost:9050')
-        options.add_argument('--incognito')
         options.update_preferences()
         options.add_argument('--no-first-run')
         options.add_argument("--window-size=2560,1440")
@@ -94,7 +92,7 @@ class Protesto:
                                                                      'Chrome/85.0.4183.102 Safari/537.36'})
         self._driver.get(self._link)
         time.sleep(2)
-        
+        '''
         
     
     def login(self):
