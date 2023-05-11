@@ -87,15 +87,30 @@ class Esaj:
             WebDriverWait(self._driver, 3).until(EC.presence_of_element_located((By.ID, "pbEnviar")))
             self._driver.find_element(By.ID,"pbEnviar").click()
 
+            time.sleep(2)
+
             try:
-                WebDriverWait(self._driver, 3).until(EC.presence_of_element_located((By.ID, "btnSim")))
-                self._driver.find_element(By.ID,'btnSim').click()
+                WebDriverWait(self._driver, 3).until(EC.presence_of_element_located((By.ID, "btnOk")))
+                self._driver.find_element(By.ID,'btnOk').click()
+                time.sleep(3)
+                print('Já existe outra solicitação com os mesmos dados')
+                self._driver.close()
+                return True
             except:
                 pass
 
-            time.sleep(3)
+            arr = {
+                'numero_pedido': WebDriverWait(self._driver, 3).until(EC.presence_of_element_located((By.CLASS_NAME, "secaoFormBody"))).text.split('\n')[2],
+                'data_pedido': WebDriverWait(self._driver, 3).until(EC.presence_of_element_located((By.CLASS_NAME, "secaoFormBody"))).text.split('\n')[5]
+            }
+
             print('Download enviado por email')
             self._driver.close()
+            return arr
+            
+            
+
+            
         
         except Exception as e:
             self._driver.close()

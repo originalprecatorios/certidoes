@@ -11,6 +11,7 @@ from pathlib import Path
 import time, os, shutil
 import img2pdf
 from PIL import Image
+import undetected_chromedriver as uc
 
 
 class Trf:
@@ -40,7 +41,7 @@ class Trf:
         else:
             os.makedirs(f'{self._pasta}')
             
-
+ 
         
         fp = webdriver.FirefoxProfile()
         fp.set_preference("general.useragent.override", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.45 Safari/537.36")
