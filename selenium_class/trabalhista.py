@@ -27,6 +27,11 @@ class Trabalhista:
             pass
         self._pasta = self._data['path']
 
+        try:
+            os.makedirs(f'{self._pasta}')
+        except:
+            pass
+
         self._capt = '/tmp/captcha/'
         if os.path.isdir(f'{self._capt}'):
             print("O diretório existe!")
