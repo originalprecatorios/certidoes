@@ -62,10 +62,10 @@ class Trabalhista:
                     try:
                         self.solve_cap()
                         print('captcha resolvido')
-                        WebDriverWait(self._driver, 10).until(EC.presence_of_element_located((By.CLASS_NAME, "container")))
+                        nome = WebDriverWait(self._driver, 10).until(EC.presence_of_element_located((By.XPATH, "/html/body/div[2]/main/div[1]/div/fieldset/h3"))).text
                         time.sleep(2)
-                        print(self._driver.find_element(By.CLASS_NAME, 'container').text)
-                        if self._driver.find_element(By.CLASS_NAME, 'container').text.find('Certidão gerada com sucesso!') >= 0:
+                        print(WebDriverWait(self._driver, 10).until(EC.presence_of_element_located((By.XPATH, "/html/body/div[2]/main/div[1]/div/fieldset/h3"))).text)
+                        if nome == ('Certidão gerada com sucesso!'):
                             print('iniciando download')
                             #self._driver.execute_script("javascript:location.href='/certidao_trabalhista_eletronica/public/index.php/index/recuperarcertidao'")
                             time.sleep(5)
