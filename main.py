@@ -706,7 +706,7 @@ def certidao_initial(id_mongo):
                                 del e
                                 modifica['$set']['extracted']['_ESAJ_CERTIDAO_6'] = 1
                                 if num_pedido is not True:
-                                    mongo._upsert({'$set': {'data_pedido': num_pedido['data_pedido_6'], 'numero_pedido_6': num_pedido['numero_pedido']}}, {'_id': busca['_id']})
+                                    mongo._upsert({'$set': {'data_pedido_6': num_pedido['data_pedido'], 'numero_pedido_6': num_pedido['numero_pedido']}}, {'_id': busca['_id']})
                                 break
                             except Exception as e:
                                 if cont == 2:
