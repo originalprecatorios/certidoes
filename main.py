@@ -17,6 +17,7 @@ from selenium_class.tj import Tj
 from selenium_class.trf import Trf
 from selenium_class.tst_trabalhista import Tst_trabalhista
 from selenium_class.esaj import Esaj
+from request.request_esaj import Request_esaj
 from selenium_class.esaj_busca import Esaj_busca
 from create_certificate.create import Creat
 from selenium_class.antecedentes_criminais import Antecedentes_criminais
@@ -700,13 +701,25 @@ def certidao_initial(id_mongo):
                         if cont <=2:
                             try:
                                 # email
-                                e = Esaj(u,os.environ['PAGE_URL_CRIMINAL_1'],mongo,erro,cap)
+                                e = Request_esaj(u,os.environ['PAGE_URL_CRIMINAL_1'],mongo,erro,cap)
+                                e.login()
+                                e.solicita_arquivo('6')
+                                e.verifica_pedido()
+                                num_pedido,download =  e.download_arquivo('6')
+                                del e
+                                if download is True:
+                                    modifica['$set']['extracted']['_ESAJ_CERTIDAO_6'] = 1
+                                else:
+                                    modifica['$set']['extracted']['_ESAJ_CERTIDAO_6'] = 3
+                                if num_pedido is not True:
+                                    mongo._upsert({'$set': {'data_pedido_6': num_pedido['data_pedido'], 'numero_pedido_6': num_pedido['numero_pedido']}}, {'_id': busca['_id']})
+                                '''e = Esaj(u,os.environ['PAGE_URL_CRIMINAL_1'],mongo,erro,cap)
                                 e.login()
                                 num_pedido = e.get_data('6')
                                 del e
                                 modifica['$set']['extracted']['_ESAJ_CERTIDAO_6'] = 1
                                 if num_pedido is not True:
-                                    mongo._upsert({'$set': {'data_pedido_6': num_pedido['data_pedido'], 'numero_pedido_6': num_pedido['numero_pedido']}}, {'_id': busca['_id']})
+                                    mongo._upsert({'$set': {'data_pedido_6': num_pedido['data_pedido'], 'numero_pedido_6': num_pedido['numero_pedido']}}, {'_id': busca['_id']})'''
                                 break
                             except Exception as e:
                                 if cont == 2:
@@ -732,13 +745,25 @@ def certidao_initial(id_mongo):
                         if cont <=2:
                             try:
                                 # email
-                                e = Esaj(u,os.environ['PAGE_URL_CRIMINAL_1'],mongo,erro,cap)
+                                e = Request_esaj(u,os.environ['PAGE_URL_CRIMINAL_1'],mongo,erro,cap)
+                                e.login()
+                                e.solicita_arquivo('52')
+                                e.verifica_pedido()
+                                num_pedido,download = e.download_arquivo('52')
+                                del e
+                                if download is True:
+                                    modifica['$set']['extracted']['_ESAJ_CERTIDAO_52'] = 1
+                                else:
+                                    modifica['$set']['extracted']['_ESAJ_CERTIDAO_52'] = 3
+                                if num_pedido is not True:
+                                    mongo._upsert({'$set': {'data_pedido_52': num_pedido['data_pedido'], 'numero_pedido_52': num_pedido['numero_pedido']}}, {'_id': busca['_id']})
+                                '''e = Esaj(u,os.environ['PAGE_URL_CRIMINAL_1'],mongo,erro,cap)
                                 e.login()
                                 num_pedido = e.get_data('52')
                                 del e
                                 modifica['$set']['extracted']['_ESAJ_CERTIDAO_52'] = 1
                                 if num_pedido is not True:
-                                    mongo._upsert({'$set': {'data_pedido_52': num_pedido['data_pedido'], 'numero_pedido_52': num_pedido['numero_pedido']}}, {'_id': busca['_id']})
+                                    mongo._upsert({'$set': {'data_pedido_52': num_pedido['data_pedido'], 'numero_pedido_52': num_pedido['numero_pedido']}}, {'_id': busca['_id']})'''
                                 break
                             except Exception as e:
                                 if cont == 2:
@@ -945,26 +970,31 @@ def certidao_initial(id_mongo):
 
 # Configuração para teste
 
-#dados = {'_id':'645d0c2051f5f997fc86b21d'}
+#dados = {'_id':'6467670e51f5f997fc86b340'}
 #dados = {"_id": "6405ec5128f620c3ddd9fb35", "certidao": {"_TRT15"}}
 #certidao_initial(dados)
 
 
 # Executa a conexão com o Rabbit e armazena em uma variavel os dados existentes na fila
 # Caso não tenha dados na fila o programa espera 3 minutos
+
 while True:
-    
-    rabbit = rabbitmq.RabbitMQ(os.environ['RABBIT_QUEUE'])
-    retorno = rabbit.get_queue()
-    del rabbit
-    if retorno[0]:
-        try:
-            dados = json.loads(retorno[-1])
-        except:
-            da = str(retorno[-1])
-            dados = {
-                '_id':da.split(':')[1].split('"')[1]
-            }
-        certidao_initial(dados)
-    else:
+    try:
+        rabbit = rabbitmq.RabbitMQ(os.environ['RABBIT_QUEUE'])
+        retorno = rabbit.get_queue()
+        del rabbit
+        if retorno[0]:
+            try:
+                dados = json.loads(retorno[-1])
+            except:
+                da = str(retorno[-1])
+                dados = {
+                    '_id':da.split(':')[1].split('"')[1]
+                }
+            certidao_initial(dados)
+        else:
+            time.sleep(60)
+    except:
+        print('Erro ao tentar conexão com o rabbit:')
+        print('Tentando novamente em 60 segundos...')
         time.sleep(60)
