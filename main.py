@@ -726,6 +726,10 @@ def certidao_initial(id_mongo):
                                     mongo._upsert({'$set': {'data_pedido_6': num_pedido['data_pedido'], 'numero_pedido_6': num_pedido['numero_pedido']}}, {'_id': busca['_id']})'''
                                 break
                             except Exception as e:
+                                try:
+                                    e.close_all()
+                                except:
+                                    pass
                                 if cont == 2:
                                     arr = {
                                         'created_at': str(datetime.today()).split(' ')[0].replace('-',''),
@@ -774,6 +778,10 @@ def certidao_initial(id_mongo):
                                     mongo._upsert({'$set': {'data_pedido_52': num_pedido['data_pedido'], 'numero_pedido_52': num_pedido['numero_pedido']}}, {'_id': busca['_id']})'''
                                 break
                             except Exception as e:
+                                try:
+                                    e.close_all()
+                                except:
+                                    pass
                                 if cont == 2:
                                     arr = {
                                         'created_at': str(datetime.today()).split(' ')[0].replace('-',''),
