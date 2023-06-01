@@ -713,6 +713,10 @@ def certidao_initial(id_mongo):
                                     modifica['$set']['extracted']['_ESAJ_CERTIDAO_6'] = 3
                                 if num_pedido is not True:
                                     mongo._upsert({'$set': {'data_pedido_6': num_pedido['data_pedido'], 'numero_pedido_6': num_pedido['numero_pedido']}}, {'_id': busca['_id']})
+                                try:
+                                    e.close_all()
+                                except:
+                                    pass
                                 '''e = Esaj(u,os.environ['PAGE_URL_CRIMINAL_1'],mongo,erro,cap)
                                 e.login()
                                 num_pedido = e.get_data('6')
@@ -757,6 +761,10 @@ def certidao_initial(id_mongo):
                                     modifica['$set']['extracted']['_ESAJ_CERTIDAO_52'] = 3
                                 if num_pedido is not True:
                                     mongo._upsert({'$set': {'data_pedido_52': num_pedido['data_pedido'], 'numero_pedido_52': num_pedido['numero_pedido']}}, {'_id': busca['_id']})
+                                try:
+                                    e.close_all()
+                                except:
+                                    pass
                                 '''e = Esaj(u,os.environ['PAGE_URL_CRIMINAL_1'],mongo,erro,cap)
                                 e.login()
                                 num_pedido = e.get_data('52')

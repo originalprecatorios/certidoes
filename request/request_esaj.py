@@ -174,3 +174,13 @@ class Request_esaj:
             else:
                 self._driver.close()
                 self._driver.close()
+    
+    def close_all(self):
+        time.sleep(2)
+        janelas = self._driver.window_handles
+
+        # feche cada aba aberta
+        for janela in janelas:
+                self._driver.switch_to.window(janela)
+                self._driver.close()
+                time.sleep(2)
