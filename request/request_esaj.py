@@ -170,6 +170,7 @@ class Request_esaj:
             self._driver.close()
         else:
             if len(self._arr['numero_pedido']) == 8:
+                self._driver.close()
                 return self._arr,False
             else:
                 self._driver.close()
