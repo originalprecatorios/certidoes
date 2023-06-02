@@ -52,7 +52,7 @@ class Request_esaj:
             self._driver.get(config('PAGE_URL_CRIMINAL_1'))
             time.sleep(2)
             self._cookies = 'JSESSIONID={}; K-JSESSIONID-bocbpjmm={}; __utma={}; __utmc={}; __utmz={}; __utmt={};__utmb={}'.format(self._driver.get_cookies()[0]['value'],self._driver.get_cookies()[1]['value'],self._driver.get_cookies()[4]['value'],self._driver.get_cookies()[2]['value'],self._driver.get_cookies()[5]['value'],self._driver.get_cookies()[3]['value'],self._driver.get_cookies()[6]['value'])
-        
+            self._driver.close()
         except Exception as e:
             self._driver.close()
             err = {'data':str(datetime.today()).split(' ')[0].replace('-',''),
@@ -164,13 +164,11 @@ class Request_esaj:
             for arquivo in os.listdir(self._pasta):
                 if arquivo.find(f'{pSelect}- ESAJ.pdf') > -1:
                     print('Download concluido')        
-                    self._driver.close()
                     return self._arr,True
             self._driver.close()
             self._driver.close()
         else:
             if len(self._arr['numero_pedido']) == 8:
-                self._driver.close()
                 return self._arr,False
             else:
                 self._driver.close()
