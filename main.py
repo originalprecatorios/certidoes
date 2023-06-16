@@ -710,7 +710,7 @@ def certidao_initial(id_mongo):
                                 if download is True:
                                     modifica['$set']['extracted']['_ESAJ_CERTIDAO_6'] = 1
                                 else:
-                                    modifica['$set']['extracted']['_ESAJ_CERTIDAO_6'] = 3
+                                    modifica['$set']['extracted']['_ESAJ_CERTIDAO_6'] = 2
                                 if num_pedido is not True:
                                     mongo._upsert({'$set': {'data_pedido_6': num_pedido['data_pedido'], 'numero_pedido_6': num_pedido['numero_pedido']}}, {'_id': busca['_id']})
                                 try:
@@ -762,7 +762,7 @@ def certidao_initial(id_mongo):
                                 if download is True:
                                     modifica['$set']['extracted']['_ESAJ_CERTIDAO_52'] = 1
                                 else:
-                                    modifica['$set']['extracted']['_ESAJ_CERTIDAO_52'] = 3
+                                    modifica['$set']['extracted']['_ESAJ_CERTIDAO_52'] = 2
                                 if num_pedido is not True:
                                     mongo._upsert({'$set': {'data_pedido_52': num_pedido['data_pedido'], 'numero_pedido_52': num_pedido['numero_pedido']}}, {'_id': busca['_id']})
                                 try:
