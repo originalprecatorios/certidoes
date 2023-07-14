@@ -79,13 +79,13 @@ class Antecedentes_criminais:
             conteudo[1].find_elements(By.TAG_NAME,"td")[2].find_element(By.TAG_NAME,"tbody").find_element(By.TAG_NAME,"tr").find_elements(By.TAG_NAME,"td")[0].find_element(By.NAME,'digito').send_keys(self._data['rg'][-1:])
             time.sleep(1)
             #dia
-            conteudo[1].find_elements(By.TAG_NAME,"td")[2].find_element(By.TAG_NAME,"tbody").find_element(By.TAG_NAME,"tr").find_elements(By.TAG_NAME,"td")[2].find_element(By.NAME,'txtDIAE').send_keys(self._data['data_expedicao'].split('-')[2])
+            conteudo[1].find_elements(By.TAG_NAME,"td")[2].find_element(By.TAG_NAME,"tbody").find_element(By.TAG_NAME,"tr").find_elements(By.TAG_NAME,"td")[2].find_element(By.NAME,'txtDIAE').send_keys(self._data['nascimento'].split('-')[2])
             time.sleep(1)
             #mes
-            conteudo[1].find_elements(By.TAG_NAME,"td")[2].find_element(By.TAG_NAME,"tbody").find_element(By.TAG_NAME,"tr").find_elements(By.TAG_NAME,"td")[2].find_element(By.NAME,'txtMESE').send_keys(self._data['data_expedicao'].split('-')[1])
+            conteudo[1].find_elements(By.TAG_NAME,"td")[2].find_element(By.TAG_NAME,"tbody").find_element(By.TAG_NAME,"tr").find_elements(By.TAG_NAME,"td")[2].find_element(By.NAME,'txtMESE').send_keys(self._data['nascimento'].split('-')[1])
             time.sleep(1)
             #ano
-            conteudo[1].find_elements(By.TAG_NAME,"td")[2].find_element(By.TAG_NAME,"tbody").find_element(By.TAG_NAME,"tr").find_elements(By.TAG_NAME,"td")[2].find_element(By.NAME,'txtANOE').send_keys(self._data['data_expedicao'].split('-')[0])
+            conteudo[1].find_elements(By.TAG_NAME,"td")[2].find_element(By.TAG_NAME,"tbody").find_element(By.TAG_NAME,"tr").find_elements(By.TAG_NAME,"td")[2].find_element(By.NAME,'txtANOE').send_keys(self._data['nascimento'].split('-')[0])
             time.sleep(1)
             #sexo
             WebDriverWait(self._driver, 3).until(EC.presence_of_element_located((By.NAME, "sexo")))
@@ -93,11 +93,11 @@ class Antecedentes_criminais:
             select.select_by_value(self._data['sexo'])
 
             WebDriverWait(self._driver, 3).until(EC.presence_of_element_located((By.NAME, "txtDIA")))
-            self._driver.find_element(By.NAME,'txtDIA').send_keys(self._data['nascimento'].split('-')[2])
+            self._driver.find_element(By.NAME,'txtDIA').send_keys(self._data['data_expedicao'].split('-')[2])
             time.sleep(1)
-            self._driver.find_element(By.NAME,'txtMES').send_keys(self._data['nascimento'].split('-')[1])
+            self._driver.find_element(By.NAME,'txtMES').send_keys(self._data['data_expedicao'].split('-')[1])
             time.sleep(1)
-            self._driver.find_element(By.NAME,'txtANO').send_keys(self._data['nascimento'].split('-')[0])
+            self._driver.find_element(By.NAME,'txtANO').send_keys(self._data['data_expedicao'].split('-')[0])
             time.sleep(1)
 
             try:

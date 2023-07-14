@@ -173,6 +173,11 @@ https://github.com/mozilla/geckodriver/releases
 Extract and copy the files to the /usr/local/bin/ folder -
 Extrair e copiar os arquivos para a pasta /usr/local/bin/
 ```
+
+```
+Run the code where the project is cloned sudo chmod -R 777 where the project was cloned -
+Executar o codigo onde o projeto for clonado sudo chmod -R 777 local onde o projeto foi clonado
+```
 ---
 
 ### 5. Create .env file with the necessary environment variables
