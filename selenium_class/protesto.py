@@ -97,9 +97,9 @@ class Protesto:
     
     def login(self):
         try:
-            self._driver.execute_script("document.getElementById('cookiefirst-root').style.display = 'none'")
+            #self._driver.execute_script("document.getElementById('cookiefirst-root').style.display = 'none'")
             time.sleep(2)
-            WebDriverWait(self._driver, 3).until(EC.presence_of_element_located((By.ID, "AbrangenciaNacional"))).click()
+            #WebDriverWait(self._driver, 3).until(EC.presence_of_element_located((By.ID, "AbrangenciaNacional"))).click()
             select = Select(self._driver.find_element(By.ID, 'TipoDocumento'))
             select.select_by_visible_text('CPF')
             cpf = self._data['cpf'].replace('.','').replace('-','')
@@ -112,27 +112,8 @@ class Protesto:
             #site_key = self._driver.find_element(By.XPATH,'/html/body/div[59]/div/div[1]/iframe').get_attribute('src').split('=')[2].split('&')[0]
             #response = self._captcha.recaptcha(site_key,self._link)
             #self._driver.execute_script('document.getElementById("g-recaptcha-response").innerHTML = "%s"' % response)
-            #self._driver.execute_script("ValidarConsulta(this)")
-            print()
-            
-            
-            self._driver.get('https://www.proxydocker.com/pt/proxylist/country/Brazil')
-            list_proxy = self._driver.find_element(By.ID,'proxylist_table').find_elements(By.TAG_NAME,'tr')[0]
-            host = list_proxy.find_elements(By.TAG_NAME,'td')[0].text.split(':')[0]
-            port = list_proxy.find_elements(By.TAG_NAME,'td')[0].text.split(':')[1]
-            self._driver.close()
-            self.proxy(host,port)
+            self._driver.execute_script("ValidarConsulta(this)")
             time.sleep(10)
-            try:
-                WebDriverWait(self._driver, 3).until(EC.presence_of_element_located((By.ID, "Celular")))
-                self._driver.get('https://www.proxydocker.com/pt/proxylist/country/Brazil')
-                list_proxy = self._driver.find_element(By.ID,'proxy_list').find_elements(By.TAG_NAME,'tr')[1]
-                host = list_proxy.find_elements(By.TAG_NAME,'td')[0].text
-                port = list_proxy.find_elements(By.TAG_NAME,'td')[1].text
-                self._driver.close()
-                self.proxy(host,port)
-            except:
-                pass
             texto = WebDriverWait(self._driver, 3).until(EC.presence_of_element_located((By.CLASS_NAME, "resultado-pesquisa"))).text
             if texto.find('Protocolo da Consulta') >= 0:
                 self._driver.execute_script("document.getElementById('cookiefirst-root').style.display = 'none'")

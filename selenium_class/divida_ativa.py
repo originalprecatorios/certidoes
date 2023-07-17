@@ -59,10 +59,10 @@ class Divida_ativa:
     def login(self):
         try:
             WebDriverWait(self._driver, 3).until(EC.presence_of_element_located((By.ID, "emitirCrda:crdaInputCpf"))).send_keys(self._data['cpf'])
-            site_key = self._driver.find_element(By.TAG_NAME,'iframe').get_attribute('src').split('=')[2].split('&')[0]
-            response = self._captcha.recaptcha(site_key,self._link)
+            #site_key = self._driver.find_element(By.TAG_NAME,'iframe').get_attribute('src').split('=')[2].split('&')[0]
+            #response = self._captcha.recaptcha(site_key,self._link)
             #response = ''
-            self._driver.execute_script("document.getElementById('g-recaptcha-response').innerHTML = '"+response+"';")
+            #self._driver.execute_script("document.getElementById('g-recaptcha-response').innerHTML = '"+response+"';")
             WebDriverWait(self._driver, 3).until(EC.presence_of_element_located((By.XPATH, "/html/body/div[1]/div/div/div/div[2]/div/div[3]/div/div[2]/div[2]/span/form/div/div[2]/div[2]/input[2]"))).click()
             time.sleep(6)
             self._download()
