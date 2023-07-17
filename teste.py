@@ -8,93 +8,69 @@ import img2pdf
 import requests
 import json
 
-captcha = Solve_Captcha()
-response = captcha.recaptcha('6LdBDtkUAAAAAPWtjfRT93OAzGSZojdvLA22RkNK','https://pje.trt2.jus.br/pje-certidoes-api/api/certidoes/trabalhistas/emissao')
-url = "https://pje.trt2.jus.br/pje-certidoes-api/api/certidoes/trabalhistas/emissao"
+import httpx
 
-payload = json.dumps({
-  "criterioDeEmissao": "CPF",
-  "nome": "",
-  "numeroDoDocumento": "403.154.468-54",
-  "respostaDoCaptcha": "{}".format(response)
-})
+url = "https://www2.ssp.sp.gov.br/aacweb/carrega-formulario"
+
 headers = {
-  'authority': 'pje.trt2.jus.br',
-  'accept': 'application/json, text/plain, */*',
-  'accept-language': 'pt-BR,pt;q=0.9,en-US;q=0.8,en;q=0.7',
-  'content-type': 'application/json',
-  'cookie': '_ga=GA1.3.371081492.1678111699',
-  'origin': 'https://pje.trt2.jus.br',
-  'referer': 'https://pje.trt2.jus.br/certidoes/trabalhista/emissao',
+    'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7',
+    'Accept-Language': 'pt-BR,pt;q=0.9,en-US;q=0.8,en;q=0.7',
+    'Connection': 'keep-alive',
+    'Cookie': 'JSESSIONID=0000MXy1891S8c64jGyH2HP7kbl:1eirm4393',
+    'Referer': 'https://www2.ssp.sp.gov.br/aacweb/carrega-iframe',
+    'Sec-Fetch-Dest': 'iframe',
+    'Sec-Fetch-Mode': 'navigate',
+    'Sec-Fetch-Site': 'same-origin',
+    'Sec-Fetch-User': '?1',
+    'Upgrade-Insecure-Requests': '1',
+    'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/111.0.0.0 Safari/537.36',
+    'sec-ch-ua': '"Google Chrome";v="111", "Not(A:Brand";v="8", "Chromium";v="111"',
+    'sec-ch-ua-mobile': '?0',
+    'sec-ch-ua-platform': '"Linux"'
+}
+
+# Criar uma instância do cliente HTTP
+client = httpx.Client()
+
+# Fazer a requisição usando o método GET
+response = client.get(url, headers=headers)
+
+# Verificar o status da resposta
+if response.status_code == 200:
+    print(response.text)
+    sitekey = response.text.split('data-sitekey=')[1].split('\r')[0].replace('"','')
+else:
+    print(f"Erro {response.status_code} ao fazer a solicitação")
+
+# Fechar a instância do cliente HTTP
+client.close()
+
+captcha = Solve_Captcha()
+response = captcha.recaptcha(sitekey,'https://www2.ssp.sp.gov.br/aacweb/carrega-formulario')
+
+url = "https://www2.ssp.sp.gov.br/aacweb/emitir-atestado.action"
+
+payload='nome=WESLEY%20SILVA%20CABRAL%20DE%20OLIVEIRA&numero=48788239&digito=8&txtDIAE=26&txtMESE=03&txtANOE=2003&sexo=M&txtDIA=14&txtMES=11&txtANO=1992&nomePai=ANTONIO%20CABRAL%20DE%20OLIVEIRA&nomeMae=JULIENE%20MARIA%20DA%20SILVA&g-recaptcha-response={}&pesquisa=Pesquisar'.format(response)
+headers = {
+  'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7',
+  'Accept-Language': 'pt-BR,pt;q=0.9,en-US;q=0.8,en;q=0.7',
+  'Cache-Control': 'max-age=0',
+  'Connection': 'keep-alive',
+  'Content-Type': 'application/x-www-form-urlencoded',
+  'Cookie': 'JSESSIONID=0000MXy1891S8c64jGyH2HP7kbl:1eirm4393',
+  'Origin': 'https://www2.ssp.sp.gov.br',
+  'Referer': 'https://www2.ssp.sp.gov.br/aacweb/carrega-formulario',
+  'Sec-Fetch-Dest': 'iframe',
+  'Sec-Fetch-Mode': 'navigate',
+  'Sec-Fetch-Site': 'same-origin',
+  'Sec-Fetch-User': '?1',
+  'Upgrade-Insecure-Requests': '1',
+  'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/111.0.0.0 Safari/537.36',
   'sec-ch-ua': '"Google Chrome";v="111", "Not(A:Brand";v="8", "Chromium";v="111"',
   'sec-ch-ua-mobile': '?0',
-  'sec-ch-ua-platform': '"Linux"',
-  'sec-fetch-dest': 'empty',
-  'sec-fetch-mode': 'cors',
-  'sec-fetch-site': 'same-origin',
-  'user-agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/111.0.0.0 Safari/537.36'
+  'sec-ch-ua-platform': '"Linux"'
 }
 
 response = requests.request("POST", url, headers=headers, data=payload)
 
 print(response.text)
-
-url = "https://pje.trt2.jus.br/pje-certidoes-api/api/certidoes/trabalhistas/{}".format(response.text.split(':')[1].replace('}',''))
-
-payload={}
-headers = {
-  'authority': 'pje.trt2.jus.br',
-  'accept': 'application/json, text/plain, */*',
-  'accept-language': 'pt-BR,pt;q=0.9,en-US;q=0.8,en;q=0.7',
-  'cookie': '_ga=GA1.3.371081492.1678111699',
-  'referer': 'https://pje.trt2.jus.br/certidoes/trabalhista/certidao/8189745320',
-  'sec-ch-ua': '"Google Chrome";v="111", "Not(A:Brand";v="8", "Chromium";v="111"',
-  'sec-ch-ua-mobile': '?0',
-  'sec-ch-ua-platform': '"Linux"',
-  'sec-fetch-dest': 'empty',
-  'sec-fetch-mode': 'cors',
-  'sec-fetch-site': 'same-origin',
-  'user-agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/111.0.0.0 Safari/537.36'
-}
-
-response = requests.request("GET", url, headers=headers, data=payload)
-
-print(response.text)
-
-texto_formatado = response.text.replace('src="assets/imagens/brasao.png\"','src="/opt/projetos/original/certidoes/templates/brasao.png"')
-with open('/opt/projetos/original/certidoes/templates/response_css.text') as arquivo:
-  dado = arquivo.read()
-with open('arquivo.html', 'w') as f:
-    f.write(texto_formatado)
-    f.write(f'<style>{dado}</style>')
-fp = webdriver.FirefoxProfile()
-fp.set_preference("general.useragent.override", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.45 Safari/537.36")
-driver = webdriver.Firefox(firefox_profile=fp)
-driver.get('file:///opt/projetos/original/certidoes/arquivo.html')
-driver.get_full_page_screenshot_as_file('teste.png')
-img_path = 'teste.png'
-        
-# storing pdf path
-pdf_path = 'teste.png'.replace('png','pdf')
-
-# opening image
-image = Image.open(img_path)
-
-# converting into chunks using img2pdf
-pdf_bytes = img2pdf.convert(image.filename)
-
-# opening or creating pdf file
-file = open(pdf_path, "wb")
-
-# writing pdf files with chunks
-file.write(pdf_bytes)
-
-# closing image file
-image.close()
-
-# closing pdf file
-file.close()
-
-os.remove(img_path)
-# output
-print("Successfully made pdf file")
