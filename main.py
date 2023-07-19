@@ -20,8 +20,10 @@ from selenium_class.esaj import Esaj
 from request.request_esaj import Request_esaj
 from selenium_class.esaj_busca import Esaj_busca
 from create_certificate.create import Creat
-from selenium_class.antecedentes_criminais import Antecedentes_criminais
+#from selenium_class.antecedentes_criminais import Antecedentes_criminais
+from request.antecedentes_criminais import Antecedentes_criminais
 from selenium_class.pje_trt import Pje_trt
+from request.ipva_estadual import Ipva_estadual
 from bd.class_mongo import Mongo
 from decouple import config
 from recaptcha.captcha import Solve_Captcha
@@ -882,17 +884,47 @@ def certidao_initial(id_mongo):
                             print('Erro ao acessar o site, para gerar a certidão _PODER_JUDICIARIO')
                             break
                 
+                #elif ext == '_ANTECEDENTES_CRIMINAIS':
+                #    cont = 0
+                #    while True:
+                #        if cont <=2:
+                #            try:
+                #                ac = Antecedentes_criminais(u,os.environ['PAGE_URL_SSP'],mongo,erro,cap)
+                #                ac.login()
+                #                del ac
+                #                modifica['$set']['extracted']['_ANTECEDENTES_CRIMINAIS'] = 1
+                #                break
+                #            except Exception as e:
+                #                if cont == 2:
+                #                    arr = {
+                #                        'created_at': str(datetime.today()).split(' ')[0].replace('-',''),
+                #                        'error': str(e),
+                #                        'cpf' : cpf_binario,
+                #                        'robot' : '_ANTECEDENTES_CRIMINAIS',
+                #                        'id_certidao': ObjectId(id),
+                #                    }
+                #                    erro.getcoll('error_cert')
+                #                    erro.addData(arr)
+                #                cont += 1
+                #        else:
+                #            modifica['$set']['extracted']['_ANTECEDENTES_CRIMINAIS'] = 2
+                #            print('Erro ao acessar o site, para gerar a certidão _ANTECEDENTES_CRIMINAIS')
+                #            break
+                
                 elif ext == '_ANTECEDENTES_CRIMINAIS':
                     cont = 0
                     while True:
                         if cont <=2:
                             try:
-                                ac = Antecedentes_criminais(u,os.environ['PAGE_URL_SSP'],mongo,erro,cap)
-                                ac.login()
+                                print('_ANTECEDENTES_CRIMINAIS')
+                                ac = Antecedentes_criminais(u,cap)
+                                ac.get_cookies()
+                                ac.creat_pdf()
                                 del ac
                                 modifica['$set']['extracted']['_ANTECEDENTES_CRIMINAIS'] = 1
                                 break
                             except Exception as e:
+                                print(str(e))
                                 if cont == 2:
                                     arr = {
                                         'created_at': str(datetime.today()).split(' ')[0].replace('-',''),
@@ -938,6 +970,37 @@ def certidao_initial(id_mongo):
                         else:
                             modifica['$set']['extracted']['_PJE_TRT'] = 2
                             print('Erro ao acessar o site, para gerar a certidão _PJE_TRT')
+                            break
+                
+                elif ext == '_IPVA_ESTADUAL':
+                    cont = 0
+                    while True:
+                        if cont <=2:
+                            try:
+                                print('_IPVA_ESTADUAL')
+                                ip = Ipva_estadual(u,cap)
+                                ip.get_cookies()
+                                ip.send_data()
+                                ip.creat_pdf()
+                                del ip
+                                modifica['$set']['extracted']['_IPVA_ESTADUAL'] = 1
+                                break
+                            except Exception as e:
+                                print(str(e))
+                                if cont == 2:
+                                    arr = {
+                                        'created_at': str(datetime.today()).split(' ')[0].replace('-',''),
+                                        'error': str(e),
+                                        'cpf' : cpf_binario,
+                                        'robot' : '_IPVA_ESTADUAL',
+                                        'id_certidao': ObjectId(id),
+                                    }
+                                    erro.getcoll('error_cert')
+                                    erro.addData(arr)
+                                cont += 1
+                        else:
+                            modifica['$set']['extracted']['_IPVA_ESTADUAL'] = 2
+                            print('Erro ao acessar o site, para gerar a certidão _IPVA_ESTADUAL')
                             break
                     
 
@@ -986,7 +1049,7 @@ def certidao_initial(id_mongo):
 
 # Configuração para teste
 
-#dados = {'_id':'6467670e51f5f997fc86b340'}
+#dados = {'_id':'64b6a0c946317aaa3df57b00'}
 #dados = {"_id": "6405ec5128f620c3ddd9fb35", "certidao": {"_TRT15"}}
 #certidao_initial(dados)
 
