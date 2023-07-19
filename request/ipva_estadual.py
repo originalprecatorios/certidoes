@@ -2,6 +2,7 @@ import requests
 import os
 import pdfkit
 from bs4 import BeautifulSoup
+from weasyprint import HTML
 
 class Ipva_estadual:
     def __init__(self,pData,pCaptcha):
@@ -67,7 +68,8 @@ class Ipva_estadual:
         response = requests.request("GET", url, headers=headers, data=payload)
         pdf_file_path = os.path.join(self._data['path'],'ESTADUAL IPVA.pdf')
         try:
-            pdfkit.from_string(response.text, pdf_file_path, options={'encoding': 'utf-8'})
+            HTML(string=response.text).write_pdf(pdf_file_path)
+            #pdfkit.from_string(response.text, pdf_file_path, options={'encoding': 'utf-8'})
         except:
             pass
         print(f"Arquivo PDF salvo em: {pdf_file_path}")

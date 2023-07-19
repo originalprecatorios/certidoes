@@ -2,6 +2,8 @@ import httpx
 import os
 import pdfkit
 import time
+from weasyprint import HTML
+
 
 class Antecedentes_criminais:
     def __init__(self,pData,pCaptcha):
@@ -100,7 +102,8 @@ class Antecedentes_criminais:
             print("Arquivo PDF salvo com sucesso.")
         else:
             try:
-                pdfkit.from_string(response.text.replace('/AACWEBSTATIC/img/imp_cab.gif','https://www2.ssp.sp.gov.br/AACWEBSTATIC/img/imp_cab.gif'), pdf_file_path, options={'encoding': 'utf-8'})
+                HTML(string=response.text).write_pdf(pdf_file_path)
+                #pdfkit.from_string(response.text.replace('/AACWEBSTATIC/img/imp_cab.gif','https://www2.ssp.sp.gov.br/AACWEBSTATIC/img/imp_cab.gif'), pdf_file_path, options={'encoding': 'utf-8'})
                 time.sleep(5)
             except:
                 pass
