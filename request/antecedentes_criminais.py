@@ -101,6 +101,7 @@ class Antecedentes_criminais:
         else:
             try:
                 pdfkit.from_string(response.text.replace('/AACWEBSTATIC/img/imp_cab.gif','https://www2.ssp.sp.gov.br/AACWEBSTATIC/img/imp_cab.gif'), pdf_file_path, options={'encoding': 'utf-8'})
+                time.sleep(5)
             except:
                 pass
             print("Arquivo PDF salvo com sucesso.")
