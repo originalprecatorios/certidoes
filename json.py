@@ -86,17 +86,17 @@ except:
     time.sleep(5)
     response = httpx.get(url, headers=headers, params=payload)
 
+print(response.text)
+
 pdf_file_path = '/opt/files/certidoes/wEz0uA9nM1QUgdV/ANTECEDENTES CRIMINAIS.pdf'
 if response.headers.get("content-type") == "application/pdf":
     with open(pdf_file_path, "wb") as pdf_file:
         pdf_file.write(response.content)
     print("Arquivo PDF salvo com sucesso.")
 else:
-    try:
-        pdfkit.from_string(response.text.replace('/AACWEBSTATIC/img/imp_cab.gif','https://www2.ssp.sp.gov.br/AACWEBSTATIC/img/imp_cab.gif'), pdf_file_path, options={'encoding': 'utf-8'})
-        time.sleep(5)
-    except:
-        pass
+    
+    pdfkit.from_string(response.text.replace('/AACWEBSTATIC/img/imp_cab.gif','https://www2.ssp.sp.gov.br/AACWEBSTATIC/img/imp_cab.gif'), pdf_file_path, options={'encoding': 'utf-8'})
+    time.sleep(5)
     print("Arquivo PDF salvo com sucesso.")
 
 for arquivo in os.listdir('/opt/files/certidoes/wEz0uA9nM1QUgdV/'):
