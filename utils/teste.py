@@ -14,9 +14,9 @@ import requests
 from bs4 import BeautifulSoup
 from selenium.webdriver.firefox.options import Options
 
-x = requests.request("GET", 'https://www.ipva.fazenda.sp.gov.br/ipvanet_consulta/consulta.aspx')
+x = requests.request("GET", 'https://servicos.receita.fazenda.gov.br/servicos/codacesso/PFCodAcesso.aspx')
 cookie = x.cookies.get_dict()
-cookies = '_ga_7RC6MLS8YN=GS1.1.1683597623.5.0.1683597631.0.0.0; _ga=GA1.1.825311961.1661543027; ASP.NET_SessionId={}; TS01308bf5={}; ai_user=7esZ8|2023-07-17T23:00:26.023Z; ai_session=WTFaP|1689685165042|1689685173137'.format(cookie['ASP.NET_SessionId'],cookie['TS01308bf5'])
+cookies = 'BIGipServer~WEBREC~POOL_SERVICOS_REC_443=rd1o00000000000000000000ffffa194e752o443; __tokencaptcha=779178711532400131695720597224106183158591672218211773'
 soup = BeautifulSoup(x.text, "html.parser")
 viewstate_generator = soup.find("input", {"id": "__VIEWSTATEGENERATOR"})["value"].replace('/','%2F').replace('+','%2B').replace('=','%3D')
 event_validation = soup.find("input", {"id": "__EVENTVALIDATION"})["value"].replace('/','%2F').replace('+','%2B').replace('=','%3D')

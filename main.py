@@ -24,6 +24,7 @@ from create_certificate.create import Creat
 from request.antecedentes_criminais import Antecedentes_criminais
 from selenium_class.pje_trt import Pje_trt
 from request.ipva_estadual import Ipva_estadual
+from selenium_class.ecac import Ecac
 from bd.class_mongo import Mongo
 from decouple import config
 from recaptcha.captcha import Solve_Captcha
@@ -1002,6 +1003,79 @@ def certidao_initial(id_mongo):
                             modifica['$set']['extracted']['_IPVA_ESTADUAL'] = 2
                             print('Erro ao acessar o site, para gerar a certidão _IPVA_ESTADUAL')
                             break
+                
+                elif ext == '_ECAC':
+                    cont = 0
+                    while True:
+                        if cont <=2:
+                            try:
+                                mongo._getcoll('password_ecac')
+                                arr = list(mongo.returnBusca({'name':u['nome']}))
+                                if arr:
+                                    data_atual = datetime.now()
+                                    data_fornecida = datetime.strptime(arr[-1]['validity'], '%d/%m/%Y')
+                                    if data_atual.date() >= data_fornecida.date():
+                                        e = Ecac(u,os.environ['PAGE_URL_ECAC'],mongo,cap)
+                                        logged,arr = e.create_password()
+                                        if logged is True:
+                                            logado = e.login(arr)
+                                            del e
+                                            modifica['$set']['extracted']['_ECAC'] = 1
+                                            break
+                                        else:
+                                                modifica['$set']['extracted']['_ECAC'] = 2
+                                                print(logged)
+                                                break
+                                    else:
+                                        e = Ecac(u,os.environ['PAGE_URL_ECAC'],mongo,cap)
+                                        logado = e.login(arr[-1])
+                                        if logado is False:
+                                            logged,arr = e.create_password()
+                                            e.login(arr)
+                                        del e
+                                        modifica['$set']['extracted']['_ECAC'] = 1
+                                        break
+                                else:
+                                    e = Ecac(u,os.environ['PAGE_URL_ECAC'],mongo,cap)
+                                    logged,arr = e.create_password()
+                                    if logged is True:
+                                        logado = e.login(arr)
+                                        del e
+                                        modifica['$set']['extracted']['_ECAC'] = 1
+                                        break
+                                    elif logged is False and type(arr) is list:
+                                        add = {
+                                        'created_at': str(datetime.today()).split(' ')[0].replace('-',''),
+                                        'error': "Erro precisa das IRPF {}".format(arr),
+                                        'cpf' : cpf_binario,
+                                        'robot' : '_ECAC',
+                                        'id_certidao': ObjectId(id),
+                                        }
+                                        erro.getcoll('error_cert')
+                                        erro.addData(add)
+                                        modifica['$set']['extracted']['_ECAC'] = 2
+                                        break
+                                    else:
+                                            modifica['$set']['extracted']['_ECAC'] = 2
+                                            print(logged)
+                                            break
+                                
+                            except Exception as e:
+                                if cont == 2:
+                                    arr = {
+                                        'created_at': str(datetime.today()).split(' ')[0].replace('-',''),
+                                        'error': str(e),
+                                        'cpf' : cpf_binario,
+                                        'robot' : '_ECAC',
+                                        'id_certidao': ObjectId(id),
+                                    }
+                                    erro.getcoll('error_cert')
+                                    erro.addData(arr)
+                                cont += 1
+                        else:
+                            modifica['$set']['extracted']['_ECAC'] = 2
+                            print('Erro ao acessar o site, para gerar a certidão _ECAC')
+                            break
                     
 
         modifica['$set']['status_process'] = True
@@ -1049,7 +1123,7 @@ def certidao_initial(id_mongo):
 
 # Configuração para teste
 
-#dados = {'_id':'64b6a0c946317aaa3df57b00'}
+#dados = {'_id':'64b743f046317aaa3df57b13'}
 #dados = {"_id": "6405ec5128f620c3ddd9fb35", "certidao": {"_TRT15"}}
 #certidao_initial(dados)
 
