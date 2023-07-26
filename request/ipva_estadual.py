@@ -26,7 +26,7 @@ class Ipva_estadual:
 
     def send_data(self):
         url = "https://www.ipva.fazenda.sp.gov.br/ipvanet_consulta/Consulta.aspx"
-        payload='__EVENTTARGET=&__EVENTARGUMENT=&__VIEWSTATE={}&__VIEWSTATEGENERATOR={}&__EVENTVALIDATION={}&ctl00%24conteudoPaginaPlaceHolder%24txtRenavam={}&ctl00%24conteudoPaginaPlaceHolder%24txtPlaca={}&g-recaptcha-response={}&ctl00%24conteudoPaginaPlaceHolder%24btn_Consultar=Consultar'.format(self._viewstate,self._viewstate_generator,self._event_validation,self._data['renavam'],self._data['placa'].replace('-',''),self._response)       
+        payload='__EVENTTARGET=&__EVENTARGUMENT=&__VIEWSTATE={}&__VIEWSTATEGENERATOR={}&__EVENTVALIDATION={}&ctl00%24conteudoPaginaPlaceHolder%24txtRenavam={}&ctl00%24conteudoPaginaPlaceHolder%24txtPlaca={}&g-recaptcha-response={}&ctl00%24conteudoPaginaPlaceHolder%24btn_Consultar=Consultar'.format(self._viewstate,self._viewstate_generator,self._event_validation,self._data['renavan'],self._data['placa'].replace('-',''),self._response)       
         headers = {
         'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64; rv:108.0) Gecko/20100101 Firefox/108.0',
         'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8',
