@@ -14,7 +14,7 @@ from decouple import config
 class Ecac:
 
     def __init__(self,pData,pLink,pMongo,pCaptcha):
-        print('Robo Estadual')
+        print('Robo ECAC')
         self._data = pData
         self._link = pLink
         self._bdMongo = pMongo
@@ -109,6 +109,13 @@ class Ecac:
                 WebDriverWait(self._driver, 3).until(EC.presence_of_element_located((By.ID, "btnAvancar"))).click()
                 time.sleep(5)
                 try:
+                    alerta = self._driver.switch_to.alert
+                    alerta.accept()
+                    break
+                except:
+                    print('Não existe chave anterior gerada')
+                    pass
+                try:
                     validation = WebDriverWait(self._driver, 3).until(EC.presence_of_element_located((By.ID, "ValidationSummary1"))).text
                     if validation == 'Caracteres da imagem não conferem.':
                         continue
@@ -117,12 +124,6 @@ class Ecac:
                 except:
                     break  
             
-            try:
-                alerta = self._driver.switch_to.alert
-                alerta.accept()
-            except:
-                print('Não existe chave anterior gerada')
-                pass
             try:
                 caixa_mensagem = WebDriverWait(self._driver, 3).until(EC.presence_of_element_located((By.CLASS_NAME, "caixaMensagem"))).text
                 if caixa_mensagem.find('Você não apresentou declaração de imposto de renda (DIRPF) como titular em nenhum dos dois últimos exercícios.') >=0:
