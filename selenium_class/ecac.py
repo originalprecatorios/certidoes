@@ -93,20 +93,30 @@ class Ecac:
             WebDriverWait(self._driver, 3).until(EC.presence_of_element_located((By.ID, "txtCPF"))).send_keys(self._data['cpf'])
             data_obj = datetime.strptime(self._data['nascimento'], '%Y-%m-%d')
             data_formatada = data_obj.strftime('%d/%m/%Y')
-            WebDriverWait(self._driver, 3).until(EC.presence_of_element_located((By.ID, "txtCPF"))).send_keys('0'+data_formatada)
-            WebDriverWait(self._driver, 5).until(EC.presence_of_element_located((By.ID, "img_captcha_serpro_gov_br")))
-            time.sleep(2)
-            with open(f'{self._capt}captcha.png', 'wb') as file:
-                l = self._driver.find_element(By.ID,'img_captcha_serpro_gov_br')
-                file.write(l.screenshot_as_png)
-            time.sleep(2)
-            response = self._captcha.resolve_normal(os.path.join(self._capt,'captcha.png'))
-            if response is None:
+            while True:
+                WebDriverWait(self._driver, 3).until(EC.presence_of_element_located((By.ID, "txtCPF"))).send_keys('0'+data_formatada)
+                WebDriverWait(self._driver, 5).until(EC.presence_of_element_located((By.ID, "img_captcha_serpro_gov_br")))
+                time.sleep(2)
+                with open(f'{self._capt}captcha.png', 'wb') as file:
+                    l = self._driver.find_element(By.ID,'img_captcha_serpro_gov_br')
+                    file.write(l.screenshot_as_png)
+                time.sleep(2)
                 response = self._captcha.resolve_normal(os.path.join(self._capt,'captcha.png'))
-            #response = ''
-            WebDriverWait(self._driver, 3).until(EC.presence_of_element_located((By.ID, "txtCaptcha"))).send_keys(response)
-            WebDriverWait(self._driver, 3).until(EC.presence_of_element_located((By.ID, "btnAvancar"))).click()
-            time.sleep(5)
+                if response is None:
+                    response = self._captcha.resolve_normal(os.path.join(self._capt,'captcha.png'))
+                #response = ''
+                WebDriverWait(self._driver, 3).until(EC.presence_of_element_located((By.ID, "txtCaptcha"))).send_keys(response)
+                WebDriverWait(self._driver, 3).until(EC.presence_of_element_located((By.ID, "btnAvancar"))).click()
+                time.sleep(5)
+                try:
+                    validation = WebDriverWait(self._driver, 3).until(EC.presence_of_element_located((By.ID, "ValidationSummary1"))).text
+                    if validation == 'Caracteres da imagem não conferem.':
+                        continue
+                    else:
+                        break
+                except:
+                    break  
+            
             try:
                 alerta = self._driver.switch_to.alert
                 alerta.accept()
@@ -157,6 +167,7 @@ class Ecac:
                 self._driver.close()
                 return True,arr
             except:
+                #self._driver.close()
                 return False,''
 
 
