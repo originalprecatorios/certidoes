@@ -100,10 +100,10 @@ class Ecac:
                 l = self._driver.find_element(By.ID,'img_captcha_serpro_gov_br')
                 file.write(l.screenshot_as_png)
             time.sleep(2)
-            #response = self._captcha.resolve_normal(os.path.join(self._capt,'captcha.png'))
-            #if response is None:
-            #    response = self._captcha.resolve_normal(os.path.join(self._capt,'captcha.png'))
-            response = ''
+            response = self._captcha.resolve_normal(os.path.join(self._capt,'captcha.png'))
+            if response is None:
+                response = self._captcha.resolve_normal(os.path.join(self._capt,'captcha.png'))
+            #response = ''
             WebDriverWait(self._driver, 3).until(EC.presence_of_element_located((By.ID, "txtCaptcha"))).send_keys(response)
             WebDriverWait(self._driver, 3).until(EC.presence_of_element_located((By.ID, "btnAvancar"))).click()
             time.sleep(5)
