@@ -106,6 +106,7 @@ class Ecac:
             response = ''
             WebDriverWait(self._driver, 3).until(EC.presence_of_element_located((By.ID, "txtCaptcha"))).send_keys(response)
             WebDriverWait(self._driver, 3).until(EC.presence_of_element_located((By.ID, "btnAvancar"))).click()
+            time.sleep(5)
             try:
                 alerta = self._driver.switch_to.alert
                 alerta.accept()
@@ -122,16 +123,21 @@ class Ecac:
             try:
                 WebDriverWait(self._driver, 3).until(EC.presence_of_element_located((By.CLASS_NAME, "line"))).text
                 irpf = self._driver.find_elements(By.CLASS_NAME,'line')[3].text
-                try:
-                    irpf_separado = irpf.split(':\n')[1].split(' ')
-                    if len(irpf_separado) > 1:
-                        for ir in range(1,len(irpf_separado)):
-                            lista_data.append(irpf_separado[ir])
-                        return False, lista_data
-                except:
-                    pass            
+                if len(self._data['numero_recibo_irpf']) <=1:
+                    try:
+                        irpf_separado = irpf.split(':\n')[1].split(' ')
+                        if len(irpf_separado) > 1:
+                            for ir in range(1,len(irpf_separado)):
+                                lista_data.append(irpf_separado[ir])
+                            self._driver.close()
+                            return False, lista_data
+                    except:
+                        pass            
                 creat_pass = self._data['cpf'].replace('.','').replace('-','')+self._data['nome'].split()[0].capitalize()
-                WebDriverWait(self._driver, 3).until(EC.presence_of_element_located((By.ID, "txtReciboAno1"))).send_keys(self._data['numero_recibo_irpf'])
+                cont = 1
+                for recibo in self._data['numero_recibo_irpf']:
+                    WebDriverWait(self._driver, 3).until(EC.presence_of_element_located((By.ID, "txtReciboAno{}".format(cont)))).send_keys(self._data['numero_recibo_irpf'][recibo].replace('.','').replace('-',''))
+                    cont += 1
                 WebDriverWait(self._driver, 3).until(EC.presence_of_element_located((By.ID, "txtSenha"))).send_keys(creat_pass)
                 WebDriverWait(self._driver, 3).until(EC.presence_of_element_located((By.ID, "txtConfirmaSenha"))).send_keys(creat_pass)
                 WebDriverWait(self._driver, 3).until(EC.presence_of_element_located((By.ID, "btnGerarCodigo"))).click()
