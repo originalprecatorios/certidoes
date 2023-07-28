@@ -8,20 +8,98 @@ import img2pdf
 import requests
 import pdfkit
 import time
+from utils.selenium_classes import Selenium_classes
 
 
 import requests
 from bs4 import BeautifulSoup
-from selenium.webdriver.firefox.options import Options
+from urllib.parse import urljoin
 
-x = requests.request("GET", 'https://servicos.receita.fazenda.gov.br/servicos/codacesso/PFCodAcesso.aspx')
-cookie = x.cookies.get_dict()
-cookies = 'BIGipServer~WEBREC~POOL_SERVICOS_REC_443=rd1o00000000000000000000ffffa194e752o443; __tokencaptcha=779178711532400131695720597224106183158591672218211773'
-soup = BeautifulSoup(x.text, "html.parser")
-viewstate_generator = soup.find("input", {"id": "__VIEWSTATEGENERATOR"})["value"].replace('/','%2F').replace('+','%2B').replace('=','%3D')
-event_validation = soup.find("input", {"id": "__EVENTVALIDATION"})["value"].replace('/','%2F').replace('+','%2B').replace('=','%3D')
-viewstate = soup.find("input", {"id": "__VIEWSTATE"})["value"].replace('/','%2F').replace('+','%2B').replace('=','%3D')
-sitekey = x.text.split('data-sitekey=')[1].split('>')[0].replace('"','')
+import requests
+
+teste = Selenium_classes()
+teste.firefox('https://aplicacoes10.trt2.jus.br/certidao_trabalhista_eletronica/public/index.php/index/solicitacao')
+retorno = teste.wait_element("ID", "jurisdicao")
+
+
+tempo_inicial = (time.time())
+retorno = teste.element("ID", "jurisdicao")
+tempo_final = (time.time())
+print(f" teste1 {tempo_final - tempo_inicial} segundos")
+
+tempo_inicial = (time.time())
+retorno = teste.teste()
+tempo_final = (time.time())
+print(f"teste2 {tempo_final - tempo_inicial} segundos")
+retorno1 = teste.wait_element("ID", "periodo-2").click()
+retorno2 = teste.wait_element("NAME", "periodo", True)
+
+url = "https://aplicacoes10.trt2.jus.br/certidao_trabalhista_eletronica/public/index.php/index/solicitacao"
+
+payload='tipoDocumentoPesquisado=1&numeroDocumentoPesquisado=403.154.468-54&nomePesquisado=WESLEY SILVA CABRAL DE OLIVEIRA&jurisdicao=0&periodo=1&data_inicial=&data_final=&captcha%5Bid%5D=094d3ded8b52b7985ca9f23f06884d13&captcha%5Binput%5D=pozir&submit=&submit='
+headers = {
+  'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7',
+  'Accept-Language': 'pt-BR,pt;q=0.9,en-US;q=0.8,en;q=0.7',
+  'Cache-Control': 'max-age=0',
+  'Connection': 'keep-alive',
+  'Content-Type': 'application/x-www-form-urlencoded',
+  'Cookie': 'PHPSESSID=u8tgdpegtsbo0mf29rohujef33; _ga=GA1.3.1642829368.1690392484; _gid=GA1.3.2048915482.1690392484; _gat=1; ww2.trtsp.jus.br={%22contraste%22:0%2C%22fontes%22:1%2C%22escalabilidade%22:0}; contraste=0; fontes=1; escalabilidade=0; PHPSESSID=gq1hsmk5poa9ag5gdeoesftup1',
+  'Origin': 'https://aplicacoes10.trt2.jus.br',
+  'Referer': 'https://aplicacoes10.trt2.jus.br/certidao_trabalhista_eletronica/public/index.php/index/solicitacao',
+  'Sec-Fetch-Dest': 'document',
+  'Sec-Fetch-Mode': 'navigate',
+  'Sec-Fetch-Site': 'same-origin',
+  'Sec-Fetch-User': '?1',
+  'Upgrade-Insecure-Requests': '1',
+  'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/111.0.0.0 Safari/537.36',
+  'sec-ch-ua': '"Google Chrome";v="111", "Not(A:Brand";v="8", "Chromium";v="111"',
+  'sec-ch-ua-mobile': '?0',
+  'sec-ch-ua-platform': '"Linux"'
+}
+
+response = requests.request("POST", url, headers=headers, data=payload)
+
+print(response.text)
+
+url = "https://aplicacoes10.trt2.jus.br/certidao_trabalhista_eletronica/public/index.php/index/recuperarcertidao"
+
+payload={}
+headers = {
+  'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7',
+  'Accept-Language': 'pt-BR,pt;q=0.9,en-US;q=0.8,en;q=0.7',
+  'Connection': 'keep-alive',
+  'Cookie': 'PHPSESSID=u8tgdpegtsbo0mf29rohujef33; _ga=GA1.3.1642829368.1690392484; _gid=GA1.3.2048915482.1690392484; ww2.trtsp.jus.br={%22contraste%22:0%2C%22fontes%22:1%2C%22escalabilidade%22:0}; contraste=0; fontes=1; escalabilidade=0; _gat=1; PHPSESSID=gq1hsmk5poa9ag5gdeoesftup1',
+  'Referer': 'https://aplicacoes10.trt2.jus.br/certidao_trabalhista_eletronica/public/index.php/index/imprimecertidao',
+  'Sec-Fetch-Dest': 'document',
+  'Sec-Fetch-Mode': 'navigate',
+  'Sec-Fetch-Site': 'same-origin',
+  'Sec-Fetch-User': '?1',
+  'Upgrade-Insecure-Requests': '1',
+  'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/111.0.0.0 Safari/537.36',
+  'sec-ch-ua': '"Google Chrome";v="111", "Not(A:Brand";v="8", "Chromium";v="111"',
+  'sec-ch-ua-mobile': '?0',
+  'sec-ch-ua-platform': '"Linux"'
+}
+
+response = requests.request("GET", url, headers=headers, data=payload)
+
+print(response.text)
+
+if response.headers.get("content-type") == "application/pdf":
+  with open('teste.pdf', "wb") as pdf_file:
+      pdf_file.write(response.content)
+  print("Arquivo PDF salvo com sucesso.")
+
+
+
+
+
+
+
+
+
+
+
 captcha = Solve_Captcha()
 response = captcha.recaptcha(sitekey,'https://www.ipva.fazenda.sp.gov.br/ipvanet_consulta/consulta.aspx')
 

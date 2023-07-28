@@ -118,7 +118,7 @@ class Ecac:
                 try:
                     validation = WebDriverWait(self._driver, 3).until(EC.presence_of_element_located((By.ID, "ValidationSummary1"))).text
                     if validation == 'Caracteres da imagem não conferem.':
-                        continue
+                        print('Caracteres da imagem não conferem.')
                     else:
                         break
                 except:

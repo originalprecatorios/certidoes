@@ -9,8 +9,8 @@ from request.distribuicao_federal import Distribuicao_federal
 from selenium_class.debito_trabalhista import Debito_trabalhista
 from selenium_class.protesto import Protesto
 from selenium_class.protesto2 import Protesto2
-#from request.trabalhista import Trabalhista
-from selenium_class.trabalhista import Trabalhista
+from request.trabalhista import Trabalhista
+#from selenium_class.trabalhista import Trabalhista
 from request.federal_request import Federal_request
 from selenium_class.divida_ativa import Divida_ativa
 from selenium_class.tj import Tj
@@ -509,7 +509,8 @@ def certidao_initial(id_mongo):
                     while True:
                         if cont <=2:
                             try:
-                                t = Trabalhista(u,os.environ['PAGE_URL_TRTSP'],mongo,erro,cap)
+                                t = Trabalhista(u,cap,os.environ['PAGE_URL_TRTSP'])
+                                #t = Trabalhista(u,os.environ['PAGE_URL_TRTSP'],mongo,erro,cap)
                                 t.login()
                                 del t
                                 modifica['$set']['extracted']['_TRTSP'] = 1
@@ -1123,7 +1124,7 @@ def certidao_initial(id_mongo):
 
 # Configuração para teste
 
-#dados = {'_id':'64b743f046317aaa3df57b13'}
+#dados = {'_id':'6405ec5128f620c3ddd9fb35'}
 #dados = {"_id": "6405ec5128f620c3ddd9fb35", "certidao": {"_TRT15"}}
 #certidao_initial(dados)
 

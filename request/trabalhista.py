@@ -1,9 +1,7 @@
-from bs4 import BeautifulSoup
 import requests
-import shutil,os, time
-from selenium import webdriver
+import os, time
 from selenium.webdriver.common.by import By
-from selenium.webdriver.firefox.options import Options
+from utils.selenium_classes import Selenium_classes
 
 class Trabalhista:
     def __init__(self,pData,pCaptcha,pLink):
@@ -12,18 +10,9 @@ class Trabalhista:
         self._captcha = pCaptcha
         self._cont = 0
         self._link = pLink
-
-        fp = webdriver.FirefoxProfile()
-        fp.set_preference("general.useragent.override", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.45 Safari/537.36")
-        options = Options()
-        options.add_argument("--headless")
-        self._driver = webdriver.Firefox(firefox_profile=fp)
-        self._driver.get(self._link)
-        time.sleep(2)
-        cooki = self._driver.get_cookies()
-        self._cookies = {
-            'Cookie': "PHPSESSID={}; _ga={}; _gid={}; ww2.trtsp.jus.br={}; contraste={}; fontes={}; escalabilidade={}; _gat=1".format(cooki[0]['value'],cooki[1]['value'],cooki[2]['value'],cooki[4]['value'],cooki[5]['value'],cooki[6]['value'],cooki[7]['value'])
-        }
+        self.navegation = Selenium_classes(self._data['path'])
+        self.navegation.firefox(self._link,None,False)
+        
         
     def login(self):
         self._capt = '/tmp/captcha/'
@@ -31,60 +20,27 @@ class Trabalhista:
             print("O diretório existe!")
         else:
             os.makedirs(f'{self._capt}')
-
-        self._pasta = self._data['path']
-        #self._pasta = '/opt/certidao/{}/'.format(self._data['cpf'].replace('.','').replace('-',''))
-        if os.path.isdir(f'{self._pasta}'):
-            print("O diretório existe!")
-        else:
-            os.makedirs(f'{self._pasta}')
+        
+        cookie = self.navegation.cookies()
+        co = "PHPSESSID={}; _ga={}; _gid={}; ww2.trtsp.jus.br={}; contraste={}; fontes={}; escalabilidade={}".format(cookie[0]['value'],cookie[1]['value'],cookie[2]['value'],cookie[4]['value'],cookie[5]['value'],cookie[6]['value'],cookie[7]['value'])
+        response = self.solve_cap()
+        id_captcha  = self.navegation.wait_element('NAME','captcha[id]').get_attribute('value')
+        self.navegation.close_driver()
 
         try:
             url = "https://aplicacoes10.trt2.jus.br/certidao_trabalhista_eletronica/public/index.php/index/solicitacao"
 
-            payload={}
+            payload='tipoDocumentoPesquisado=1&numeroDocumentoPesquisado={}&nomePesquisado={}&jurisdicao=0&periodo=1&data_inicial=&data_final=&captcha%5Bid%5D={}&captcha%5Binput%5D={}&submit=&submit='.format(self._data['cpf'],self._data['nome'],id_captcha,response)
             headers = {
-            'User-Agent': 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:102.0) Gecko/20100101 Firefox/102.0',
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.45 Safari/537.36',
             'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8',
-            'Accept-Language': 'pt-BR,pt;q=0.8,en-US;q=0.5,en;q=0.3',
+            'Accept-Language': 'en-US,en;q=0.5',
             'Accept-Encoding': 'gzip, deflate, br',
-            'Referer': 'https://aplicacoes10.trt2.jus.br/certidao_trabalhista_eletronica/public/index.php/index/imprimecertidao',
-            'Connection': 'keep-alive',
-            'Cookie': '{}'.format(self._cookies['Cookie']),
-            'Upgrade-Insecure-Requests': '1',
-            'Sec-Fetch-Dest': 'document',
-            'Sec-Fetch-Mode': 'navigate',
-            'Sec-Fetch-Site': 'same-origin',
-            'Sec-Fetch-User': '?1'
-            }
-
-            response = requests.request("GET", url, headers=headers, data=payload)
-
-            
-
-            soup = BeautifulSoup(response.text, 'html.parser')
-            captcha_id = soup.find(id="captcha-id").get('value')
-            url = 'https://aplicacoes10.trt2.jus.br' + soup.find("table", {"class": "tcaptcha"}).find_all("img")[0].get('src')
-            response = requests.get(url, stream=True)
-            with open(self._capt+'captcha.png', 'wb') as out_file:
-                shutil.copyfileobj(response.raw, out_file)
-
-            solve_captcha = self._captcha.resolve_normal(os.path.join(self._capt,'captcha.png'))
-            os.system('rm {}'.format(os.path.join(self._capt,'captcha.png')))
-
-            url = "https://aplicacoes10.trt2.jus.br/certidao_trabalhista_eletronica/public/index.php/index/solicitacao"
-
-            payload='tipoDocumentoPesquisado=1&numeroDocumentoPesquisado={}&nomePesquisado={}&jurisdicao=0&periodo=1&data_inicial=&data_final=&captcha%5Bid%5D={}&captcha%5Binput%5D={}&submit=&submit='.format(self._data['cpf'],self._data['nome'].strip(),captcha_id,solve_captcha)
-            headers = {
-            'User-Agent': 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:102.0) Gecko/20100101 Firefox/102.0',
-            'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8',
-            'Accept-Language': 'pt-BR,pt;q=0.8,en-US;q=0.5,en;q=0.3',
-            'Accept-Encoding': 'gzip, deflate, br',
+            'Referer': 'https://aplicacoes10.trt2.jus.br/certidao_trabalhista_eletronica/public/index.php/index/solicitacao',
             'Content-Type': 'application/x-www-form-urlencoded',
             'Origin': 'https://aplicacoes10.trt2.jus.br',
             'Connection': 'keep-alive',
-            'Referer': 'https://aplicacoes10.trt2.jus.br/certidao_trabalhista_eletronica/public/index.php/index/solicitacao',
-            'Cookie': '{}'.format(self._cookies['Cookie']),
+            'Cookie': co,
             'Upgrade-Insecure-Requests': '1',
             'Sec-Fetch-Dest': 'document',
             'Sec-Fetch-Mode': 'navigate',
@@ -94,20 +50,17 @@ class Trabalhista:
 
             response = requests.request("POST", url, headers=headers, data=payload)
 
-            
-
-
             url = "https://aplicacoes10.trt2.jus.br/certidao_trabalhista_eletronica/public/index.php/index/recuperarcertidao"
 
             payload={}
             headers = {
-            'User-Agent': 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:102.0) Gecko/20100101 Firefox/102.0',
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.45 Safari/537.36',
             'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8',
-            'Accept-Language': 'pt-BR,pt;q=0.8,en-US;q=0.5,en;q=0.3',
+            'Accept-Language': 'en-US,en;q=0.5',
             'Accept-Encoding': 'gzip, deflate, br',
-            'Connection': 'keep-alive',
             'Referer': 'https://aplicacoes10.trt2.jus.br/certidao_trabalhista_eletronica/public/index.php/index/imprimecertidao',
-            'Cookie': '{}'.format(self._cookies['Cookie']),
+            'Connection': 'keep-alive',
+            'Cookie': co,
             'Upgrade-Insecure-Requests': '1',
             'Sec-Fetch-Dest': 'document',
             'Sec-Fetch-Mode': 'navigate',
@@ -117,16 +70,37 @@ class Trabalhista:
 
             response = requests.request("GET", url, headers=headers, data=payload)
 
-            
-
-            with open(self._pasta+'11- TRT2ª.pdf', 'wb') as f:
-                f.write(response.content)
-            self._driver.close()
-        except:
-            self._cont += 1
-            if self._cont <= 3:
-                self.login()
+            if response.headers.get("content-type") == "application/pdf":
+                with open(os.path.join(self._data['path'],'11- TRT2ª.pdf'), "wb") as pdf_file:
+                    pdf_file.write(response.content)
+                print("Arquivo PDF salvo com sucesso.")
             else:
-                return
+                self.navegation.close_driver()
+                raise ValueError
 
+            
+            for arquivo in os.listdir(self._data['path']):
+                if arquivo.find('11- TRT2ª.pdf') > -1:
+                    print('Download do arquivo gerado para o cliente {}'.format(self._data['nome']))
+                    return
+            
+            self.navegation.close_driver()
+            raise ValueError
+            
+        except:
+            self.navegation.close_driver()
+            return
+
+    def solve_cap(self):
+        self.navegation.wait_element('CLASS_NAME','tcaptcha')
+        with open(f'{self._capt}captcha.png', 'wb') as file:
+            l = self.navegation.element('CLASS_NAME','tcaptcha').find_element(By.TAG_NAME,'img')
+            file.write(l.screenshot_as_png)
+        time.sleep(1)
+        response = self._captcha.resolve_normal(os.path.join(self._capt,'captcha.png'))
+        if response is None:
+            response = self._captcha.resolve_normal(os.path.join(self._capt,'captcha.png'))
+        #response = ''
+        os.system('rm {}'.format(os.path.join(self._capt,'captcha.png')))
+        return response
         
