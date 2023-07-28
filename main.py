@@ -1078,7 +1078,7 @@ def certidao_initial(id_mongo):
                             print('Erro ao acessar o site, para gerar a certidão _ECAC')
                             break
                     
-
+        mongo._getcoll('certidao')
         modifica['$set']['status_process'] = True
         mongo.updateOne_Query(busca, modifica)
     del mongo
