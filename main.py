@@ -3,7 +3,8 @@
 from selenium_class.estadual import Estadual
 from selenium_class.municipal import Municipal
 from selenium_class.federal import Federal
-from selenium_class.trt15 import Trt15
+#from selenium_class.trt15 import Trt15
+from request.trt15 import Trt15
 #from selenium_class.distribuicao_federal import Distribuicao_federal
 from request.distribuicao_federal import Distribuicao_federal
 from selenium_class.debito_trabalhista import Debito_trabalhista
@@ -620,7 +621,8 @@ def certidao_initial(id_mongo):
                     while True:
                         if cont <=2:
                             try:
-                                t15 = Trt15(u,os.environ['PAGE_URL_TRT15'],mongo,erro,cap)
+                                #t15 = Trt15(u,os.environ['PAGE_URL_TRT15'],mongo,erro,cap)
+                                t15 = Trt15(u,cap,os.environ['PAGE_URL_TRT15'])
                                 t15.login()
                                 del t15
                                 modifica['$set']['extracted']['_TRT15'] = 1

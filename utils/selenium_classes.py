@@ -44,6 +44,21 @@ class Selenium_classes:
         self._driver.get(pLink)
         time.sleep(2)
     
+    def accept_cookie(self):
+        try:
+            WebDriverWait(self._driver, 5).until(EC.presence_of_element_located((By.CLASS_NAME, "eu-cookie-compliance-default-button"))).click()
+        except:
+            pass
+    
+    def download_img(self,pPath):
+        img = self._driver.find_elements(By.TAG_NAME,'img')[0]
+        
+        time.sleep(2)
+        # download the image
+        #urllib.request.urlretrieve(src, os.path.join(self._pasta,'captcha.png'))
+        with open(os.path.join(pPath,'captcha.png'), 'wb') as file:
+            file.write(self._driver.find_element(By.XPATH,'/html/body/img').screenshot_as_png)
+    
     def chrome(self,pLink,pSave=None):
         from selenium.webdriver.chrome.options import Options
         self.print_colored("Executando navegador Chrome ", "blue")
@@ -96,6 +111,9 @@ class Selenium_classes:
                                                                         'Chrome/85.0.4183.102 Safari/537.36'})
         self._driver.get(pLink)
         time.sleep(2)
+    
+    def navegation(self,pLink):
+        self._driver.get(pLink)
     
     def close_driver(self):
         self.print_colored("Fechando Navegador", "blue")
