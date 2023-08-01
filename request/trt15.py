@@ -10,7 +10,7 @@ class Trt15:
         self._captcha = pCaptcha
         self._cont = 0
         self._link = pLink
-        self.create_folder(self._data['path'])
+        #self.create_folder(self._data['path'])
         self.navegation = Selenium_classes(self._data['path'])
         self.navegation.firefox('https://ceat.trt15.jus.br/ceat/seam/resource/captcha?f=1690828042005',None,False)
         #self.navegation.accept_cookie()
@@ -70,7 +70,7 @@ class Trt15:
         print("Imagem do captcha salva com sucesso!")
         response = self._captcha.resolve_normal(os.path.join(self._data['path'],'captcha.png'))
         time.sleep(1)
-        
+        print('passo pelo captcha')
         if response is None:
             response = self._captcha.resolve_normal(os.path.join(self._data['path'],'captcha.png'))
         #response = ''

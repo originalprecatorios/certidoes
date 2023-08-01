@@ -22,7 +22,7 @@ class Solve_Captcha:
         data = {'key': self._key, 'method': 'post'}
 
         r = requests.post('http://2captcha.com/in.php', files=content, data=data)
-
+        print(r)
         if r.ok and r.text.find('OK') > -1:
 
             reqid = r.text[r.text.find('|')+1:]
