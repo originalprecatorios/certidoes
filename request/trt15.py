@@ -68,11 +68,11 @@ class Trt15:
             f.write(response_captcha.content)
 
         print("Imagem do captcha salva com sucesso!")
-        response = self._captcha.resolve_normal(os.path.join(self._data['path'],'captcha.png'))
+        response = self._captcha.resolve_normal(os.path.join(self._data['path'],'captcha.jpg'))
         time.sleep(1)
         print('passo pelo captcha')
         if response is None:
-            response = self._captcha.resolve_normal(os.path.join(self._data['path'],'captcha.png'))
+            response = self._captcha.resolve_normal(os.path.join(self._data['path'],'captcha.jpg'))
         #response = ''
         response = response.replace('=','')
         if '+' in response:
