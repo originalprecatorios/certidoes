@@ -25,6 +25,8 @@ class Trt15:
             self.print_colored("Diretório Criado!", "green")
         
     def login(self):
+        print('login')
+        time.sleep(2)
         cookie = self.navegation.cookies()
 
         url = "https://ceat.trt15.jus.br/ceat/certidaoAction.seam"
