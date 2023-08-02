@@ -1,57 +1,78 @@
 import requests
-from bs4 import BeautifulSoup
-from selenium import webdriver
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.firefox.options import Options
-from selenium.webdriver.common.by import By
-from datetime import datetime
-from pathlib import Path
-import time, os, shutil
-import undetected_chromedriver as uc
+import os
 
 class Divida_ativa():
     def __init__(self,pData,pCaptcha):
-        print('Divida_ativa')
+        self.print_colored("Executando a classe Divida_ativa", "blue")
         self._data = pData
-        self._sitekey = '6Le9EjMUAAAAAPKi-JVCzXgY_ePjRV9FFVLmWKB_'
         self._captcha = pCaptcha
-        self._r = self._captcha.recaptcha(self._sitekey,'https://www.dividaativa.pge.sp.gov.br/sc/pages/crda/emitirCrda.jsf')
-        self._save = '/opt/certidao/download/'
-        self._pasta = '/opt/certidao/{}/'.format(self._data['cpf'].replace('.','').replace('-',''))
+        self._pasta = self._data['path']
         if os.path.isdir(f'{self._pasta}'):
+            self.print_colored("O diretório já existe!", "red")
             print("O diretório existe!")
         else:
+            self.print_colored("O Diretório foi criado!", "gree")
             os.makedirs(f'{self._pasta}')
-            os.makedirs(f'{self._save}')
 
     def get_download(self):
+        self.print_colored("Função get_download", "blue")
+        self.print_colored("Capturando cookie de sessão e chave do captcha", "yellow")
+        response = requests.get('https://www.dividaativa.pge.sp.gov.br/sc/pages/crda/emitirCrda.jsf')
+        JSESSIONID = response.cookies.get('JSESSIONID')
+        sitekey = response.text.split('data-sitekey=')[1].split('"')[1]
+        self.print_colored("Resolvendo captcha", "yellow")
+        resposta = self._captcha.recaptcha(sitekey,'https://www.dividaativa.pge.sp.gov.br/sc/pages/crda/emitirCrda.jsf;jsessionid=72B376078823BBC593503156E614391E.395015-sc-03')
+
         url = "https://www.dividaativa.pge.sp.gov.br/sc/pages/crda/emitirCrda.jsf"
 
-        payload='emitirCrda=emitirCrda&emitirCrda%3AcrdaInputCnpjBase=&emitirCrda%3AcrdaInputCpf={}&g-recaptcha-response={}&emitirCrda%3Aj_id95=Emitir&javax.faces.ViewState=j_id2'.format(self._data['cpf'],self._r)
+        payload='emitirCrda=emitirCrda&emitirCrda%3AcrdaInputCnpjBase=&emitirCrda%3AcrdaInputCpf={}&g-recaptcha-response={}&emitirCrda%3Aj_id97=Emitir&javax.faces.ViewState=j_id1'.format(self._data['cpf'],resposta)
         headers = {
-        'User-Agent': 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:102.0) Gecko/20100101 Firefox/102.0',
-        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8',
-        'Accept-Language': 'pt-BR,pt;q=0.8,en-US;q=0.5,en;q=0.3',
-        'Accept-Encoding': 'gzip, deflate, br',
-        'Content-Type': 'application/x-www-form-urlencoded',
-        'Origin': 'https://www.dividaativa.pge.sp.gov.br',
-        'DNT': '1',
+        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7',
+        'Accept-Language': 'pt-BR,pt;q=0.9,en-US;q=0.8,en;q=0.7',
+        'Cache-Control': 'max-age=0',
         'Connection': 'keep-alive',
-        'Referer': 'https://www.dividaativa.pge.sp.gov.br/sc/pages/crda/emitirCrda.jsf;jsessionid=524AA237088F50590D560C87068D972F.395016-sc-01',
-        'Cookie': 'JSESSIONID=524AA237088F50590D560C87068D972F.395016-sc-01',
-        'Upgrade-Insecure-Requests': '1',
+        'Content-Type': 'application/x-www-form-urlencoded',
+        'Cookie': 'JSESSIONID={};'.format(JSESSIONID),
+        'Origin': 'https://www.dividaativa.pge.sp.gov.br',
+        'Referer': 'https://www.dividaativa.pge.sp.gov.br/sc/pages/crda/emitirCrda.jsf?param=150304',
         'Sec-Fetch-Dest': 'document',
         'Sec-Fetch-Mode': 'navigate',
         'Sec-Fetch-Site': 'same-origin',
-        'Sec-Fetch-User': '?1'
+        'Sec-Fetch-User': '?1',
+        'Upgrade-Insecure-Requests': '1',
+        'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/111.0.0.0 Safari/537.36',
+        'sec-ch-ua': '"Google Chrome";v="111", "Not(A:Brand";v="8", "Chromium";v="111"',
+        'sec-ch-ua-mobile': '?0',
+        'sec-ch-ua-platform': '"Linux"'
         }
 
         response = requests.request("POST", url, headers=headers, data=payload)
 
+        self.print_colored("Verificando resposta do servidor", "yellow")
+        if response.headers.get("content-type") == "application/pdf":
+            with open(os.path.join(self._data['path'],'17- DIVIDA ATIVA.pdf'), "wb") as pdf_file:
+                pdf_file.write(response.content)
+            self.print_colored("Arquivo PDF salvo com sucesso.", "gree")
+            
+        for arquivo in os.listdir(self._data['path']):
+                if arquivo.find('17- DIVIDA ATIVA.pdf') > -1:
+                    print('Download do arquivo gerado para o cliente {}'.format(self._data['nome']))
+                    return
+        self.print_colored("Não foi possivel salvar o arquivo PDF", "red")
+        raise ValueError
 
-        with open(self._pasta+'_CND_CONTRIBUINTE.pdf', 'wb') as f:
-            f.write(response.content)
-        
-        print('Download concluido')
+    def print_colored(self, text, color):
+        colors = {
+            'blue': '\033[94m',
+            'red': '\033[91m',
+            'yellow': '\033[93m',
+            'green': '\033[92m'
+        }
+
+        end_color = '\033[0m'
+
+        if color.lower() in colors:
+            colored_text = colors[color.lower()] + text + end_color
+            print(colored_text)
+        else:
+            print("A cor selecionada não existe")

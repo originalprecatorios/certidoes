@@ -8,6 +8,40 @@ import time
 
 import httpx
 
+response = requests.get('https://www.dividaativa.pge.sp.gov.br/sc/pages/crda/emitirCrda.jsf')
+
+JSESSIONID = response.cookies.get('JSESSIONID')
+
+resposta = ''
+
+url = "https://www.dividaativa.pge.sp.gov.br/sc/pages/crda/emitirCrda.jsf"
+
+payload='emitirCrda=emitirCrda&emitirCrda%3AcrdaInputCnpjBase=&emitirCrda%3AcrdaInputCpf=403.154.468-54&g-recaptcha-response={}&emitirCrda%3Aj_id97=Emitir&javax.faces.ViewState=j_id1'.format(resposta)
+headers = {
+  'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7',
+  'Accept-Language': 'pt-BR,pt;q=0.9,en-US;q=0.8,en;q=0.7',
+  'Cache-Control': 'max-age=0',
+  'Connection': 'keep-alive',
+  'Content-Type': 'application/x-www-form-urlencoded',
+  'Cookie': 'JSESSIONID={};'.format(JSESSIONID),
+  'Origin': 'https://www.dividaativa.pge.sp.gov.br',
+  'Referer': 'https://www.dividaativa.pge.sp.gov.br/sc/pages/crda/emitirCrda.jsf?param=150304',
+  'Sec-Fetch-Dest': 'document',
+  'Sec-Fetch-Mode': 'navigate',
+  'Sec-Fetch-Site': 'same-origin',
+  'Sec-Fetch-User': '?1',
+  'Upgrade-Insecure-Requests': '1',
+  'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/111.0.0.0 Safari/537.36',
+  'sec-ch-ua': '"Google Chrome";v="111", "Not(A:Brand";v="8", "Chromium";v="111"',
+  'sec-ch-ua-mobile': '?0',
+  'sec-ch-ua-platform': '"Linux"'
+}
+
+response = requests.request("POST", url, headers=headers, data=payload)
+
+captcha = Solve_Captcha()
+response = captcha.recaptcha('6Le9EjMUAAAAAPKi-JVCzXgY_ePjRV9FFVLmWKB_','https://www.dividaativa.pge.sp.gov.br/sc/pages/crda/emitirCrda.jsf;jsessionid=72B376078823BBC593503156E614391E.395015-sc-03')
+
 url = "https://www2.ssp.sp.gov.br/aacweb/carrega-formulario"
 
 headers = {
