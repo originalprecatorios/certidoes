@@ -1,6 +1,5 @@
 import httpx
 import os
-import pdfkit
 import time
 from weasyprint import HTML
 

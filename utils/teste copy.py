@@ -8,7 +8,7 @@ import time
 
 import httpx
 
-response = requests.get('https://www.dividaativa.pge.sp.gov.br/sc/pages/crda/emitirCrda.jsf')
+response = requests.get('https://www10.fazenda.sp.gov.br/CertidaoNegativaDeb/Pages/EmissaoCertidaoNegativa.aspx')
 
 JSESSIONID = response.cookies.get('JSESSIONID')
 

@@ -1,6 +1,5 @@
 import requests
 import os
-import pdfkit
 from bs4 import BeautifulSoup
 from weasyprint import HTML
 
