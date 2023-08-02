@@ -11,7 +11,7 @@ class Divida_ativa():
             self.print_colored("O diretório já existe!", "red")
             print("O diretório existe!")
         else:
-            self.print_colored("O Diretório foi criado!", "gree")
+            self.print_colored("O Diretório foi criado!", "green")
             os.makedirs(f'{self._pasta}')
 
     def get_download(self):
@@ -52,7 +52,7 @@ class Divida_ativa():
         if response.headers.get("content-type") == "application/pdf":
             with open(os.path.join(self._data['path'],'17- DIVIDA ATIVA.pdf'), "wb") as pdf_file:
                 pdf_file.write(response.content)
-            self.print_colored("Arquivo PDF salvo com sucesso.", "gree")
+            self.print_colored("Arquivo PDF salvo com sucesso.", "green")
             
         for arquivo in os.listdir(self._data['path']):
                 if arquivo.find('17- DIVIDA ATIVA.pdf') > -1:
