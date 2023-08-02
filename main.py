@@ -13,7 +13,8 @@ from selenium_class.protesto2 import Protesto2
 from request.trabalhista import Trabalhista
 #from selenium_class.trabalhista import Trabalhista
 from request.federal_request import Federal_request
-from selenium_class.divida_ativa import Divida_ativa
+#from selenium_class.divida_ativa import Divida_ativa
+from request.divida_ativa import Divida_ativa
 from selenium_class.tj import Tj
 from selenium_class.trf import Trf
 from selenium_class.tst_trabalhista import Tst_trabalhista
@@ -650,8 +651,10 @@ def certidao_initial(id_mongo):
                     while True:
                         if cont <=2:
                             try:
-                                da = Divida_ativa(u,os.environ['PAGE_URL_CONTRIBUINTE'],mongo,erro,cap)
-                                da.login()
+                                #da = Divida_ativa(u,os.environ['PAGE_URL_CONTRIBUINTE'],mongo,erro,cap)
+                                #da.login()
+                                da = Divida_ativa(u,cap)
+                                da.get_download()
                                 del da
                                 modifica['$set']['extracted']['_CND_CONTRIBUINTE'] = 1
                                 break
