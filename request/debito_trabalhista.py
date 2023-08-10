@@ -91,7 +91,7 @@ class Debito_trabalhista():
 
         url = "https://cndt-certidao.tst.jus.br/gerarCertidao.faces"
 
-        payload = "AJAXREQUEST=j_id_jsp_216541370_0&gerarCertidaoForm=gerarCertidaoForm&gerarCertidaoForm%3ApodeFazerDownload=false&gerarCertidaoForm%3AcpfCnpj=235.129.258-80&resposta={}&tokenDesafio={}&emailUsuario=&javax.faces.ViewState={}&gerarCertidaoForm%3AbtnEmitirCertidao=gerarCertidaoForm%3AbtnEmitirCertidao&".format(captcha_response,self._token_desafio,self._viewstate)
+        payload = "AJAXREQUEST=j_id_jsp_216541370_0&gerarCertidaoForm=gerarCertidaoForm&gerarCertidaoForm%3ApodeFazerDownload=false&gerarCertidaoForm%3AcpfCnpj={}&resposta={}&tokenDesafio={}&emailUsuario=&javax.faces.ViewState={}&gerarCertidaoForm%3AbtnEmitirCertidao=gerarCertidaoForm%3AbtnEmitirCertidao&".format(self._data['cpf'],captcha_response,self._token_desafio,self._viewstate)
         headers = {
         'Accept': '*/*',
         'Accept-Language': 'pt-BR,pt;q=0.9,en-US;q=0.8,en;q=0.7',
