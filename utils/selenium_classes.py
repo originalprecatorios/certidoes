@@ -30,7 +30,7 @@ class Selenium_classes:
     def firefox(self,pLink,pSave=None,pOpen=True):
         self.print_colored("Executando navegador FireFox", "blue")
         options = Options()
-        options = webdriver.FirefoxProfile()
+        #options = webdriver.FirefoxProfile()
         options.set_preference("general.useragent.override", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.45 Safari/537.36")
         options.set_preference("browser.download.folderList", 2)
         options.set_preference("browser.download.manager.showWhenStarting", False)
