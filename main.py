@@ -7,7 +7,8 @@ from selenium_class.federal import Federal
 from request.trt15 import Trt15
 #from selenium_class.distribuicao_federal import Distribuicao_federal
 from request.distribuicao_federal import Distribuicao_federal
-from selenium_class.debito_trabalhista import Debito_trabalhista
+#from selenium_class.debito_trabalhista import Debito_trabalhista
+from request.debito_trabalhista import Debito_trabalhista
 from selenium_class.protesto import Protesto
 from selenium_class.protesto2 import Protesto2
 from request.trabalhista import Trabalhista
@@ -540,8 +541,11 @@ def certidao_initial(id_mongo):
                     while True:
                         if cont <=2:
                             try:
-                                dt = Debito_trabalhista(u,os.environ['PAGE_URL_DEBITO_TRABALHISTA'],mongo,erro,cap)
-                                dt.login()
+                                
+                                dt = Debito_trabalhista(u,cap)
+                                dt.get_download()
+                                #dt = Debito_trabalhista(u,os.environ['PAGE_URL_DEBITO_TRABALHISTA'],mongo,erro,cap)
+                                #dt.login()
                                 del dt
                                 modifica['$set']['extracted']['_DEBITO_TRABALHISTA'] = 1
                                 break
