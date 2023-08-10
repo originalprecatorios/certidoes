@@ -3,6 +3,7 @@ from recaptcha.captcha import Solve_Captcha
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 import os
+from selenium.webdriver.firefox.options import Options 
 from PIL import Image
 import img2pdf
 import requests
@@ -182,10 +183,10 @@ print(f"Arquivo PDF salvo em: {pdf_file_path}")
 
 
 
-fp = webdriver.FirefoxProfile()
+#fp = webdriver.FirefoxProfile()
 options = Options()
 options.add_argument("--headless")
-driver = webdriver.Firefox(firefox_profile=fp)
+driver = webdriver.Firefox(options=options)
 driver.get('https://www.ipva.fazenda.sp.gov.br/ipvanet_consulta/consulta.aspx')
 time.sleep(2)
 arr ={'NET_SessionId':driver.get_cookies()[0]['value'],

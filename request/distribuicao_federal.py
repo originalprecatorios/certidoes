@@ -3,6 +3,7 @@ from bs4 import BeautifulSoup
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 import os
+from selenium.webdriver.firefox.options import Options
 from PIL import Image
 import img2pdf
 import requests
@@ -124,9 +125,10 @@ class Distribuicao_federal():
         return True
     
     def creat_document(self):
-        fp = webdriver.FirefoxProfile()
-        fp.set_preference("general.useragent.override", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.45 Safari/537.36")
-        driver = webdriver.Firefox(firefox_profile=fp)
+        options = Options()
+        #fp = webdriver.FirefoxProfile()
+        options.set_preference("general.useragent.override", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.45 Safari/537.36")
+        driver = webdriver.Firefox(options=options)
         driver.get('file:///{}'.format(self._save+'/arquivo.html'))
         time.sleep(2)
         driver.get_full_page_screenshot_as_file(self._data['path']+'{}.png'.format(self._nome))

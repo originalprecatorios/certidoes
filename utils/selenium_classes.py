@@ -29,18 +29,18 @@ class Selenium_classes:
         
     def firefox(self,pLink,pSave=None,pOpen=True):
         self.print_colored("Executando navegador FireFox", "blue")
-        fp = webdriver.FirefoxProfile()
-        fp.set_preference("general.useragent.override", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.45 Safari/537.36")
-        fp.set_preference("browser.download.folderList", 2)
-        fp.set_preference("browser.download.manager.showWhenStarting", False)
-        if pSave is not None:
-            fp.set_preference("browser.download.dir", pSave)
-        fp.set_preference(TEXTO[0], TEXTO[1])
-        fp.set_preference("pdfjs.disabled", True)
         options = Options()
+        options = webdriver.FirefoxProfile()
+        options.set_preference("general.useragent.override", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.45 Safari/537.36")
+        options.set_preference("browser.download.folderList", 2)
+        options.set_preference("browser.download.manager.showWhenStarting", False)
+        if pSave is not None:
+            options.set_preference("browser.download.dir", pSave)
+        options.set_preference(TEXTO[0], TEXTO[1])
+        options.set_preference("pdfjs.disabled", True)
         if pOpen is False:
             options.add_argument("--headless")
-        self._driver = webdriver.Firefox(firefox_profile=fp,options=options)
+        self._driver = webdriver.Firefox(options=options)
         self._driver.get(pLink)
         time.sleep(2)
     
