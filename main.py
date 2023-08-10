@@ -1133,9 +1133,9 @@ def certidao_initial(id_mongo):
 
 # Configuração para teste
 
-dados = {'_id':'64d4eb370d59e9afe9451047'}
+#dados = {'_id':'64d4eb370d59e9afe9451047'}
 #dados = {"_id": "6405ec5128f620c3ddd9fb35", "certidao": {"_TRT15"}}
-certidao_initial(dados)
+#certidao_initial(dados)
 
 
 # Executa a conexão com o Rabbit e armazena em uma variavel os dados existentes na fila
