@@ -47,7 +47,7 @@ class Esaj_busca:
         options.set_preference("browser.download.manager.showWhenStarting", False)
         options.set_preference("pdfjs.disabled", True)
         options = Options()
-        options.add_argument("--headless")
+        #options.add_argument("--headless")
         self._driver = webdriver.Firefox(options=options)
         self._driver.get(self._link)
         time.sleep(2)

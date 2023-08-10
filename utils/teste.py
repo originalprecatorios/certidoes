@@ -185,7 +185,7 @@ print(f"Arquivo PDF salvo em: {pdf_file_path}")
 
 #fp = webdriver.FirefoxProfile()
 options = Options()
-options.add_argument("--headless")
+#options.add_argument("--headless")
 driver = webdriver.Firefox(options=options)
 driver.get('https://www.ipva.fazenda.sp.gov.br/ipvanet_consulta/consulta.aspx')
 time.sleep(2)

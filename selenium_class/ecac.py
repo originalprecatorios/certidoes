@@ -49,7 +49,7 @@ class Ecac:
         options.set_preference("browser.download.dir", self._save)
         options.set_preference(TEXTO[0], TEXTO[1])
         options.set_preference("pdfjs.disabled", True)
-        options.add_argument("--headless")
+        #options.add_argument("--headless")
         self._driver = webdriver.Firefox(options=options)
         self._driver.get(link)
         time.sleep(2)

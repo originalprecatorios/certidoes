@@ -33,7 +33,7 @@ class Request_esaj:
         options.set_preference("general.useragent.override", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.45 Safari/537.36")
         options.set_preference("browser.download.folderList", 2)
         options.set_preference("browser.download.manager.showWhenStarting", False)
-        options.add_argument("--headless")
+        #options.add_argument("--headless")
         self._driver = webdriver.Firefox(options=options)
         self._driver.get(self._link)
         time.sleep(2)
