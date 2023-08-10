@@ -11,7 +11,7 @@ class Trabalhista:
         self._cont = 0
         self._link = pLink
         self.navegation = Selenium_classes(self._data['path'])
-        self.navegation.firefox(self._link,None,False)
+        self.navegation.firefox(self._link,None)
         
         
     def login(self):
