@@ -7,12 +7,32 @@ import requests
 import time
 import io
 import httpx
-
+from weasyprint import HTML
 import requests
 import base64
 
 def load_captcha():
-    response = requests.get('https://cndt-certidao.tst.jus.br/inicio.faces')
+    response = requests.get('https://esaj.tjsp.jus.br/cpopg/search.do?conversationId=&cbPesquisa=DOCPARTE&dadosConsulta.valorConsulta=40315446854&cdForo=-1')
+
+    with open('teste.html','wb') as f:
+        f.write(response.content)
+    
+    with open('teste.html','r') as f:
+        html_contente = f.read()
+    
+    html_contente_modify = html_contente.replace('/cpopg/softheme/src/css/app.css?v=2.8.34-30','https://esaj.tjsp.jus.br/cpopg/softheme/src/css/app.css?v=2.8.34-30').replace('/cpopg/softheme/src/fonts/saj/styles.css?v=2.8.34-30','https://esaj.tjsp.jus.br/cpopg/softheme/src/fonts/saj/styles.css?v=2.8.34-30').replace('/cpopg/css/formulario.css?v=2.8.34-30','https://esaj.tjsp.jus.br/cpopg/css/formulario.css?v=2.8.34-30').replace('/cpopg/webjars/select2/3.5.4/select2.css?v=2.8.34-30','https://esaj.tjsp.jus.br/cpopg/webjars/select2/3.5.4/select2.css?v=2.8.34-30').replace('/cpopg/webjars/select2/3.5.4/select2-bootstrap.css?v=2.8.34-30','https://esaj.tjsp.jus.br/cpopg/webjars/select2/3.5.4/select2-bootstrap.css?v=2.8.34-30').replace('/cpopg/css/saj/select2/saj-select2.css','https://esaj.tjsp.jus.br/cpopg/css/saj/select2/saj-select2.css')
+
+    with open('teste.html','w', encoding='utf-8') as f:
+        f.write(html_contente_modify)
+
+    with open('teste.html', 'rb') as f:
+        html_content = f.read()
+
+    # Criar um objeto HTML
+    html = HTML(string=html_content)
+
+    # Salvar o arquivo PDF
+    html.write_pdf('teste.pdf')
 
     JSESSIONID = response.cookies.get('JSESSIONID')
 
