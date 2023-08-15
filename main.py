@@ -21,7 +21,8 @@ from selenium_class.trf import Trf
 from selenium_class.tst_trabalhista import Tst_trabalhista
 from selenium_class.esaj import Esaj
 from request.request_esaj import Request_esaj
-from selenium_class.esaj_busca import Esaj_busca
+#from selenium_class.esaj_busca import Esaj_busca
+from request.esaj_busca import Esaj_busca
 from create_certificate.create import Creat
 #from selenium_class.antecedentes_criminais import Antecedentes_criminais
 from request.antecedentes_criminais import Antecedentes_criminais
@@ -817,9 +818,11 @@ def certidao_initial(id_mongo):
                     while True:
                         if cont <=2:
                             try:
-                                e = Esaj_busca(u,os.environ['PAGE_URL_ESAJ_B_NOME_CPF'],mongo,erro,cap,'15- PESQUISA ONLINE TJSP - CPF')
-                                e.login()
-                                e.get_data('CPF')
+                                e = Esaj_busca(u,cap,'CPF','15- PESQUISA ONLINE TJSP - CPF')
+                                e.get_download()
+                                #e = Esaj_busca(u,os.environ['PAGE_URL_ESAJ_B_NOME_CPF'],mongo,erro,cap,'15- PESQUISA ONLINE TJSP - CPF')
+                                #e.login()
+                                #e.get_data('CPF')
                                 del e
                                 modifica['$set']['extracted']['_ESAJ_BUSCA_CPF'] = 1
                                 break
@@ -845,9 +848,11 @@ def certidao_initial(id_mongo):
                     while True:
                         if cont <=2:
                             try:
-                                e = Esaj_busca(u,os.environ['PAGE_URL_ESAJ_B_NOME_CPF'],mongo,erro,cap,'15.1- PESQUISA ONLINE TJSP - NOME')
-                                e.login()
-                                e.get_data('NOME')
+                                e = Esaj_busca(u,cap,'NOME','15.1- PESQUISA ONLINE TJSP - NOME')
+                                e.get_download()
+                                #e = Esaj_busca(u,os.environ['PAGE_URL_ESAJ_B_NOME_CPF'],mongo,erro,cap,'15.1- PESQUISA ONLINE TJSP - NOME')
+                                #e.login()
+                                #e.get_data('NOME')
                                 del e
                                 modifica['$set']['extracted']['_ESAJ_BUSCA_NOME'] = 1
                                 break
