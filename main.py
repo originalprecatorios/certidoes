@@ -1139,6 +1139,7 @@ def certidao_initial(id_mongo):
 # Configuração para teste
 
 #dados = {'_id':'64d4eb370d59e9afe9451047'}
+#dados = {'_id':'64dd08b30d59e9afe9451149'}
 #dados = {"_id": "6405ec5128f620c3ddd9fb35", "certidao": {"_TRT15"}}
 #certidao_initial(dados)
 
