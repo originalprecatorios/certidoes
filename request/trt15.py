@@ -12,7 +12,11 @@ class Trt15:
         self._link = pLink
         #self.create_folder(self._data['path'])
         self.navegation = Selenium_classes(self._data['path'])
-        self.navegation.firefox('https://ceat.trt15.jus.br/ceat/seam/resource/captcha?f=1690828042005',None)
+        try:
+            self.navegation.firefox('https://ceat.trt15.jus.br/ceat/seam/resource/captcha?f=1690828042005',None)
+        except:
+            self.navegation.close_driver()
+            raise ValueError
         #self.navegation.accept_cookie()
     
     # Cria uma pasta conforme passado no parametro
