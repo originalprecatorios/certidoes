@@ -44,6 +44,7 @@ class Estadual:
         try:
             response = self.download_archive()
         except:
+            time.sleep(5)
             response = self.download_archive()
 
         if response.headers.get("content-type") == "application/pdf":
