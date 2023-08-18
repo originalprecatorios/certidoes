@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 
-from selenium_class.estadual import Estadual
+#from selenium_class.estadual import Estadual
+from request.estadual import Estadual
 from selenium_class.municipal import Municipal
 from selenium_class.federal import Federal
 #from selenium_class.trt15 import Trt15
@@ -129,6 +130,11 @@ def certidao_initial(id_mongo):
                     while True:
                         if cont <=2:
                             try:
+                                e = Estadual(u,cap)
+                                e.login()
+                                modifica['$set']['extracted']['_CND_ESTADUAL'] = 1
+                                break
+                                '''
                                 e = Estadual(u,os.environ['PAGE_URL'],mongo,erro,cap)
                                 logged,texto = e.login()
                                 if logged is True:
@@ -152,6 +158,7 @@ def certidao_initial(id_mongo):
                                         erro.getcoll('error_cert')
                                         erro.addData(arr)
                                     cont += 1
+                                '''
                                 
                             except Exception as e:
                                 if cont == 2:
@@ -1138,7 +1145,7 @@ def certidao_initial(id_mongo):
 
 # Configuração para teste
 
-#dados = {'_id':'64d4eb370d59e9afe9451047'}
+#dados = {'_id':'64dd0eb50d59e9afe9451150'}
 #dados = {'_id':'64dd08b30d59e9afe9451149'}
 #dados = {"_id": "6405ec5128f620c3ddd9fb35", "certidao": {"_TRT15"}}
 #certidao_initial(dados)
