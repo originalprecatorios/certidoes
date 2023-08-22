@@ -16,7 +16,7 @@ class Estadual:
             os.makedirs('{}'.format(self._data['path']))
         
         resposta = self._captcha.recaptcha('6LdoPeUUAAAAAIC5yvhe7oc9h4_qf8_Vmq0xd9GU','https://www10.fazenda.sp.gov.br/CertidaoNegativaDeb/Pages/EmissaoCertidaoNegativa.aspx')
-      
+        #resposta =''
         url = "https://www10.fazenda.sp.gov.br/CertidaoNegativaDeb/Pages/EmissaoCertidaoNegativa.aspx"
 
         payload='__EVENTTARGET=&__EVENTARGUMENT=&__VIEWSTATE=R48j9Oo3CDFf%2FjqgaTvosq%2BfqHFmcGDLJ04OGzgk%2BMmJBSPBnmvilTwk8mHEMSTJM4DenQXh3M%2BhpOzZQGqvTMbrAx%2B7Xw%2BpkoEhY0agcQYv0esRs9ptlDtKQSCEyiMtHonv29dqNYZ2VskDlcTzLALvUuHoW88f34Sf8XgzWibeRp5Wo6%2FpSkdcr68hYLGFU3y4Yjo%2BEDSyrB0q9iBEJT3LqSNVAoQ5Dfq0eMZa6sKi%2FT3toQmYIodldsCw0GUJ4U80YW5Lhtg3s5PBeVgIYeSZOyky2DsnviojRvaOwTYbrEHfBABg047QZvy0VzMrPDVGMrw%2BT8rSWTPHTNUbpg5NivM9u%2F8q0cvKL4eKypiutEeCRuK9zBj7a5t0nz9CAvAsF7EQinYgjP8ZiUaWGoP%2F7jHSS9L%2Bu%2FXmCuDaR3Q2ByDaavWuspv0Bid3SOOVcywt7g%3D%3D&__VIEWSTATEGENERATOR=1C0B1C53&__EVENTVALIDATION=mcKH9PmY7J%2FN7q0lULNNbrsUBz4NpZLG2naZxTA5GqPokRnQmZWKF1IqK5484mBwrx7n2A%2BprVcmBe9rSNNE9r0yVjdoa5MrMvMdDbo7x1M2ZeDsx40O5WRUz4fq%2FcTzCYkIvD%2B1Zk01dyTTHLvKRfgaZjpE9wJOGmEtuLQvOOiwsAWP%2BAOen1viyhg%2BbblV%2B%2BmQ5g%3D%3D&ctl00%24MainContent%24grupoDocumento=cpfradio&ctl00%24MainContent%24txtDocumento={}&ctl00%24MainContent%24btnPesquisar=%2BEmitir%2B&g-recaptcha-response={}&ctl00%24MainContent%24hdgrecaptcha={}'.format(self._data['cpf'],resposta,resposta)
@@ -41,6 +41,8 @@ class Estadual:
         }
 
         response = requests.request("POST", url, headers=headers, data=payload)
+        if response.text.find('Não foi possível emitir a Certidão Negativa.') >=0:
+            return 'Não foi possível emitir a Certidão Negativa.'
         try:
             response = self.download_archive()
         except:
@@ -58,7 +60,9 @@ class Estadual:
         for arquivo in os.listdir(self._data['path']):
             if arquivo.find('2- CND ESTADUAL.pdf') > -1:
                 print('Download do arquivo gerado para o cliente {}'.format(self._data['nome']))
-                return
+                return True
+        raise ValueError
+
 
     def download_archive(self):
         url = "https://www10.fazenda.sp.gov.br/CertidaoNegativaDeb/Pages/ImpressaoCertidaoNegativa.aspx"

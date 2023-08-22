@@ -131,8 +131,14 @@ def certidao_initial(id_mongo):
                         if cont <=2:
                             try:
                                 e = Estadual(u,cap)
-                                e.login()
-                                modifica['$set']['extracted']['_CND_ESTADUAL'] = 1
+                                logged = e.login()
+                                if logged is True:
+                                    modifica['$set']['extracted']['_CND_ESTADUAL'] = 1
+                                elif logged == 'Não foi possível emitir a Certidão Negativa.':
+                                    modifica['$set']['extracted']['_CND_ESTADUAL'] = 2
+                                    print('Não foi possível emitir a Certidão Negativa.')
+                                else:
+                                    raise ValueError
                                 break
                                 '''
                                 e = Estadual(u,os.environ['PAGE_URL'],mongo,erro,cap)
@@ -1145,7 +1151,7 @@ def certidao_initial(id_mongo):
 
 # Configuração para teste
 
-#dados = {'_id':'64dd0eb50d59e9afe9451150'}
+#dados = {'_id':'64e3b6320d59e9afe94511cb'}
 #dados = {'_id':'64dd08b30d59e9afe9451149'}
 #dados = {"_id": "6405ec5128f620c3ddd9fb35", "certidao": {"_TRT15"}}
 #certidao_initial(dados)

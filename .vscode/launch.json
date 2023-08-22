@@ -30,6 +30,18 @@
             "justMyCode": true
         },
         {
+            "name": "VERIFICACPF",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/utils/verifica_cpf.py",
+            "console": "integratedTerminal",
+            "envFile": "${workspaceFolder}/.env",
+            "env": {
+                "PYTHONPATH": "${workspaceFolder}"
+            },
+            "justMyCode": true
+        },
+        {
             "name": "TESTES",
             "type": "python",
             "request": "launch",
