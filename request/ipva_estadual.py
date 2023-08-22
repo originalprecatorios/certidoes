@@ -21,7 +21,7 @@ class Ipva_estadual:
         self._event_validation = soup.find("input", {"id": "__EVENTVALIDATION"})["value"].replace('/','%2F').replace('+','%2B').replace('=','%3D')
         self._viewstate = soup.find("input", {"id": "__VIEWSTATE"})["value"].replace('/','%2F').replace('+','%2B').replace('=','%3D')
         self._sitekey = x.text.split('data-sitekey=')[1].split('>')[0].replace('"','')
-        self._response = self._captcha.recaptcha(self._sitekey,'https://www.ipva.fazenda.sp.gov.br/ipvanet_consulta/consulta.aspx')
+        self._response = self._captcha.resolve_hcaptcha(self._sitekey,'https://www.ipva.fazenda.sp.gov.br/ipvanet_consulta/consulta.aspx')
 
     def send_data(self):
         url = "https://www.ipva.fazenda.sp.gov.br/ipvanet_consulta/Consulta.aspx"
