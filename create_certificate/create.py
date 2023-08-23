@@ -68,7 +68,7 @@ class Creat:
                             "rg": self._data['rg'], 
                             "cpf": self._data['cpf'][:-3],
                             "cpf_digit": self._data['cpf'].replace('.','').replace('-','')[-2:],
-                            "org" : self._data['orgao_expedidor'],
+                            "org" : self._data['orgao_exp'],
                             "data" : self._dt
                             }
 
