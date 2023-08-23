@@ -139,7 +139,7 @@ class Ecac:
                         irpf_separado = irpf.split(':\n')[1].split(' ')
                         if len(irpf_separado) > 1:
                             for ir in range(1,len(irpf_separado)):
-                                lista_data.append(irpf_separado[ir])
+                                lista_data.append(int(irpf_separado[ir]))
                             self._driver.close()
                             return False, lista_data
                     except:
