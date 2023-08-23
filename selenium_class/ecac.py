@@ -184,9 +184,9 @@ class Ecac:
             WebDriverWait(self._driver, 3).until(EC.presence_of_element_located((By.ID, "CodigoAcesso"))).send_keys(arr['code'])
             WebDriverWait(self._driver, 3).until(EC.presence_of_element_located((By.ID, "Senha"))).send_keys(db.decrypt(arr['password']))
             WebDriverWait(self._driver, 3).until(EC.presence_of_element_located((By.CLASS_NAME, "submit"))).click()
-            time.sleep(5)
+            time.sleep(10)
             try:
-                logado = WebDriverWait(self._driver, 3).until(EC.presence_of_element_located((By.ID, "bem-vindo"))).text
+                logado = WebDriverWait(self._driver, 5).until(EC.presence_of_element_located((By.ID, "bem-vindo"))).text
                 if logado.find('Seja bem-vindo ao Portal e-CAC da Receita Federal') < 0:
                     return False
             except:
