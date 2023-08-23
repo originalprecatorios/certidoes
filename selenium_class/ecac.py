@@ -192,8 +192,9 @@ class Ecac:
             except:
                 return False
             self._driver.execute_script("window.open('https://cav.receita.fazenda.gov.br/ecac/Aplicacao.aspx?id=2&origem=maisacessados', '_blank')")
+            time.sleep(3)
             self._driver.switch_to.window(self._driver.window_handles[1])
-            time.sleep(2)
+            time.sleep(5)
             iframe = self._driver.find_element(By.ID,"frmApp")
             self._driver.switch_to.frame(iframe)
             WebDriverWait(self._driver, 3).until(EC.presence_of_element_located((By.ID, "menuPrincipal_divLinks3"))).click()
