@@ -101,10 +101,10 @@ class Ecac:
                     l = self._driver.find_element(By.ID,'img_captcha_serpro_gov_br')
                     file.write(l.screenshot_as_png)
                 time.sleep(2)
-                response = self._captcha.resolve_normal(os.path.join(self._capt,'captcha.png'))
-                if response is None:
-                    response = self._captcha.resolve_normal(os.path.join(self._capt,'captcha.png'))
-                #response = ''
+                #response = self._captcha.resolve_normal(os.path.join(self._capt,'captcha.png'))
+                #if response is None:
+                #    response = self._captcha.resolve_normal(os.path.join(self._capt,'captcha.png'))
+                response = ''
                 WebDriverWait(self._driver, 3).until(EC.presence_of_element_located((By.ID, "txtCaptcha"))).send_keys(response)
                 WebDriverWait(self._driver, 3).until(EC.presence_of_element_located((By.ID, "btnAvancar"))).click()
                 time.sleep(5)
@@ -147,7 +147,8 @@ class Ecac:
                 creat_pass = self._data['cpf'].replace('.','').replace('-','')+self._data['nome'].split()[0].capitalize()
                 cont = 1
                 for recibo in self._data['numero_recibo_irpf']:
-                    WebDriverWait(self._driver, 3).until(EC.presence_of_element_located((By.ID, "txtReciboAno{}".format(cont)))).send_keys(self._data['numero_recibo_irpf'][recibo].replace('.','').replace('-',''))
+                    ano = self._driver.find_element(By.ID,'lblReciboAno{}'.format(cont)).text
+                    WebDriverWait(self._driver, 3).until(EC.presence_of_element_located((By.ID, "txtReciboAno{}".format(cont)))).send_keys(self._data['numero_recibo_irpf'][ano].replace('.','').replace('-',''))
                     cont += 1
                 WebDriverWait(self._driver, 3).until(EC.presence_of_element_located((By.ID, "txtSenha"))).send_keys(creat_pass)
                 WebDriverWait(self._driver, 3).until(EC.presence_of_element_located((By.ID, "txtConfirmaSenha"))).send_keys(creat_pass)
@@ -223,6 +224,9 @@ class Ecac:
 
 
         except Exception as e:
+            self._driver.close()
+            time.sleep(2)
+            self._driver.switch_to.window(self._driver.window_handles[0])
             self._driver.close()
             WebDriverWait(self._driver, 5).until(EC.presence_of_element_located((By.ID, "submit")))
             self._driver.find_element(By.ID,'submit').click()
