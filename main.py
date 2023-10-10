@@ -10,7 +10,8 @@ from request.trt15 import Trt15
 from request.distribuicao_federal import Distribuicao_federal
 #from selenium_class.debito_trabalhista import Debito_trabalhista
 from request.debito_trabalhista import Debito_trabalhista
-from selenium_class.protesto import Protesto
+#from selenium_class.protesto import Protesto
+from selenium_class.protesto_novo import Protesto
 from selenium_class.protesto2 import Protesto2
 from request.trabalhista import Trabalhista
 #from selenium_class.trabalhista import Trabalhista
@@ -586,8 +587,8 @@ def certidao_initial(id_mongo):
                     while True:
                         if cont <=2:
                             try:
-                                p = Protesto(u,os.environ['PAGE_URL_PROTESTO'],mongo,erro,cap)
-                                p.login()
+                                p = Protesto(u,os.environ['PAGE_URL_PROTESTONOVO'],mongo,erro,cap)
+                                p.login(os.environ['CENPROT_USER'],os.environ['CENPROT_PASS'])
                                 del p
                                 modifica['$set']['extracted']['_PROTESTO'] = 1
                                 break
@@ -1151,7 +1152,7 @@ def certidao_initial(id_mongo):
 
 # Configuração para teste
 
-#dados = {'_id':'64e3b6320d59e9afe94511cb'}
+#dados = {'_id':'6504529afe9b90da3f205a3c'}
 #dados = {'_id':'64dd08b30d59e9afe9451149'}
 #dados = {"_id": "6405ec5128f620c3ddd9fb35", "certidao": {"_TRT15"}}
 #certidao_initial(dados)

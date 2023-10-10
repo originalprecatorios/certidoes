@@ -13,6 +13,117 @@ import base64
 from bs4 import BeautifulSoup
 
 def load_captcha():
+    url = "https://duc.prefeitura.sp.gov.br/certidoes/pgImagem.ashx"
+    headers = {
+        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7',
+        'Accept-Language': 'pt-BR,pt;q=0.9,en-US;q=0.8,en;q=0.7',
+        'Connection': 'keep-alive',
+        'Cookie': 'ASP.NET_SessionId=2moy0v3uvpy2lcj3xylbwmws; ServerID=rd4o00000000000000000000ffff0a0a4459o443; SWCookieConfig={"aceiteSessao":"S","aceitePersistentes":"S","aceiteDesempenho":"S","aceiteEstatisticos":"S","aceiteTermos":"S"}; _ga=GA1.1.733918143.1692967001; _ga_LC6GL9KCK4=GS1.1.1692967000.1.1.1692967028.0.0.0; TS01b2d78c=0181a10bc7258a639d750528327d5d2601d1d723666232b1e0ef20f2b4a17b57943963f9ec843bb83b1bde9bf3a45540d4ddcedef260ca1e5f1bddcf41b21fc75ee7e78da30b8a93e8db8b58d7736cf83ab3848384; TS3592777f029=083a958c66ab2800ed894d85f151163c6ab347dfae522a3fdb841838aae00717f0efe8273dfedb28955df3d09f02bd37; TSPD_101=083a958c66ab2800a80e622117e6c16f898dc79d500b8a99aca5a8813e917b7b0bda249b2adc15be14baf3ea95f0b99e089069b98e051800dc5fd395131420cdf3de12ed0b156b3dfbe86f3802284862; TS9a5d5ac3027=083a958c66ab20009956fa7cd55e68ba310722c93c7436d7c31d6056dbe8552c593ebca41a2061a008edb0191e1130005c7832232d581ba1ec7221c0efe6a1bdf5e24ea80d1c313ea640eb4d7e5170ff84c61d40961c3bd9ec29055fe8f05923; TS3592777f077=083a958c66ab28004009df2433bd3ccf217e5d430f852fabb8c3539073e05a17a798c5dd311ddd2c6224bcbf9ce1e9e5082f8fab661720002dc8f8a873f8c1dadb5d6a9906e3a6ae3b94932e82fea9d2dd8aee63e0450304; ASP.NET_SessionId=kba3oe2xhlwyav0xoj2b03is; ServerID=rd4o00000000000000000000ffff0a0a4459o443; TS01b2d78c=0181a10bc79a4f087da264e2bf28c773ebeb4d2991810d2d0fc5881f603578cfcf396496cd82126d2eb5d3e5d45edc2fd36c642bd421d1ad52a0e07c4673a2e85d6aef77c07fcaec0a8ad4b70ca861daf9603f5c01; TS3592777f029=083a958c66ab2800edafdbd86da061e2fe260482d0e88e3287536b4d73d26b7a734f2f178fa5b2af788bdd920e3ff2b7; TS9a5d5ac3027=083a958c66ab20006c218a5d21c1061ea2ebda30a83f0654ce8c78a60cc915bb70acde1c50307a5f08bdbb78db113000c09dc9c8876e4e6ccb68e3eada847dcad93b5d5c0001f1594ffe1019415e88d8c86d17332b9467a1839534106387c3c9; TSPD_101=083a958c66ab28001276b9174db727d49f8d0c977aa8ac85a421571b4894ba411e7f27374af4aa94c3a462c304ec5ef9084dfc56370518000635e06dbca64a2db0670ecd9408ab774f29f86acc1fe506',
+        'Sec-Fetch-Dest': 'document',
+        'Sec-Fetch-Mode': 'navigate',
+        'Sec-Fetch-Site': 'none',
+        'Sec-Fetch-User': '?1',
+        'Upgrade-Insecure-Requests': '1',
+        'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/111.0.0.0 Safari/537.36',
+        'sec-ch-ua': '"Google Chrome";v="111", "Not(A:Brand";v="8", "Chromium";v="111"',
+        'sec-ch-ua-mobile': '?0',
+        'sec-ch-ua-platform': '"Linux"'
+        }
+    imagem_captcha = requests.request("GET", url, headers=headers, verify=False)
+    url = "https://duc.prefeitura.sp.gov.br/certidoes/forms_anonimo/frmConsultaEmissaoCertificado.aspx"
+
+    payload={}
+    headers = {
+    'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7',
+    'Accept-Language': 'pt-BR,pt;q=0.9,en-US;q=0.8,en;q=0.7',
+    'Connection': 'keep-alive',
+    'Cookie': 'ASP.NET_SessionId=2moy0v3uvpy2lcj3xylbwmws; ServerID=rd4o00000000000000000000ffff0a0a4459o443; SWCookieConfig={"aceiteSessao":"S","aceitePersistentes":"S","aceiteDesempenho":"S","aceiteEstatisticos":"S","aceiteTermos":"S"}; _ga=GA1.1.733918143.1692967001; _ga_LC6GL9KCK4=GS1.1.1692967000.1.1.1692967028.0.0.0; TS01b2d78c=0181a10bc7258a639d750528327d5d2601d1d723666232b1e0ef20f2b4a17b57943963f9ec843bb83b1bde9bf3a45540d4ddcedef260ca1e5f1bddcf41b21fc75ee7e78da30b8a93e8db8b58d7736cf83ab3848384; TS3592777f029=083a958c66ab2800ed894d85f151163c6ab347dfae522a3fdb841838aae00717f0efe8273dfedb28955df3d09f02bd37; TSPD_101=083a958c66ab2800a80e622117e6c16f898dc79d500b8a99aca5a8813e917b7b0bda249b2adc15be14baf3ea95f0b99e089069b98e051800dc5fd395131420cdf3de12ed0b156b3dfbe86f3802284862; TS9a5d5ac3027=083a958c66ab20009956fa7cd55e68ba310722c93c7436d7c31d6056dbe8552c593ebca41a2061a008edb0191e1130005c7832232d581ba1ec7221c0efe6a1bdf5e24ea80d1c313ea640eb4d7e5170ff84c61d40961c3bd9ec29055fe8f05923; TS3592777f077=083a958c66ab28004009df2433bd3ccf217e5d430f852fabb8c3539073e05a17a798c5dd311ddd2c6224bcbf9ce1e9e5082f8fab661720002dc8f8a873f8c1dadb5d6a9906e3a6ae3b94932e82fea9d2dd8aee63e0450304; ASP.NET_SessionId=kba3oe2xhlwyav0xoj2b03is; ServerID=rd4o00000000000000000000ffff0a0a4459o443; TS01b2d78c=0181a10bc79a4f087da264e2bf28c773ebeb4d2991810d2d0fc5881f603578cfcf396496cd82126d2eb5d3e5d45edc2fd36c642bd421d1ad52a0e07c4673a2e85d6aef77c07fcaec0a8ad4b70ca861daf9603f5c01; TS3592777f029=083a958c66ab2800edafdbd86da061e2fe260482d0e88e3287536b4d73d26b7a734f2f178fa5b2af788bdd920e3ff2b7; TS9a5d5ac3027=083a958c66ab20006c218a5d21c1061ea2ebda30a83f0654ce8c78a60cc915bb70acde1c50307a5f08bdbb78db113000c09dc9c8876e4e6ccb68e3eada847dcad93b5d5c0001f1594ffe1019415e88d8c86d17332b9467a1839534106387c3c9; TSPD_101=083a958c66ab28001276b9174db727d49f8d0c977aa8ac85a421571b4894ba411e7f27374af4aa94c3a462c304ec5ef9084dfc56370518000635e06dbca64a2db0670ecd9408ab774f29f86acc1fe506',
+    'Sec-Fetch-Dest': 'document',
+    'Sec-Fetch-Mode': 'navigate',
+    'Sec-Fetch-Site': 'none',
+    'Sec-Fetch-User': '?1',
+    'Upgrade-Insecure-Requests': '1',
+    'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/111.0.0.0 Safari/537.36',
+    'sec-ch-ua': '"Google Chrome";v="111", "Not(A:Brand";v="8", "Chromium";v="111"',
+    'sec-ch-ua-mobile': '?0',
+    'sec-ch-ua-platform': '"Linux"'
+    }
+
+    response = requests.request("GET", url, headers=headers, data=payload, verify=False)
+
+    soup = BeautifulSoup(response.content,'html.parser')
+
+    tokencac = soup.find(id='ctl00_ConteudoPrincipal_consentimento___tokencac').get('value')
+    ct = soup.find(id='ctl00_hdnUrlDefault').get('value')
+    view = soup.find(id='__VIEWSTATE1').get('value')
+    view1 = soup.find(id='__VIEWSTATE').get('value')
+    generation = soup.find(id='__VIEWSTATEGENERATOR').get('value')
+
+    url = "https://duc.prefeitura.sp.gov.br/certidoes/forms_anonimo/frmConsultaEmissaoCertificado.aspx"
+
+    payload='PageProdamSPOnChange=&PageProdamSPPosicao=Form%3D0%3B0%2F&PageProdamSPFocado=ctl00_ConteudoPrincipal_ddlTipoCertidao&__EVENTTARGET=ctl00%24ConteudoPrincipal%24ddlTipoCertidao&__EVENTARGUMENT=&__LASTFOCUS=&__VIEWSTATEFIELDCOUNT=2&__VIEWSTATE=iT6jLsUQtaDi4bsBR777GRIw0Gy594PUPV8LQ%2BXadHpuGuYYJBwHcD5ZaQ1An4m9aJ%2BNcLTkREUcDAZvgr1qQTxbl%2BKHPNiaXODFl8Ijt53NlChhdob08mqPIQEZh0T1tX%2Bmo9csg1vJRyyHs5Pwt%2FDr876cbfjc2vs2wwcwHeWuS9I3pviGoij6l8K%2B2FNsCTd3SJU0aAqin7UjDQk%2B6k2dJo8BHLhYy13k%2BHFFa2m9CCkc1NNFVVDNclgYhM38%2FhQeOhrV0osmUpfvP7eQ%2ByNB%2BU5tAgX%2FzsQTR%2Fz3XinjYk%2BT4uU1lPN7Poy9wX9x%2FgJ6hPAeFN1W6UfM%2Bf6OcqnXWXlbLHa0LuTjNZINZKFiFb%2BLeA9CEQSokQZdNZ3WPyCEYCmLrPl7uxJ6BFim6ZdnqjDvaFiS8cYn3DdQTduB%2BQROJxkPBpJN4iarqSrFVIKJTC9WF3euzUo3fCcqwVUIZ1ATaXCv8UdZIsn%2FMynnvnk2Ngb1Xj9rGLTtFcDJkcm4UfropXMOGtXUpb645LL8H4jpNhM8MYxjXQTi6jJBLxlbkriNlTkpXaxh0YIlcO2k2gTrnVtEJrXAiiD%2Fy%2B8WgzhqHyhPSZajSvtMD93Hu%2BMFauFlqmNI0T99qRMwfx74JUwh0g6jMQjqlLgxp7ijCbRAtDaOlYvuQ3hefIOCXioMGZNFypfX8ImTsmJRDWRotKQbqAVQ0JlQzgUo%2B4sOlmavdAEd0v0OmpUwJKDf8SoeioewTvLCozWxdKH65opCILdyNuc7nubqwUcZj9z3QITir%2FbfveOgxCDdTHwp8zEiSMTwAj6oVJEhpS3VxliuRzfD%2FUIdGy63rQJ%2BZNIg1UVChEsjvhrJcpTefiQ%2FEzRoc9cgfcjtZ%2BbZgV8IIGZSxyu8Hh5qqKWD72wgUZt23Yc2XNbKIxlvwADrq8nP%2F6ECmVQ885vfCKysa7gfh0DvzeCzOBvwaHZSTWETrxnDDKf9kgr2yJx3Jh8ul6LVFSzc91CwcKIj2iHwkfKL&__VIEWSTATE1=sEgLlIFzt8pMEX8VD2O96E3DwpuSPd7tp%2FXeWJENgvWTEFKApG%2F%2Fz9uemlvuYeJ860OR8Q%3D%3D&__VIEWSTATEGENERATOR=786373C9&__VIEWSTATEENCRYPTED=&ctl00%24ConteudoPrincipal%24hdnParmCertidao=&ctl00%24ConteudoPrincipal%24__tpAudio=mp3&ctl00%24ConteudoPrincipal%243130540=&ctl00%24ConteudoPrincipal%24ddlTipoCertidao=1&ctl00%24ConteudoPrincipal%24consentimento%24__contribuinte=&ctl00%24ConteudoPrincipal%24consentimento%24__tipoContribuinte=&ctl00%24ConteudoPrincipal%24consentimento%24__tokencac=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6WyJTRjk0MjFJIiwidXN1YXJpbyBkZSBpbnRlZ3JhY2FvIHNlbmhhIHdlYiAtIHNmOTQyMWkiXSwiaHR0cDovL3NjaGVtYXMucHJvZGFtLnNwLmdvdi5ici9zdHMvY2xhaW1zL0xvZ2luIjoic2Y5NDIxaSIsImh0dHA6Ly9zY2hlbWFzLnByb2RhbS5zcC5nb3YuYnIvc3RzL2NsYWltcy9TaXN0ZW1hIjoic2Y5NDIxIiwiaHR0cDovL3NjaGVtYXMucHJvZGFtLnNwLmdvdi5ici9zdHMvY2xhaW1zL0hpZXJhcnF1aWEiOiJ7XCJjZHNlbmhhcGFkcmFvXCI6bnVsbCxcImNkdXN1YXJpb1wiOm51bGwsXCJjaWhpZXJhcnF1aWF1c3VhcmlvXCI6MTk5ODU1LFwiY2loaWVyYXJxdWlhdXN1YXJpb2FsdGVyYWNhb1wiOjAsXCJjaWhpZXJhcnF1aWF1c3VhcmlvaW5jbHVzYW9cIjowLFwiY2l1c3VhcmlvXCI6MTEyNTM2LFwiY29kaWdvaGllcmFycXVpYVwiOjE0OTYsXCJjb2RpZ29oaWVyYXJxdWlhcGFpXCI6bnVsbCxcImR0YWx0ZXJhY2FvXCI6bnVsbCxcImR0aW5jbHVzYW9cIjpudWxsLFwiaW5hZG1pbmlzdHJhZG9yaGllcmFycXVpYVwiOmZhbHNlLFwibm9tZWhpZXJhcnF1aWFcIjpcIndlYnNlcnZpY2UgY29udHJvbGUgZGUgaW50ZWdyYWNhb1wiLFwibnJvcmRlbVwiOjAsXCJzaWdsYWhpZXJhcnF1aWFcIjpcIndzaVwifSIsImFkZnMxZW1haWwiOiJ0ZWNvcnJlYUBwcm9kYW0uc3AuZ292LmJyIiwiaHR0cDovL3NjaGVtYXMucHJvZGFtLnNwLmdvdi5ici9zdHMvY2xhaW1zL01vZGVsb0F1dG9yaXphY2FvIjoiMCIsImh0dHA6Ly9zY2hlbWFzLnByb2RhbS5zcC5nb3YuYnIvc3RzL2NsYWltcy9SZWN1cnNvcyI6ImtoTUFBQitMQ0FBQUFBQUFCQURObUUxdjFEQVFoditLbFJOSXEwaEZYT0JudE53UWg0azkyYnB5NHVDUEZJSDYzenYrMkNRcnA0c0tCK2UyR3R2SjQ5ZHZac2I3L1UvRHRaQm4vU0N0d3dHYXI2eXgvWmZQbis2YUUyc01jbStzWG9OdE43VWN4SVRXaG5HQmxodkpJYzZnT0Zobk5CUEl3Z1FOY2M0c3JaeFJoUm5PZUd4T3pTTjBVa2tIUW0rQ1hIeVRrNzVmWDNqWHZKeitHYTRGNWRxcEx4Z3BqQVlNSzFsWlQ1d2NLaE0vdllmNHlSc3BxakxMMGU2cG5GbUoraURhUnM1UzI0S3p2cUpjRStybHJFdGdHdlhLd1k0YktuNXJCbFdiYk1vMWxubUJoc0ZwSXlQc091K3lCNUQyRUx1WVFVa0Jwc0RQOFFOSWJwK0RQWHA1M3ZNRmhYMFdWbWhtY1h5RVoreHFFYlo1YktkS0xLaVFER0d0SDUyMkRObGxUWDM2Q1F3TVNJZjlkLzUxYWwzZEJTb3NqUkdqQWJVU1VNcG5FNXBCN2txWnNsa2F0OEc3a3piTVd3K1VMcW9pRzV6TVRpNWJrTk00amc1R2x6NjVpdFMyVS9ybnp0bkh1TWVVZWFNMXE5RWxWY0hoS0VnMGZGdllEWFZ5dzlXYU91d2Jwb09ySEJvZHBYZjB2UzdDUVZJNVlNeTdIemhNRUV0d1dQaXhIbnRvSTdhbmYzc1BoL0VKdFJCeTdEVVplQzZJdHdOMWtPSzFncGlVUE1PN2FobXdEaXhXN2N5V1BjVGNRZVRMdTI3V2trakx1QjdJRXA2YXQ5OTVlOHR5WUtObWxZNkcvTDZraUtzTjVQSlJzWU9JYjA1YTR5K091V25ZVjFuUlUwT3VabmxtK01uUk9OblRWQ3FHOUdhaVZGVTNRWVRPMzNCS0d0K1U3bU5vYjNEVzU5c2V6N3hybzh5dUZ0VkFEOG43eld2cm1yZ3hpRTZQbGp4WkpsOEJZeW1xV0Q0dmV3Z2lsamZBSEdmYWsrKzcrRzhNOEpCbUFuRnhGdjlKLytNVmdaZWgyWklUQUFBPSIsInJvbGUiOiJueE1BQUIrTENBQUFBQUFBQkFDZFdNbU80ellRdmVjckNKOFNZR2JBUlJ2ekVUbmtHZ1NOTWttN09iQkVOaWs1UVlMOGUwcVNQVDB3MmlCcmZHcTQ3WHBrVmIxRi91UGZnL0V2cjk0bFNHK0xoNWR6V21JNC9Nb09MWmZ5OE9rd2plOXZnWEU1QndhQlpaOW5Od0w3eXgxSGlPd3p5eWZkREQxK1B2dDVBUVBiNTMvNy9mRGZwNmNBU3FqaFk0Q2Z2a013WVAxMEF4QU5DVUNydG4xeUE1WmNuaGxFejhZdytUa2tQNTBSNnJnQkRiM1VSS0JPUFcyVmdUaWJWMkF4QlFzakFzU28rWGJ6ZW9CK2FFUnhGbkIwYVY0U3R1d1ZSckFocjVkSlFpdEZ2VXdGMW9VTDN2Z1Z3V2NURWcxQlNGNUd3SDVkZ1ZsLzlqTmNHTXNYTGptdGE1bzMxVGdKZDhFR3ZNK3kzb3lJbzlybjQvK0djNFdMWCt2dEc5QVROMENMcHN6R0kyVEhyR054L1Fma2ZabmJnYmJNU3JYbCtSL3Q2Y2JKbmtaNkxkVXpUbjVmZmR5cmQ3d2xubDJVSi83ak5CY1YrMlRBc0hoWk10dlVaWnYxTUFnU3pvQ3ZDaHdMbXk1YXFUaXR2dXlhcGx6ZmpMZjk2VHBhZFYxeit2dUVHMGxVSjk1V25OMVpqNHBodVJTMENXTm55aXd6S2VDM2JzZm5rdHFjc2xTZ1RlUzdwMjVLU2FwZmJvKzl4THMwMEU3ZmRSWENiUmR6TzN0RHE0NjIwQmVybjhCZzVyZ0JkRFR0d2VtV20rL2p2R3psV3lGb3E0bmx5OUkybmR5OTkwUURrS284MlNsY3cvc05VRDVwMUIyMExrdC9kRzk3OVZiUlpBZTNwOXgrbEV1bFd3UXdFemlpQzFkTU55Wm5ZSTE3ZXpveVptUEN4TFdnZFVweldSYTU1TjRXbC96b3BqbXNTWm50Y2kwRWtkTmRSYnpJOXE1SUxXMHF5THJ5VGJJNzJUM3I3UlIzelAzdHpMS21tUlBtUDZEYWFKa24yVTJ2OEsxcHF4Q0tGelRVQjZEU3ZwVVpzOGtJZVkvTEpySFcxYlRIbFVIek12dnllZDVXZGhZOXA1VkhhOURsOHQ2ZDd1R0l4Z2pWdERYbHo1L1IybjZlanBkZkVNWXVuRXFHb1NaZElBeXNKblFGM2hLenZOS2JacGJxai9qVXNObmNWNjRWOGFtVTl4WHI3ek9Zc0ZrRnBwaUdUT21hVWVTQVBwb25ETFhVa04xWDZKSFAvNFExbjVySUZhZjVkRnNqcnZtcmxNMkFBR0NKN1ZmbERJT09NSEM1cHZjVVpwZm5RQk9JdHNLcTgzS1BlQjJSeDExYklUL1h1eDAwdE41M3ZYamNIUXgwWDZ6THh3dkdYdWVKcmVqRjR5alhjbU9ZL1RWazRtOGd3K085dHo5V04zcHZBRVR3OHk2UWU5cWpqSzEveko4ZkFNeWV1RzlDUGdvS2pvVnpMcjZ3YzRvdkllSjNiRWp1bzI3OCtUOWs3NC9jbnhNQUFBPT0iLCJuYmYiOjE2OTMyMjcwMTQsImV4cCI6MTY5MzIyNzYxNCwiaWF0IjoxNjkzMjI3MDE0LCJpc3MiOiJodHRwOi8vY2FjcGx1cy5wcm9kYW0iLCJhdWQiOiJodHRwOi8vNjU3MTMzODktMWMyYy00YWMwLWE3YzktMTU2MzlhNjZjNmIxIn0.G58F3gVV6-KsLv0hrs2ARYe-zUbzdjB7K4Tcr2DG7vo&ctl00%24hdnUrlDefault=%2Fcertidoes%2FDefault.aspx%2FVerificaJanejaSessao'
+    headers = {
+    'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7',
+    'Accept-Language': 'pt-BR,pt;q=0.9,en-US;q=0.8,en;q=0.7',
+    'Cache-Control': 'max-age=0',
+    'Connection': 'keep-alive',
+    'Content-Type': 'application/x-www-form-urlencoded',
+    'Cookie': 'ASP.NET_SessionId=2moy0v3uvpy2lcj3xylbwmws; ServerID=rd4o00000000000000000000ffff0a0a4459o443; SWCookieConfig={"aceiteSessao":"S","aceitePersistentes":"S","aceiteDesempenho":"S","aceiteEstatisticos":"S","aceiteTermos":"S"}; _ga=GA1.1.733918143.1692967001; _ga_LC6GL9KCK4=GS1.1.1692967000.1.1.1692967028.0.0.0; TS01b2d78c=0181a10bc7258a639d750528327d5d2601d1d723666232b1e0ef20f2b4a17b57943963f9ec843bb83b1bde9bf3a45540d4ddcedef260ca1e5f1bddcf41b21fc75ee7e78da30b8a93e8db8b58d7736cf83ab3848384; TSPD_101=083a958c66ab2800444cc1e428eb05f29070a587a2d9ef1b3861930bd3c87b328c96b2de04ead803bd7983f4f2d5f77908f2613701051800ce25624ad79bb6bdb0670ecd9408ab774f29f86acc1fe506; TS9a5d5ac3027=083a958c66ab2000028d95468105819fecf146743a4559ac3dba11064e08d90f5e0ddfaa59f33f8008179a7201113000e390e4e4d5a5c986110830ad5e2395420f35d88814727f3dd6d89e4c87cce8f04d062b1396ff02831e58ac910aa780a3; TS3592777f077=083a958c66ab28006705fcf1f829575cc09037e524102ddeba1feb5a4666996adcb465b6d037398da07550f9cf4bf8be08329dfac1172000c07f8e9d1c8f4d7fdb5d6a9906e3a6ae4e4aa2c02b2e9e50a5993b61c9bbea41; ASP.NET_SessionId=kba3oe2xhlwyav0xoj2b03is; ServerID=rd4o00000000000000000000ffff0a0a4459o443; TS01b2d78c=0181a10bc75fc390d110aa4f72befa78c955f911a75a135c29eeacdc49150ab9c05f72d35f5aed9a4adc5678f2c707814b2076c8c7b0b0dbf05915df07f1d25561ac9fbaf33374cf34253fe6ce73fba5c6c9de6eb5; TS3592777f029=083a958c66ab28007267209268f2fa4b1db8bf019e50d40d15e8ccc9e7da13a1a5f064bceae8b1583276bf6838ebfc63; TS9a5d5ac3027=083a958c66ab20008a2cec6069c5a86023520377de5775b41eaea74483e1b6da5efa22df34d98dd10872453c7a1130009b55cbb5527c8ebac42228b934cce530bfea94e6260325381178e332f5b9ada7a71323489566d0934b809aff14ca9315; TSPD_101=083a958c66ab28001276b9174db727d49f8d0c977aa8ac85a421571b4894ba411e7f27374af4aa94c3a462c304ec5ef9084dfc56370518000635e06dbca64a2db0670ecd9408ab774f29f86acc1fe506',
+    'Origin': 'https://duc.prefeitura.sp.gov.br',
+    'Referer': 'https://duc.prefeitura.sp.gov.br/certidoes/forms_anonimo/frmConsultaEmissaoCertificado.aspx',
+    'Sec-Fetch-Dest': 'document',
+    'Sec-Fetch-Mode': 'navigate',
+    'Sec-Fetch-Site': 'same-origin',
+    'Upgrade-Insecure-Requests': '1',
+    'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/111.0.0.0 Safari/537.36',
+    'sec-ch-ua': '"Google Chrome";v="111", "Not(A:Brand";v="8", "Chromium";v="111"',
+    'sec-ch-ua-mobile': '?0',
+    'sec-ch-ua-platform': '"Linux"'
+    }
+
+    response = requests.request("POST", url, headers=headers, data=payload)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     with open('novo 2.html', 'r', encoding='utf-8') as html_file:
         html_content = html_file.read()
