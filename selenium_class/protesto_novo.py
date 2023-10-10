@@ -109,7 +109,7 @@ class Protesto:
                 WebDriverWait(self._driver, 5).until(EC.presence_of_element_located((By.XPATH, "/html/body/div[1]/div/div[2]/div[1]/div/div/div/div/div/div/button"))).click()
             except:
                 pass
-            time.sleep(5)
+            time.sleep(10)
 
             if WebDriverWait(self._driver, 5).until(EC.presence_of_all_elements_located((By.TAG_NAME, "button")))[7].text == 'Detalhes' or WebDriverWait(self._driver, 5).until(EC.presence_of_all_elements_located((By.TAG_NAME, "button")))[7].text == 'Solicitar certidão':
                 name = os.path.join(self._save,'13- CENPROT.png')
