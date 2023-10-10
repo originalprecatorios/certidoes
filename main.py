@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 
-#from selenium_class.estadual import Estadual
-from request.estadual import Estadual
+from selenium_class.estadual import Estadual
+#from request.estadual import Estadual
 from selenium_class.municipal import Municipal
 from selenium_class.federal import Federal
 #from selenium_class.trt15 import Trt15
@@ -131,7 +131,7 @@ def certidao_initial(id_mongo):
                     while True:
                         if cont <=2:
                             try:
-                                e = Estadual(u,cap)
+                                '''e = Estadual(u,cap)
                                 logged = e.login()
                                 if logged is True:
                                     modifica['$set']['extracted']['_CND_ESTADUAL'] = 1
@@ -140,8 +140,8 @@ def certidao_initial(id_mongo):
                                     print('Não foi possível emitir a Certidão Negativa.')
                                 else:
                                     raise ValueError
-                                break
-                                '''
+                                break'''
+                                
                                 e = Estadual(u,os.environ['PAGE_URL'],mongo,erro,cap)
                                 logged,texto = e.login()
                                 if logged is True:
@@ -165,7 +165,7 @@ def certidao_initial(id_mongo):
                                         erro.getcoll('error_cert')
                                         erro.addData(arr)
                                     cont += 1
-                                '''
+                                
                                 
                             except Exception as e:
                                 if cont == 2:
@@ -218,7 +218,7 @@ def certidao_initial(id_mongo):
                         if cont <=2:
                             try:
                                 # USO COM O CHROME
-                                verifica_chrome()
+                                #verifica_chrome()
                                 f = Federal(u,os.environ['PAGE_URL_FEDERAL'],mongo,erro,u['cpf'])
                                 resposta,texto = f.login()
                                 if resposta is True:
