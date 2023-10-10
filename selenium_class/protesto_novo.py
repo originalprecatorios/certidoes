@@ -102,12 +102,12 @@ class Protesto:
             WebDriverWait(self._driver, 5).until(EC.presence_of_all_elements_located((By.TAG_NAME, "button")))[10].click()
 
             self._driver.get('https://www.pesquisaprotesto.com.br/servico/consulta-documento')
-            time.sleep(2)
+            time.sleep(5)
 
 
             WebDriverWait(self._driver, 5).until(EC.presence_of_element_located((By.ID, "cpf_cnpj"))).send_keys(self._data['cpf'])
             WebDriverWait(self._driver, 5).until(EC.presence_of_element_located((By.XPATH, "/html/body/div[1]/div/div[2]/div[1]/div/div/div/div/div/div/button"))).click()
-            time.sleep(2)
+            time.sleep(5)
 
             if WebDriverWait(self._driver, 5).until(EC.presence_of_all_elements_located((By.TAG_NAME, "button")))[7].text == 'Detalhes' or WebDriverWait(self._driver, 5).until(EC.presence_of_all_elements_located((By.TAG_NAME, "button")))[7].text == 'Solicitar certidão':
                 name = os.path.join(self._save,'13- CENPROT.png')
