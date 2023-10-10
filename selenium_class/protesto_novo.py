@@ -100,6 +100,7 @@ class Protesto:
             WebDriverWait(self._driver, 5).until(EC.presence_of_element_located((By.ID, "senha"))).send_keys(pwd)
             WebDriverWait(self._driver, 5).until(EC.presence_of_all_elements_located((By.TAG_NAME, "button")))[5].click()
             WebDriverWait(self._driver, 5).until(EC.presence_of_all_elements_located((By.TAG_NAME, "button")))[10].click()
+            time.sleep(5)
 
             self._driver.get('https://www.pesquisaprotesto.com.br/servico/consulta-documento')
             time.sleep(5)
