@@ -587,7 +587,7 @@ def certidao_initial(id_mongo):
                     while True:
                         if cont <=2:
                             try:
-                                verifica_chrome()
+                                
                                 p = Protesto(u,os.environ['PAGE_URL_PROTESTONOVO'],mongo,erro,cap)
                                 p.login(os.environ['CENPROT_USER'],os.environ['CENPROT_PASS'])
                                 del p
