@@ -218,7 +218,7 @@ def certidao_initial(id_mongo):
                         if cont <=2:
                             try:
                                 # USO COM O CHROME
-                                #verifica_chrome()
+                                verifica_chrome()
                                 f = Federal(u,os.environ['PAGE_URL_FEDERAL'],mongo,erro,u['cpf'])
                                 resposta,texto = f.login()
                                 if resposta is True:
@@ -587,6 +587,7 @@ def certidao_initial(id_mongo):
                     while True:
                         if cont <=2:
                             try:
+                                verifica_chrome()
                                 p = Protesto(u,os.environ['PAGE_URL_PROTESTONOVO'],mongo,erro,cap)
                                 p.login(os.environ['CENPROT_USER'],os.environ['CENPROT_PASS'])
                                 del p
@@ -1153,7 +1154,7 @@ def certidao_initial(id_mongo):
 # Configuração para teste
 
 #dados = {'_id':'6504529afe9b90da3f205a3c'}
-#dados = {'_id':'64dd08b30d59e9afe9451149'}
+#dados = {'_id':'6525572cd6b5a9b5c404313e'}
 #dados = {"_id": "6405ec5128f620c3ddd9fb35", "certidao": {"_TRT15"}}
 #certidao_initial(dados)
 

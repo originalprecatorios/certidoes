@@ -44,7 +44,7 @@ class Protesto:
             os.makedirs(f'{self._pasta}')
             
 
-        options = Options()
+        '''options = Options()
         options.set_preference("general.useragent.override", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.45 Safari/537.36")
         options.set_preference("browser.download.folderList", 2)
         options.set_preference("browser.download.manager.showWhenStarting", False)
@@ -56,11 +56,8 @@ class Protesto:
         #options.add_argument("--headless")
         self._driver = webdriver.Firefox(options=options)
         self._driver.get(self._link)
-        time.sleep(2)
-        '''
+        time.sleep(2)'''
         options = uc.ChromeOptions()
-        options.set_preference("pdfjs.disabled", True)
-        options.update_preferences()
         options.add_argument('--no-first-run')
         options.add_argument("--window-size=2560,1440")
         options.add_argument('--no-sandbox')
@@ -90,12 +87,11 @@ class Protesto:
                                                                      'AppleWebKit/537.36 (KHTML, like Gecko) '
                                                                      'Chrome/85.0.4183.102 Safari/537.36'})
         self._driver.get(self._link)
-        time.sleep(2)
-        '''
         
     
     def login(self,usr,pwd):
         try:
+            WebDriverWait(self._driver, 5).until(EC.presence_of_element_located((By.ID, "adopt-accept-all-button"))).click()
             WebDriverWait(self._driver, 5).until(EC.presence_of_element_located((By.ID, "usario"))).send_keys(usr)
             WebDriverWait(self._driver, 5).until(EC.presence_of_element_located((By.ID, "senha"))).send_keys(pwd)
             WebDriverWait(self._driver, 5).until(EC.presence_of_all_elements_located((By.TAG_NAME, "button")))[5].click()
@@ -105,9 +101,14 @@ class Protesto:
             self._driver.get('https://www.pesquisaprotesto.com.br/servico/consulta-documento')
             time.sleep(5)
 
-
+            #response = self._captcha.recaptcha('6LcRJIweAAAAAA1j5uWYIp_7utWp4yNDi5INfYh0','https://www.pesquisaprotesto.com.br/servico/consulta-documento')
+            #self._driver.execute_script("document.getElementById('g-recaptcha-response').innerHTML = '"+response+"';")
             WebDriverWait(self._driver, 5).until(EC.presence_of_element_located((By.ID, "cpf_cnpj"))).send_keys(self._data['cpf'])
             WebDriverWait(self._driver, 5).until(EC.presence_of_element_located((By.XPATH, "/html/body/div[1]/div/div[2]/div[1]/div/div/div/div/div/div/button"))).click()
+            try:
+                WebDriverWait(self._driver, 5).until(EC.presence_of_element_located((By.XPATH, "/html/body/div[1]/div/div[2]/div[1]/div/div/div/div/div/div/button"))).click()
+            except:
+                pass
             time.sleep(5)
 
             if WebDriverWait(self._driver, 5).until(EC.presence_of_all_elements_located((By.TAG_NAME, "button")))[7].text == 'Detalhes' or WebDriverWait(self._driver, 5).until(EC.presence_of_all_elements_located((By.TAG_NAME, "button")))[7].text == 'Solicitar certidão':
