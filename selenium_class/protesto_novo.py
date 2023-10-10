@@ -92,9 +92,13 @@ class Protesto:
     def login(self,usr,pwd):
         try:
             WebDriverWait(self._driver, 5).until(EC.presence_of_element_located((By.ID, "adopt-accept-all-button"))).click()
+            time.sleep(2)
             WebDriverWait(self._driver, 5).until(EC.presence_of_element_located((By.ID, "usario"))).send_keys(usr)
+            time.sleep(2)
             WebDriverWait(self._driver, 5).until(EC.presence_of_element_located((By.ID, "senha"))).send_keys(pwd)
+            time.sleep(2)
             WebDriverWait(self._driver, 5).until(EC.presence_of_all_elements_located((By.TAG_NAME, "button")))[5].click()
+            time.sleep(2)
             WebDriverWait(self._driver, 5).until(EC.presence_of_all_elements_located((By.TAG_NAME, "button")))[10].click()
             time.sleep(5)
 
@@ -104,14 +108,16 @@ class Protesto:
             #response = self._captcha.recaptcha('6LcRJIweAAAAAA1j5uWYIp_7utWp4yNDi5INfYh0','https://www.pesquisaprotesto.com.br/servico/consulta-documento')
             #self._driver.execute_script("document.getElementById('g-recaptcha-response').innerHTML = '"+response+"';")
             WebDriverWait(self._driver, 5).until(EC.presence_of_element_located((By.ID, "cpf_cnpj"))).send_keys(self._data['cpf'])
+            time.sleep(2)
             WebDriverWait(self._driver, 5).until(EC.presence_of_element_located((By.XPATH, "/html/body/div[1]/div/div[2]/div[1]/div/div/div/div/div/div/button"))).click()
+            time.sleep(2)
             try:
                 WebDriverWait(self._driver, 5).until(EC.presence_of_element_located((By.XPATH, "/html/body/div[1]/div/div[2]/div[1]/div/div/div/div/div/div/button"))).click()
             except:
                 pass
             time.sleep(10)
 
-            if WebDriverWait(self._driver, 5).until(EC.presence_of_all_elements_located((By.TAG_NAME, "button")))[7].text == 'Detalhes' or WebDriverWait(self._driver, 5).until(EC.presence_of_all_elements_located((By.TAG_NAME, "button")))[7].text == 'Solicitar certidão':
+            if WebDriverWait(self._driver, 5).until(EC.presence_of_all_elements_located((By.TAG_NAME, "button")))[7].text == 'Detalhes' or WebDriverWait(self._driver, 5).until(EC.presence_of_all_elements_located((By.TAG_NAME, "button")))[7].text == 'Solicitar Certidão':
                 name = os.path.join(self._save,'13- CENPROT.png')
                 time.sleep(3)
                 self._driver.get_full_page_screenshot_as_file('{}'.format(name))
