@@ -136,7 +136,7 @@ class Trt15:
             # Fazer a solicitação para gerar a certidão
             response_certidao = requests.post(url_certidao, headers=headers, data=payload_certidao)
 
-            print("Certidão gerada com sucesso!")
+            
 
             url_pdf = "https://ceat.trt15.jus.br/ceat/certidaoAction.seam"
 
@@ -154,6 +154,7 @@ class Trt15:
                 # Salvar o conteúdo do PDF em um arquivo local
                 with open(os.path.join(self._data['path'],'14- TRT15ª.pdf'), 'wb') as f:
                     f.write(response_pdf.content)
+                print("Certidão gerada com sucesso!")
                 #self.navegation.close_driver()
             
             for arquivo in os.listdir(self._data['path']):
