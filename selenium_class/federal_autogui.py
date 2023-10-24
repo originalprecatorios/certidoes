@@ -20,7 +20,7 @@ class Federal:
         self._error = pError
         
         self._error._getcoll('error')
-        self._save = os.path.join(os.path.expanduser("~"), "Downloads")
+        self._save = os.path.join(os.path.expanduser("~"), "Downloads/")
         if os.path.isdir(f'{self._save}'):
             print("O diretório existe!")
         else:
