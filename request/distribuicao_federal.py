@@ -127,6 +127,7 @@ class Distribuicao_federal():
     def creat_document(self):
         options = Options()
         #fp = webdriver.FirefoxProfile()
+        options.add_argument("--headless")
         options.set_preference("general.useragent.override", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.45 Safari/537.36")
         driver = webdriver.Firefox(options=options)
         driver.get('file:///{}'.format(self._save+'/arquivo.html'))

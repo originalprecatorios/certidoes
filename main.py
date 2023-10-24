@@ -3,7 +3,8 @@
 from selenium_class.estadual import Estadual
 #from request.estadual import Estadual
 from selenium_class.municipal import Municipal
-from selenium_class.federal import Federal
+#from selenium_class.federal import Federal
+from selenium_class.federal_autogui import Federal
 #from selenium_class.trt15 import Trt15
 from request.trt15 import Trt15
 #from selenium_class.distribuicao_federal import Distribuicao_federal
@@ -219,29 +220,37 @@ def certidao_initial(id_mongo):
                             try:
                                 # USO COM O CHROME
                                 verifica_chrome()
-                                f = Federal(u,os.environ['PAGE_URL_FEDERAL'],mongo,erro,u['cpf'])
-                                resposta,texto = f.login()
-                                if resposta is True:
-                                    del f
-                                    modifica['$set']['extracted']['_CND_FEDERAL'] = 1
-                                    break
-                                else:
-                                    try:
-                                        f._close()
-                                    except:
-                                        pass
-                                    modifica['$set']['extracted']['_CND_FEDERAL'] = 2
-                                    print('Certidão de Débitos Relativos a Créditos Tributários Federais e à Dívida Ativa da União\nResultado da Consulta\n\nAs informações disponíveis na Secretaria da Receita Federal do Brasil - RFB sobre o contribuinte 138.525.098-40 são insuficientes para a emissão de certidão por meio da Internet.\nPara consultar sua situação fiscal, acesse Centro Virtual de Atendimento e-CAC.\nPara maiores esclarecimentos, consulte a página Orientações para emissão de Certidão nas unidades da RFB.')
-                                    arr = {
-                                        'created_at': str(datetime.today()).split(' ')[0].replace('-',''),
-                                        'error': texto,
-                                        'cpf' : cpf_binario,
-                                        'robot' : '_CND_FEDERAL',
-                                        'id_certidao': ObjectId(id),
-                                    }
-                                    erro.getcoll('error_cert')
-                                    erro.addData(arr)
-                                    break
+                                f = Federal(u,mongo,erro,u['cpf'])
+                                f.login()
+                                f.get_download()
+                                
+                                del f
+                                modifica['$set']['extracted']['_CND_FEDERAL'] = 1
+                                break
+                                
+                                # f = Federal(u,os.environ['PAGE_URL_FEDERAL'],mongo,erro,u['cpf'])
+                                # resposta,texto = f.login()
+                                # if resposta is True:
+                                #     del f
+                                #     modifica['$set']['extracted']['_CND_FEDERAL'] = 1
+                                #     break
+                                # else:
+                                #     try:
+                                #         f._close()
+                                #     except:
+                                #         pass
+                                #     modifica['$set']['extracted']['_CND_FEDERAL'] = 2
+                                #     print('Certidão de Débitos Relativos a Créditos Tributários Federais e à Dívida Ativa da União\nResultado da Consulta\n\nAs informações disponíveis na Secretaria da Receita Federal do Brasil - RFB sobre o contribuinte 138.525.098-40 são insuficientes para a emissão de certidão por meio da Internet.\nPara consultar sua situação fiscal, acesse Centro Virtual de Atendimento e-CAC.\nPara maiores esclarecimentos, consulte a página Orientações para emissão de Certidão nas unidades da RFB.')
+                                #     arr = {
+                                #         'created_at': str(datetime.today()).split(' ')[0].replace('-',''),
+                                #         'error': texto,
+                                #         'cpf' : cpf_binario,
+                                #         'robot' : '_CND_FEDERAL',
+                                #         'id_certidao': ObjectId(id),
+                                #     }
+                                #     erro.getcoll('error_cert')
+                                #     erro.addData(arr)
+                                #     break
 
                             except Exception as e:
                                 if cont == 2:
