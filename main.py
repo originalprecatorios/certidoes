@@ -169,17 +169,20 @@ def certidao_initial(id_mongo):
                                 
                                 
                             except Exception as e:
-                                if cont == 2:
-                                    arr = {
-                                        'created_at': str(datetime.today()).split(' ')[0].replace('-',''),
-                                        'error': str(e),
-                                        'cpf' : cpf_binario,
-                                        'robot' : '_CND_ESTADUAL',
-                                        'id_certidao': ObjectId(id),
-                                    }
-                                    erro.getcoll('error_cert')
-                                    erro.addData(arr)
-                                cont += 1
+                                modifica['$set']['extracted']['_CND_ESTADUAL'] = 2
+                                print('Erro ao acessar o site, para gerar a certidão _CND_ESTADUAL')
+                                break
+                                # if cont == 2:
+                                #     arr = {
+                                #         'created_at': str(datetime.today()).split(' ')[0].replace('-',''),
+                                #         'error': str(e),
+                                #         'cpf' : cpf_binario,
+                                #         'robot' : '_CND_ESTADUAL',
+                                #         'id_certidao': ObjectId(id),
+                                #     }
+                                #     erro.getcoll('error_cert')
+                                #     erro.addData(arr)
+                                # cont += 1
                         else:
                             modifica['$set']['extracted']['_CND_ESTADUAL'] = 2
                             print('Erro ao acessar o site, para gerar a certidão _CND_ESTADUAL')
