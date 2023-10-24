@@ -53,7 +53,7 @@ class Federal:
         pyautogui.hotkey('esc')
         pyautogui.hotkey('enter')
         time.sleep(15)
-        pyautogui.hotkey('ctrl','w')
+        #pyautogui.hotkey('ctrl','w')
         time.sleep(2)
         pyautogui.click(676,423)
         pyautogui.hotkey('tab')
