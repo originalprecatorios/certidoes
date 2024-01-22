@@ -192,7 +192,6 @@ def certidao_initial(id_mongo):
                     cont = 0
                     modifica['$set']['extracted']['_CND_MUNICIPAL'] = 2
                     print('Erro ao acessar o site, para gerar a certidão _CND_MUNICIPAL')
-                    break
                     '''while True:
                         if cont <=2:
                             try:
@@ -223,7 +222,7 @@ def certidao_initial(id_mongo):
                     cont = 0
                     modifica['$set']['extracted']['_CND_FEDERAL'] = 2
                     print('Erro ao acessar o site, para gerar a certidão _CND_FEDERAL')
-                    break
+                    
                     '''while True:
                         if cont <=2:
                             try:
