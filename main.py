@@ -190,7 +190,10 @@ def certidao_initial(id_mongo):
                     
                 elif ext == '_CND_MUNICIPAL':
                     cont = 0
-                    while True:
+                    modifica['$set']['extracted']['_CND_MUNICIPAL'] = 2
+                    print('Erro ao acessar o site, para gerar a certidão _CND_MUNICIPAL')
+                    break
+                    '''while True:
                         if cont <=2:
                             try:
                                 m = Municipal(u,os.environ['PAGE_URL_MUN'],mongo,erro,cap)
@@ -213,7 +216,7 @@ def certidao_initial(id_mongo):
                         else:
                             modifica['$set']['extracted']['_CND_MUNICIPAL'] = 2
                             print('Erro ao acessar o site, para gerar a certidão _CND_MUNICIPAL')
-                            break
+                            break'''
                     
 
                 elif ext == '_CND_FEDERAL':
