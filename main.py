@@ -218,7 +218,10 @@ def certidao_initial(id_mongo):
 
                 elif ext == '_CND_FEDERAL':
                     cont = 0
-                    while True:
+                    modifica['$set']['extracted']['_CND_FEDERAL'] = 2
+                    print('Erro ao acessar o site, para gerar a certidão _CND_FEDERAL')
+                    break
+                    '''while True:
                         if cont <=2:
                             try:
                                 # USO COM O CHROME
@@ -271,7 +274,7 @@ def certidao_initial(id_mongo):
                         else:
                             modifica['$set']['extracted']['_CND_FEDERAL'] = 2
                             print('Erro ao acessar o site, para gerar a certidão _CND_FEDERAL')
-                            break
+                            break'''
                     
                 
                 elif ext == '_TRF3_JUS_SJSP':
