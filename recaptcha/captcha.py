@@ -126,3 +126,16 @@ class Solve_Captcha:
             i += 1
             time.sleep(5)
         return form_tokon
+    
+    def verificar_saldo(self):
+        url = f"http://2captcha.com/res.php?key={self._key}&action=getbalance"
+
+        try:
+            response = requests.get(url)
+            if response.status_code == 200:
+                saldo = float(response.text)
+                print(f"Saldo actual en 2Captcha: ${saldo}")
+            else:
+                print(f"Error al obtener el saldo. Código de estado: {response.status_code}")
+        except Exception as e:
+            print(f"Error al realizar la solicitud: {e}")
