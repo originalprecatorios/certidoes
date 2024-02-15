@@ -47,7 +47,7 @@ def initial():
                 if data_passado is True:
                     user['extracted'][ext] = 2
                     smtp_config = {'host': os.environ['SMTP_SERVE'], 'port': os.environ['SMTP_PORT'], 'user': os.environ['SMTP_USER'], 'passwd':os.environ['SMTP_PASS']}
-                    e = Email_enviar(os.environ['SMTP_USER'],'@sys@Sup@B7775#$#','',[user['email']],smtp_config)
+                    e = Email_enviar(os.environ['SMTP_USER'],'@#$WSDEqasw1!','',[user['email']],smtp_config)
                     texto = """O Prazo de 5 dias expirou, não foi possivel obter o certificado {} para o cliente {}""".format(ext,user['nome'])
                     e.send_email_ruralservice('',texto)
                     break
