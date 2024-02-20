@@ -97,7 +97,7 @@ class Request_esaj:
 
         response = requests.request("POST", url, headers=headers, data=payload)
 
-        print(response.text)
+        print('solicita_arquivo')
     
     def verifica_pedido(self):
         url = "https://esaj.tjsp.jus.br/sco/abrirResultadoCadastro.do"
