@@ -122,8 +122,10 @@ class Request_esaj:
         }
 
         response = requests.request("GET", url, headers=headers, data=payload)
-        self._arr = {'numero_pedido' : response.text.replace('\n','').replace('\t','').split('class=""')[4].split('>')[1][:8],'data_pedido' : response.text.replace('\n','').replace('\t','').split('class=""')[7].split('>')[1][:10]}
-
+        if response.text.replace('\n','').replace('\t','').split('class=""')[4].split('>')[1][:8].isdigit():
+            self._arr = {'numero_pedido' : response.text.replace('\n','').replace('\t','').split('class=""')[4].split('>')[1][:8],'data_pedido' : response.text.replace('\n','').replace('\t','').split('class=""')[7].split('>')[1][:10]}
+        else:
+            raise ValueError("A string contém caracteres que não são números.")
         print(self._arr)
     
     def download_arquivo(self,pSelect):
