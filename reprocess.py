@@ -24,8 +24,8 @@ import subprocess
 # Envia para o sistema B7 que o processo já foi realizado
 def certidao_initial(id_mongo):
     print('Iniciando...')
-    mongo = Mongo(os.environ['MONGO_USER_PROD'], os.environ['MONGO_PASS_PROD'], os.environ['MONGO_HOST_PROD'], os.environ['MONGO_PORT_PROD'], os.environ['MONGO_DB_PROD'], os.environ['MONGO_AUTH_DB_PROD'])
-    erro = Mongo(os.environ['MONGO_USER_PROD'], os.environ['MONGO_PASS_PROD'], os.environ['MONGO_HOST_PROD'], os.environ['MONGO_PORT_PROD'], os.environ['MONGO_DB_PROD'], os.environ['MONGO_AUTH_DB_PROD'])
+    mongo = Mongo(os.getenv('MONGO_USER_PROD'), os.getenv('MONGO_PASS_PROD'), os.getenv('MONGO_HOST_PROD'), os.getenv('MONGO_PORT_PROD'), os.getenv('MONGO_DB_PROD'), os.getenv('MONGO_AUTH_DB_PROD'))
+    erro = Mongo(os.getenv('MONGO_USER_PROD'), os.getenv('MONGO_PASS_PROD'), os.getenv('MONGO_HOST_PROD'), os.getenv('MONGO_PORT_PROD'), os.getenv('MONGO_DB_PROD'), os.getenv('MONGO_AUTH_DB_PROD'))
     mongo._getcoll('certidao')
     id = id_mongo['_id']
     arr = {
@@ -60,7 +60,7 @@ def certidao_initial(id_mongo):
                     if cont <=2:
                         try:
                             # email
-                            e = Request_esaj(u,os.environ['PAGE_URL_CRIMINAL_1'],mongo,erro,cap)
+                            e = Request_esaj(u,os.getenv('PAGE_URL_CRIMINAL_1'),mongo,erro,cap)
                             e.login()
                             download =  e.download_arquivo('6')
                             if download is True:
@@ -101,7 +101,7 @@ def certidao_initial(id_mongo):
                     if cont <=2:
                         try:
                             # email
-                            e = Request_esaj(u,os.environ['PAGE_URL_CRIMINAL_1'],mongo,erro,cap)
+                            e = Request_esaj(u,os.getenv('PAGE_URL_CRIMINAL_1'),mongo,erro,cap)
                             e.login()
                             download = e.download_arquivo('52')
                             if download is True:

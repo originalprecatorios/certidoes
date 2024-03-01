@@ -5,9 +5,9 @@ class RabbitMQ:
 
     def __init__(self, pQueue):
         self._queue = pQueue
-        self._host = os.environ['RABBIT_HOST']
-        self._port = os.environ['RABBIT_PORT']
-        self._credentials = pika.PlainCredentials(os.environ['RABBIT_USR'], os.environ['RABBIT_PWD'])
+        self._host = os.getenv('RABBIT_HOST')
+        self._port = os.getenv('RABBIT_PORT')
+        self._credentials = pika.PlainCredentials(os.getenv('RABBIT_USR'), os.getenv('RABBIT_PWD'))
 
         #self._host = 'localhost'
         #self._port = '5672'

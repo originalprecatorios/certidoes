@@ -97,8 +97,8 @@ def verifica_chrome():
 # Envia para o sistema B7 que o processo já foi realizado
 def certidao_initial(id_mongo):
     print('Iniciando...')
-    mongo = Mongo(os.environ['MONGO_USER_PROD'], os.environ['MONGO_PASS_PROD'], os.environ['MONGO_HOST_PROD'], os.environ['MONGO_PORT_PROD'], os.environ['MONGO_DB_PROD'], os.environ['MONGO_AUTH_DB_PROD'])
-    erro = Mongo(os.environ['MONGO_USER_PROD'], os.environ['MONGO_PASS_PROD'], os.environ['MONGO_HOST_PROD'], os.environ['MONGO_PORT_PROD'], os.environ['MONGO_DB_PROD'], os.environ['MONGO_AUTH_DB_PROD'])
+    mongo = Mongo(os.getenv('MONGO_USER_PROD'), os.getenv('MONGO_PASS_PROD'), os.getenv('MONGO_HOST_PROD'), os.getenv('MONGO_PORT_PROD'), os.getenv('MONGO_DB_PROD'), os.getenv('MONGO_AUTH_DB_PROD'))
+    erro = Mongo(os.getenv('MONGO_USER_PROD'), os.getenv('MONGO_PASS_PROD'), os.getenv('MONGO_HOST_PROD'), os.getenv('MONGO_PORT_PROD'), os.getenv('MONGO_DB_PROD'), os.getenv('MONGO_AUTH_DB_PROD'))
     mongo._getcoll('certidao')
     id = id_mongo['_id']
     arr = {
@@ -143,7 +143,7 @@ def certidao_initial(id_mongo):
                                     raise ValueError
                                 break'''
                                 
-                                e = Estadual(u,os.environ['PAGE_URL'],mongo,erro,cap)
+                                e = Estadual(u,os.getenv('PAGE_URL'),mongo,erro,cap)
                                 logged,texto = e.login()
                                 if logged is True:
                                     e.download_document()
@@ -195,7 +195,7 @@ def certidao_initial(id_mongo):
                     '''while True:
                         if cont <=2:
                             try:
-                                m = Municipal(u,os.environ['PAGE_URL_MUN'],mongo,erro,cap)
+                                m = Municipal(u,os.getenv('PAGE_URL_MUN'],mongo,erro,cap)
                                 m.login()
                                 del m
                                 modifica['$set']['extracted']['_CND_MUNICIPAL'] = 1
@@ -236,7 +236,7 @@ def certidao_initial(id_mongo):
                                 modifica['$set']['extracted']['_CND_FEDERAL'] = 1
                                 break
                                 
-                                # f = Federal(u,os.environ['PAGE_URL_FEDERAL'],mongo,erro,u['cpf'])
+                                # f = Federal(u,os.getenv('PAGE_URL_FEDERAL'],mongo,erro,u['cpf'])
                                 # resposta,texto = f.login()
                                 # if resposta is True:
                                 #     del f
@@ -426,7 +426,7 @@ def certidao_initial(id_mongo):
                 #            try:
                 #                # USO COM O CHROME
                 #                #verifica_chrome()
-                #                df1 = Distribuicao_federal(u,os.environ['PAGE_URL_TRF3_JUS'],mongo,erro,cap,u,'1','9- CERTIDÃO DE DISTRIBUIÇÃO FEDERAL DE 1ª INSTANCIA','CIVEL')
+                #                df1 = Distribuicao_federal(u,os.getenv('PAGE_URL_TRF3_JUS'],mongo,erro,cap,u,'1','9- CERTIDÃO DE DISTRIBUIÇÃO FEDERAL DE 1ª INSTANCIA','CIVEL')
                 #                df1.login()
                 #                del df1
                 #                modifica['$set']['extracted']['_TRF3_JUS_SJSP'] = 1
@@ -456,7 +456,7 @@ def certidao_initial(id_mongo):
                 #            try:
                 #                # USO COM O CHROME
                 #                #verifica_chrome()
-                #                df2 = Distribuicao_federal(u,os.environ['PAGE_URL_TRF3_JUS'],mongo,erro,cap,u,'2','10- CERTIDÃO DE DISTRIBUIÇÃO FEDERAL DE 2ª INSTANCIA','CIVEL')
+                #                df2 = Distribuicao_federal(u,os.getenv('PAGE_URL_TRF3_JUS'],mongo,erro,cap,u,'2','10- CERTIDÃO DE DISTRIBUIÇÃO FEDERAL DE 2ª INSTANCIA','CIVEL')
                 #                df2.login()
                 #                del df2
                 #                modifica['$set']['extracted']['_TRF3_JUS_TRF'] = 1
@@ -486,7 +486,7 @@ def certidao_initial(id_mongo):
                 #            try:
                 #                # USO COM O CHROME
                 #                #verifica_chrome()
-                #                df1 = Distribuicao_federal(u,os.environ['PAGE_URL_TRF3_JUS'],mongo,erro,cap,u,'1','9.1- CERTIDÃO DE DISTRIBUIÇÃO FEDERAL DE 1ª INSTANCIA','CRIMINAL')
+                #                df1 = Distribuicao_federal(u,os.getenv('PAGE_URL_TRF3_JUS'],mongo,erro,cap,u,'1','9.1- CERTIDÃO DE DISTRIBUIÇÃO FEDERAL DE 1ª INSTANCIA','CRIMINAL')
                 #                df1.login()
                 #                del df1
                 #                modifica['$set']['extracted']['_DISTRIBUICAO_FEDERAL_1_INSTANCIA'] = 1
@@ -516,7 +516,7 @@ def certidao_initial(id_mongo):
                 #            try:
                 #                # USO COM O CHROME
                 #                #verifica_chrome()
-                #                df2 = Distribuicao_federal(u,os.environ['PAGE_URL_TRF3_JUS'],mongo,erro,cap,u,'2','10.1- CERTIDÃO DE DISTRIBUIÇÃO FEDERAL DE 2ª INSTANCIA','CRIMINAL')
+                #                df2 = Distribuicao_federal(u,os.getenv('PAGE_URL_TRF3_JUS'],mongo,erro,cap,u,'2','10.1- CERTIDÃO DE DISTRIBUIÇÃO FEDERAL DE 2ª INSTANCIA','CRIMINAL')
                 #                df2.login()
                 #                del df2
                 #                modifica['$set']['extracted']['_DISTRIBUICAO_FEDERAL_2_INSTANCIA'] = 1
@@ -544,8 +544,8 @@ def certidao_initial(id_mongo):
                     while True:
                         if cont <=2:
                             try:
-                                t = Trabalhista(u,cap,os.environ['PAGE_URL_TRTSP'])
-                                #t = Trabalhista(u,os.environ['PAGE_URL_TRTSP'],mongo,erro,cap)
+                                t = Trabalhista(u,cap,os.getenv('PAGE_URL_TRTSP'))
+                                #t = Trabalhista(u,os.getenv('PAGE_URL_TRTSP'],mongo,erro,cap)
                                 t.login()
                                 del t
                                 modifica['$set']['extracted']['_TRTSP'] = 1
@@ -576,7 +576,7 @@ def certidao_initial(id_mongo):
                                 
                                 dt = Debito_trabalhista(u,cap)
                                 dt.get_download()
-                                #dt = Debito_trabalhista(u,os.environ['PAGE_URL_DEBITO_TRABALHISTA'],mongo,erro,cap)
+                                #dt = Debito_trabalhista(u,os.getenv('PAGE_URL_DEBITO_TRABALHISTA'],mongo,erro,cap)
                                 #dt.login()
                                 del dt
                                 modifica['$set']['extracted']['_DEBITO_TRABALHISTA'] = 1
@@ -605,8 +605,8 @@ def certidao_initial(id_mongo):
                         if cont <=2:
                             try:
                                 
-                                p = Protesto(u,os.environ['PAGE_URL_PROTESTONOVO'],mongo,erro,cap)
-                                p.login(os.environ['CENPROT_USER'],os.environ['CENPROT_PASS'])
+                                p = Protesto(u,os.getenv('PAGE_URL_PROTESTONOVO'),mongo,erro,cap)
+                                p.login(os.getenv('CENPROT_USER'),os.getenv('CENPROT_PASS'))
                                 del p
                                 modifica['$set']['extracted']['_PROTESTO'] = 1
                                 break
@@ -632,7 +632,7 @@ def certidao_initial(id_mongo):
                 #    while True:
                 #        if cont <=2:
                 #            try:
-                #                p = Protesto2(u,os.environ['PAGE_URL_PROTESTO2'],mongo,erro,cap)
+                #                p = Protesto2(u,os.getenv('PAGE_URL_PROTESTO2'],mongo,erro,cap)
                 #                p.login()
                 #                del p
                 #                modifica['$set']['extracted']['_PROTESTO'] = 1
@@ -659,8 +659,8 @@ def certidao_initial(id_mongo):
                     while True:
                         if cont <=2:
                             try:
-                                #t15 = Trt15(u,os.environ['PAGE_URL_TRT15'],mongo,erro,cap)
-                                t15 = Trt15(u,cap,os.environ['PAGE_URL_TRT15'])
+                                #t15 = Trt15(u,os.getenv('PAGE_URL_TRT15'],mongo,erro,cap)
+                                t15 = Trt15(u,cap,os.getenv('PAGE_URL_TRT15'))
                                 t15.login()
                                 del t15
                                 modifica['$set']['extracted']['_TRT15'] = 1
@@ -688,7 +688,7 @@ def certidao_initial(id_mongo):
                     while True:
                         if cont <=2:
                             try:
-                                #da = Divida_ativa(u,os.environ['PAGE_URL_CONTRIBUINTE'],mongo,erro,cap)
+                                #da = Divida_ativa(u,os.getenv('PAGE_URL_CONTRIBUINTE'],mongo,erro,cap)
                                 #da.login()
                                 da = Divida_ativa(u,cap)
                                 da.get_download()
@@ -718,7 +718,7 @@ def certidao_initial(id_mongo):
                     while True:
                         if cont <=2:
                             try:
-                                trf = Trf(u,os.environ['PAGE_URL_PJE_TRF3'],mongo,erro,cap)
+                                trf = Trf(u,os.getenv('PAGE_URL_PJE_TRF3'),mongo,erro,cap)
                                 trf.login()
                                 del trf
                                 modifica['$set']['extracted']['_PJE_TRF3'] = 1
@@ -747,7 +747,7 @@ def certidao_initial(id_mongo):
                         if cont <=2:
                             try:
                                 # email
-                                e = Request_esaj(u,os.environ['PAGE_URL_CRIMINAL_1'],mongo,erro,cap)
+                                e = Request_esaj(u,os.getenv('PAGE_URL_CRIMINAL_1'),mongo,erro,cap)
                                 e.login()
                                 e.solicita_arquivo('6')
                                 e.verifica_pedido()
@@ -763,7 +763,7 @@ def certidao_initial(id_mongo):
                                     e.close_all()
                                 except:
                                     pass
-                                '''e = Esaj(u,os.environ['PAGE_URL_CRIMINAL_1'],mongo,erro,cap)
+                                '''e = Esaj(u,os.getenv('PAGE_URL_CRIMINAL_1'],mongo,erro,cap)
                                 e.login()
                                 num_pedido = e.get_data('6')
                                 del e
@@ -799,7 +799,7 @@ def certidao_initial(id_mongo):
                         if cont <=2:
                             try:
                                 # email
-                                e = Request_esaj(u,os.environ['PAGE_URL_CRIMINAL_1'],mongo,erro,cap)
+                                e = Request_esaj(u,os.getenv('PAGE_URL_CRIMINAL_1'),mongo,erro,cap)
                                 e.login()
                                 e.solicita_arquivo('52')
                                 e.verifica_pedido()
@@ -815,7 +815,7 @@ def certidao_initial(id_mongo):
                                     e.close_all()
                                 except:
                                     pass
-                                '''e = Esaj(u,os.environ['PAGE_URL_CRIMINAL_1'],mongo,erro,cap)
+                                '''e = Esaj(u,os.getenv('PAGE_URL_CRIMINAL_1'],mongo,erro,cap)
                                 e.login()
                                 num_pedido = e.get_data('52')
                                 del e
@@ -852,7 +852,7 @@ def certidao_initial(id_mongo):
                             try:
                                 e = Esaj_busca(u,cap,'CPF','15- PESQUISA ONLINE TJSP - CPF')
                                 e.get_download()
-                                #e = Esaj_busca(u,os.environ['PAGE_URL_ESAJ_B_NOME_CPF'],mongo,erro,cap,'15- PESQUISA ONLINE TJSP - CPF')
+                                #e = Esaj_busca(u,os.getenv('PAGE_URL_ESAJ_B_NOME_CPF'],mongo,erro,cap,'15- PESQUISA ONLINE TJSP - CPF')
                                 #e.login()
                                 #e.get_data('CPF')
                                 del e
@@ -882,7 +882,7 @@ def certidao_initial(id_mongo):
                             try:
                                 e = Esaj_busca(u,cap,'NOME','15.1- PESQUISA ONLINE TJSP - NOME')
                                 e.get_download()
-                                #e = Esaj_busca(u,os.environ['PAGE_URL_ESAJ_B_NOME_CPF'],mongo,erro,cap,'15.1- PESQUISA ONLINE TJSP - NOME')
+                                #e = Esaj_busca(u,os.getenv('PAGE_URL_ESAJ_B_NOME_CPF'],mongo,erro,cap,'15.1- PESQUISA ONLINE TJSP - NOME')
                                 #e.login()
                                 #e.get_data('NOME')
                                 del e
@@ -937,7 +937,7 @@ def certidao_initial(id_mongo):
                 #    while True:
                 #        if cont <=2:
                 #            try:
-                #                ac = Antecedentes_criminais(u,os.environ['PAGE_URL_SSP'],mongo,erro,cap)
+                #                ac = Antecedentes_criminais(u,os.getenv('PAGE_URL_SSP'],mongo,erro,cap)
                 #                ac.login()
                 #                del ac
                 #                modifica['$set']['extracted']['_ANTECEDENTES_CRIMINAIS'] = 1
@@ -995,7 +995,7 @@ def certidao_initial(id_mongo):
                         if cont <=2:
                             try:
                                 print('_PJE_TRT')
-                                pj = Pje_trt(u,os.environ['PAGE_URL_PJE_TRT'],mongo,erro,cap)
+                                pj = Pje_trt(u,os.getenv('PAGE_URL_PJE_TRT'),mongo,erro,cap)
                                 print('abriu')
                                 pj.login()
                                 print('login')
@@ -1062,7 +1062,7 @@ def certidao_initial(id_mongo):
                                     data_atual = datetime.now()
                                     data_fornecida = datetime.strptime(arr[-1]['validity'], '%d/%m/%Y')
                                     if data_atual.date() >= data_fornecida.date():
-                                        e = Ecac(u,os.environ['PAGE_URL_ECAC'],mongo,cap)
+                                        e = Ecac(u,os.getenv('PAGE_URL_ECAC'),mongo,cap)
                                         logged,arr = e.create_password()
                                         if logged is True:
                                             logado = e.login(arr)
@@ -1074,7 +1074,7 @@ def certidao_initial(id_mongo):
                                                 print(logged)
                                                 break
                                     else:
-                                        e = Ecac(u,os.environ['PAGE_URL_ECAC'],mongo,cap)
+                                        e = Ecac(u,os.getenv('PAGE_URL_ECAC'),mongo,cap)
                                         logado = e.login(arr[-1])
                                         if logado is False:
                                             logged,arr = e.create_password()
@@ -1083,7 +1083,7 @@ def certidao_initial(id_mongo):
                                         modifica['$set']['extracted']['_ECAC'] = 1
                                         break
                                 else:
-                                    e = Ecac(u,os.environ['PAGE_URL_ECAC'],mongo,cap)
+                                    e = Ecac(u,os.getenv('PAGE_URL_ECAC'),mongo,cap)
                                     logged,arr = e.create_password()
                                     if logged is True:
                                         logado = e.login(arr)
@@ -1170,7 +1170,7 @@ def certidao_initial(id_mongo):
 
 # Configuração para teste
 
-#dados = {'_id':'6504529afe9b90da3f205a3c'}
+#dados = {'_id':'65df32e90430c3423c69f568'}
 #dados = {'_id':'6525572cd6b5a9b5c404313e'}
 #dados = {"_id": "6405ec5128f620c3ddd9fb35", "certidao": {"_TRT15"}}
 #certidao_initial(dados)
@@ -1181,7 +1181,7 @@ def certidao_initial(id_mongo):
 
 while True:
     try:
-        rabbit = rabbitmq.RabbitMQ(os.environ['RABBIT_QUEUE'])
+        rabbit = rabbitmq.RabbitMQ(os.getenv('RABBIT_QUEUE'))
         retorno = rabbit.get_queue()
         del rabbit
         if retorno[0]:

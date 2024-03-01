@@ -17,7 +17,7 @@ def initial():
     data_atual = datetime.datetime.now()
     dias_somar = datetime.timedelta(days=7)
     data_passado = False
-    mongo = Mongo(os.environ['MONGO_USER_PROD'], os.environ['MONGO_PASS_PROD'], os.environ['MONGO_HOST_PROD'], os.environ['MONGO_PORT_PROD'], os.environ['MONGO_DB_PROD'], os.environ['MONGO_AUTH_DB_PROD'])
+    mongo = Mongo(os.getenv('MONGO_USER_PROD'), os.getenv('MONGO_PASS_PROD'), os.getenv('MONGO_HOST_PROD'), os.getenv('MONGO_PORT_PROD'), os.getenv('MONGO_DB_PROD'), os.getenv('MONGO_AUTH_DB_PROD'))
     mongo._getcoll('certidao')
     arr = {
         'protocolo': { '$exists': True }
@@ -46,8 +46,8 @@ def initial():
             if user['extracted'][ext] == 3:
                 if data_passado is True:
                     user['extracted'][ext] = 2
-                    smtp_config = {'host': os.environ['SMTP_SERVE'], 'port': os.environ['SMTP_PORT'], 'user': os.environ['SMTP_USER'], 'passwd':os.environ['SMTP_PASS']}
-                    e = Email_enviar(os.environ['SMTP_USER'],'@#$WSDEqasw1!','',[user['email']],smtp_config)
+                    smtp_config = {'host': os.getenv('SMTP_SERVE'), 'port': os.getenv('SMTP_PORT'), 'user': os.getenv('SMTP_USER'), 'passwd':os.getenv('SMTP_PASS')}
+                    e = Email_enviar(os.getenv('SMTP_USER'),'@#$WSDEqasw1!','',[user['email']],smtp_config)
                     texto = """O Prazo de 5 dias expirou, não foi possivel obter o certificado {} para o cliente {}""".format(ext,user['nome'])
                     e.send_email_ruralservice('',texto)
                     break

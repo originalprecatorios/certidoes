@@ -6,7 +6,7 @@ class Solve_Captcha:
 
     def __init__(self):
         try:
-            self._key = os.environ["CAPTCHA"]
+            self._key = os.getenv("CAPTCHA")
         except:
             self._key = config('CAPTCHA')
 

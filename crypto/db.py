@@ -9,7 +9,7 @@ from datetime import date, datetime
 def decrypt(encrypted_value, session=None, pos_func=None):
     if encrypted_value is not None:
         sec = AES
-        cipher = sec.new((os.environ['KEY']).encode("utf8"), AES.MODE_ECB)
+        cipher = sec.new((os.getenv('KEY')).encode("utf8"), AES.MODE_ECB)
         result = cipher.decrypt(binascii.unhexlify(
             encrypted_value)).rstrip().decode('latin-1')
         if result is not None:
@@ -26,7 +26,7 @@ def encrypt(value, session=None):
             value = str(value)
         data = value.encode('latin-1', 'ignore').decode('latin-1')
         sec = AES
-        cipher = sec.new(os.environ['KEY'].encode('utf-8'), AES.MODE_ECB)
+        cipher = sec.new(os.getenv('KEY').encode('utf-8'), AES.MODE_ECB)
         data = (data + (" " * (16 - (len(data) % 16)))
                 ).encode('latin-1', 'ignore')
         return binascii.hexlify(cipher.encrypt(data))

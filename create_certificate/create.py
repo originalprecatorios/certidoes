@@ -84,9 +84,9 @@ class Creat:
             shutil.rmtree(path_temp)
 
 
-            smtp_config = {'host': os.environ['SMTP_SERVE'], 'port': os.environ['SMTP_PORT'], 'user': os.environ['SMTP_USER'], 'passwd':os.environ['SMTP_PASS']}
-            e = Email_enviar(os.environ['SMTP_USER'],'@#$WSDEqasw1!',file_name,['certidao2instancia@tjsp.jus.br',self._data['email']],smtp_config)
-            #e = Email_enviar(os.environ['SMTP_USER'],os.environ['SMTP_PASS'],file_name,[self._data['email']],smtp_config)
+            smtp_config = {'host': os.getenv('SMTP_SERVE'), 'port': os.getenv('SMTP_PORT'), 'user': os.getenv('SMTP_USER'), 'passwd':os.getenv('SMTP_PASS')}
+            e = Email_enviar(os.getenv('SMTP_USER'),'@#$WSDEqasw1!',file_name,['certidao2instancia@tjsp.jus.br',self._data['email']],smtp_config)
+            #e = Email_enviar(os.getenv('SMTP_USER'),os.getenv('SMTP_PASS'),file_name,[self._data['email']],smtp_config)
             texto = """
                         Segue pdf com os dados para solicitação de certificado
                     """
