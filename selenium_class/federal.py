@@ -70,6 +70,7 @@ class Federal:
         })
         #self._driver = uc.Chrome(options=options,version_main=105)
         self._driver = uc.Chrome(options=options,version_main=int(config('VERSION')))
+        self._driver.implicitly_wait(30)
         try:
             self._driver.set_page_load_timeout(60)
         except:

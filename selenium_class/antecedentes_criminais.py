@@ -52,6 +52,7 @@ class Antecedentes_criminais:
         options.set_preference("pdfjs.disabled", True)
         #options.add_argument("--headless")
         self._driver = webdriver.Firefox(options=options)
+        self._driver.implicitly_wait(30)
         self._driver.get(self._link)
         time.sleep(2)
         

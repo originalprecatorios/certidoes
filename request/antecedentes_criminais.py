@@ -35,9 +35,9 @@ class Antecedentes_criminais:
 
         # Criar uma instância do cliente HTTP
         client = httpx.Client()
-
+        timeout_seconds = 10
         # Fazer a requisição usando o método GET
-        response = client.get(url, headers=headers)
+        response = client.get(url, headers=headers, timeout=timeout_seconds)
 
         # Verificar o status da resposta
         if response.status_code == 200:
@@ -87,12 +87,12 @@ class Antecedentes_criminais:
         'sec-ch-ua-mobile': '?0',
         'sec-ch-ua-platform': '"Linux"'
         }
-
+        timeout_seconds = 10
         try:
-            response = httpx.get(url, headers=headers, params=payload)
+            response = httpx.get(url, headers=headers, params=payload, timeout=timeout_seconds)
         except:
             time.sleep(5)
-            response = httpx.get(url, headers=headers, params=payload)
+            response = httpx.get(url, headers=headers, params=payload, timeout=timeout_seconds)
 
         pdf_file_path = os.path.join(self._data['path'],'ANTECEDENTES CRIMINAIS.pdf')
         if response.headers.get("content-type") == "application/pdf":

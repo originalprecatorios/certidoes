@@ -7,6 +7,7 @@ import io
 class Debito_trabalhista():
     def __init__(self,pData,pCaptcha):
         print('Debito Trabalhista')
+        self.timeout_seconds = 10
         self._data = pData
         self._captcha = pCaptcha
         if os.path.isdir('{}'.format(self._data['path'])):
@@ -15,7 +16,7 @@ class Debito_trabalhista():
             os.makedirs('{}'.format(self._data['path']))
     
     def get_cookies(self):
-        response = requests.get('https://cndt-certidao.tst.jus.br/inicio.faces')
+        response = requests.get('https://cndt-certidao.tst.jus.br/inicio.faces', timeout=self.timeout_seconds)
         self._jsessionid = response.cookies.get('JSESSIONID')
         self._id = response.cookies.get_dict()['7aa721eeaef392956e2c4add5997cdb0']
         self._viewstate = response.text.split('javax.faces.ViewState:0" value="')[1].split('"')[0].replace('/','%2F').replace('+','%2B').replace('=','%3D')
@@ -40,7 +41,7 @@ class Debito_trabalhista():
         'sec-ch-ua-platform': '"Linux"'
         }
 
-        response = requests.request("GET", url, headers=headers, data=payload)
+        response = requests.request("GET", url, headers=headers, data=payload, timeout=self.timeout_seconds)
         
         data = response.json()
 
@@ -79,7 +80,7 @@ class Debito_trabalhista():
         'sec-ch-ua-platform': '"Linux"'
         }
 
-        response = requests.request("POST", url, headers=headers, data=payload)
+        response = requests.request("POST", url, headers=headers, data=payload, timeout=self.timeout_seconds)
         self._viewstate = response.text.split('javax.faces.ViewState:0" value="')[1].split('"')[0].replace('/','%2F').replace('+','%2B').replace('=','%3D')
 
         self.image_captcha()
@@ -109,7 +110,7 @@ class Debito_trabalhista():
         'sec-ch-ua-platform': '"Linux"'
         }
 
-        response = requests.request("POST", url, headers=headers, data=payload)
+        response = requests.request("POST", url, headers=headers, data=payload, timeout=self.timeout_seconds)
 
         if response.text.find('Aguarde') >=0:
 
@@ -133,7 +134,7 @@ class Debito_trabalhista():
             'sec-ch-ua-platform': '"Linux"'
             }
 
-            response = requests.request("GET", url, headers=headers, data=payload)
+            response = requests.request("GET", url, headers=headers, data=payload, timeout=self.timeout_seconds)
             if response.headers.get("content-type") == "application/pdf":
 
                 with open(os.path.join(self._data['path'],'12- CERTIDÃO DE DÉBITOS TRABALHISTAS.pdf'), 'wb') as f:

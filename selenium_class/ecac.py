@@ -51,6 +51,7 @@ class Ecac:
         options.set_preference("pdfjs.disabled", True)
         #options.add_argument("--headless")
         self._driver = webdriver.Firefox(options=options)
+        self._driver.implicitly_wait(30)
         self._driver.get(link)
         time.sleep(2)
     
@@ -67,6 +68,7 @@ class Ecac:
         "plugins.always_open_pdf_externally": True #It will not show PDF directly in chrome
         })
         self._driver = uc.Chrome(options=options,version_main=int(config('VERSION')))
+        self._driver.implicitly_wait(30)
         try:
             self._driver.set_page_load_timeout(60)
         except:

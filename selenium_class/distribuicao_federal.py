@@ -81,6 +81,7 @@ class Distribuicao_federal:
         # just some options passing in to skip annoying popups
         options.add_argument('--no-first-run --no-service-autorun --password-store=basic')
         self._driver = uc.Chrome(options=options,version_main=int(config('VERSION')))
+        self._driver.implicitly_wait(30)
         try:
             self._driver.set_page_load_timeout(60)
         except:

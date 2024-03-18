@@ -9,6 +9,7 @@ class Esaj():
     def __init__(self,pData,pCaptcha,pSelect,pNome):
         print('Esaj')
         self._data = pData
+        self.timeout_seconds = 10
         self._captcha = pCaptcha
         self._select = pSelect
         self._archive = pNome
@@ -39,7 +40,7 @@ class Esaj():
         'user-agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/111.0.0.0 Safari/537.36'
         }
 
-        response = requests.request("GET", url, headers=headers, data=payload)
+        response = requests.request("GET", url, headers=headers, data=payload, timeout=self.timeout_seconds)
 
         url = "https://pje1g.trf3.jus.br/pje/ConsultaPublica/listView.seam"
 
@@ -61,7 +62,7 @@ class Esaj():
         'user-agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/111.0.0.0 Safari/537.36'
         }
 
-        response = requests.request("POST", url, headers=headers, data=payload)
+        response = requests.request("POST", url, headers=headers, data=payload, timeout=self.timeout_seconds)
 
         with open(os.path.join(self._data['path'],'esaj.html'),'wb') as f:
             f.write(response.content)

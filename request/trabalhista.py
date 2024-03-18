@@ -6,6 +6,7 @@ from utils.selenium_classes import Selenium_classes
 class Trabalhista:
     def __init__(self,pData,pCaptcha,pLink):
         print('Robo Trabalhista')
+        self.timeout_seconds = 10
         self._data = pData
         self._captcha = pCaptcha
         self._cont = 0
@@ -48,7 +49,7 @@ class Trabalhista:
             'Sec-Fetch-User': '?1'
             }
 
-            response = requests.request("POST", url, headers=headers, data=payload)
+            response = requests.request("POST", url, headers=headers, data=payload, timeout=self.timeout_seconds)
 
             url = "https://aplicacoes10.trt2.jus.br/certidao_trabalhista_eletronica/public/index.php/index/recuperarcertidao"
 
@@ -68,7 +69,7 @@ class Trabalhista:
             'Sec-Fetch-User': '?1'
             }
 
-            response = requests.request("GET", url, headers=headers, data=payload)
+            response = requests.request("GET", url, headers=headers, data=payload, timeout=self.timeout_seconds)
 
             if response.headers.get("content-type") == "application/pdf":
                 with open(os.path.join(self._data['path'],'11- TRT2ª.pdf'), "wb") as pdf_file:

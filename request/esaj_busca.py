@@ -9,6 +9,7 @@ class Esaj_busca():
     def __init__(self,pData,pCaptcha,pSelect,pNome):
         print('Esaj Busca')
         self._data = pData
+        self.timeout_seconds = 10
         self._captcha = pCaptcha
         self._select = pSelect
         self._archive = pNome
@@ -20,9 +21,9 @@ class Esaj_busca():
 
     def get_download(self):
         if self._select == 'NOME':
-            response = requests.get('https://esaj.tjsp.jus.br/cpopg/search.do?conversationId=&cbPesquisa=NMPARTE&dadosConsulta.valorConsulta={}&cdForo=-1'.format(self._data['nome']))
+            response = requests.get('https://esaj.tjsp.jus.br/cpopg/search.do?conversationId=&cbPesquisa=NMPARTE&dadosConsulta.valorConsulta={}&cdForo=-1'.format(self._data['nome']), timeout=self.timeout_seconds)
         else:
-            response = requests.get('https://esaj.tjsp.jus.br/cpopg/search.do?conversationId=&cbPesquisa=DOCPARTE&dadosConsulta.valorConsulta={}&cdForo=-1'.format(self._data['cpf'].replace('.','').replace('-','')))
+            response = requests.get('https://esaj.tjsp.jus.br/cpopg/search.do?conversationId=&cbPesquisa=DOCPARTE&dadosConsulta.valorConsulta={}&cdForo=-1'.format(self._data['cpf'].replace('.','').replace('-','')), timeout=self.timeout_seconds)
 
         with open(os.path.join(self._data['path'],'esaj.html'),'wb') as f:
             f.write(response.content)

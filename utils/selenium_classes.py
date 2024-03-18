@@ -42,6 +42,7 @@ class Selenium_classes:
         if pOpen is False:
             options.add_argument("--headless")
         self._driver = webdriver.Firefox(options=options)
+        self._driver.implicitly_wait(30)
         self._driver.get(pLink)
         time.sleep(2)
     

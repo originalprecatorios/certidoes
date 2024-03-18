@@ -7,6 +7,7 @@ class Estadual:
     def __init__(self,pData,pCaptcha):
         print('Robo Estadual')
         self._data = pData
+        self.timeout_seconds = 10
         self._captcha = pCaptcha        
         
     def login(self):
@@ -37,7 +38,7 @@ class Estadual:
         'Cookie': 'ASP.NET_SessionId=4crvekcr53g4yi5ilzokj4dv'
         }
 
-        response = requests.request("GET", url, headers=headers, data=payload)
+        response = requests.request("GET", url, headers=headers, data=payload, timeout=self.timeout_seconds)
 
         url = "https://www10.fazenda.sp.gov.br/CertidaoNegativaDeb/Pages/EmissaoCertidaoNegativa.aspx"
 
@@ -62,7 +63,7 @@ class Estadual:
         'Cookie': 'ASP.NET_SessionId=4crvekcr53g4yi5ilzokj4dv'
         }
 
-        response = requests.request("POST", url, headers=headers, data=payload)
+        response = requests.request("POST", url, headers=headers, data=payload, timeout=self.timeout_seconds)
 
         '''url = "https://www10.fazenda.sp.gov.br/CertidaoNegativaDeb/Pages/EmissaoCertidaoNegativa.aspx"
 
@@ -110,7 +111,7 @@ class Estadual:
         'Cookie': 'ASP.NET_SessionId=4crvekcr53g4yi5ilzokj4dv'
         }
 
-        response = requests.request("GET", url, headers=headers, data=payload)
+        response = requests.request("GET", url, headers=headers, data=payload, timeout=self.timeout_seconds)
         if response.text.find('Não foi possível emitir a Certidão Negativa.') >=0:
             return 'Não foi possível emitir a Certidão Negativa.'
         try:
@@ -158,7 +159,7 @@ class Estadual:
         'Cookie': 'ASP.NET_SessionId=4crvekcr53g4yi5ilzokj4dv'
         }
 
-        response = requests.request("POST", url, headers=headers, data=payload)
+        response = requests.request("POST", url, headers=headers, data=payload, timeout=self.timeout_seconds)
 
         return response
         

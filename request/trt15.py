@@ -6,6 +6,7 @@ from utils.selenium_classes import Selenium_classes
 class Trt15:
     def __init__(self,pData,pCaptcha,pLink):
         print('Robo Trabalhista')
+        self.timeout_seconds = 10
         self._data = pData
         self._captcha = pCaptcha
         self._cont = 0
@@ -39,7 +40,7 @@ class Trt15:
             'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.45 Safari/537.36',
             }
 
-            response = requests.request("GET", url, headers=headers, data=payload)
+            response = requests.request("GET", url, headers=headers, data=payload, timeout=self.timeout_seconds)
             cookie = response.cookies.get_dict()['JSESSIONID']
             #cookie = self.navegation.cookies()
 
@@ -56,7 +57,7 @@ class Trt15:
             'Cookie': 'JSESSIONID={}'.format(cookie)
             }
 
-            response = requests.request("GET", url, headers=headers, data=payload)
+            response = requests.request("GET", url, headers=headers, data=payload, timeout=self.timeout_seconds)
 
             # URL para obter a imagem do captcha
             url_captcha = "https://ceat.trt15.jus.br/ceat/seam/resource/captcha?f=1690828042005"
@@ -97,7 +98,7 @@ class Trt15:
             }'''
 
             # Fazer a solicitação para obter a imagem do captcha
-            response_captcha = requests.get(url_captcha, headers=headers)
+            response_captcha = requests.get(url_captcha, headers=headers, timeout=self.timeout_seconds)
 
             # Salvar a imagem em um arquivo local
             with open(os.path.join(self._data['path'],'captcha.jpg'), 'wb') as f:
@@ -134,7 +135,7 @@ class Trt15:
             }
 
             # Fazer a solicitação para gerar a certidão
-            response_certidao = requests.post(url_certidao, headers=headers, data=payload_certidao)
+            response_certidao = requests.post(url_certidao, headers=headers, data=payload_certidao , timeout=self.timeout_seconds)
 
             
 
@@ -148,7 +149,7 @@ class Trt15:
             }
 
             # Fazer a solicitação para baixar o arquivo em PDF
-            response_pdf = requests.post(url_pdf, headers=headers, data=payload_pdf)
+            response_pdf = requests.post(url_pdf, headers=headers, data=payload_pdf, timeout=self.timeout_seconds)
 
             if response_pdf.headers.get("content-type") == "application/pdf":
                 # Salvar o conteúdo do PDF em um arquivo local

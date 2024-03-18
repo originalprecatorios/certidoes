@@ -5,6 +5,7 @@ class Divida_ativa():
     def __init__(self,pData,pCaptcha):
         self.print_colored("Executando a classe Divida_ativa", "blue")
         self._data = pData
+        self.timeout_seconds = 10
         self._captcha = pCaptcha
         self._pasta = self._data['path']
         if os.path.isdir(f'{self._pasta}'):
@@ -17,7 +18,7 @@ class Divida_ativa():
     def get_download(self):
         self.print_colored("Função get_download", "blue")
         self.print_colored("Capturando cookie de sessão e chave do captcha", "yellow")
-        response = requests.get('https://www.dividaativa.pge.sp.gov.br/sc/pages/crda/emitirCrda.jsf')
+        response = requests.get('https://www.dividaativa.pge.sp.gov.br/sc/pages/crda/emitirCrda.jsf', timeout=self.timeout_seconds)
         JSESSIONID = response.cookies.get('JSESSIONID')
         sitekey = response.text.split('data-sitekey=')[1].split('"')[1]
         self.print_colored("Resolvendo captcha", "yellow")
@@ -46,7 +47,7 @@ class Divida_ativa():
         'sec-ch-ua-platform': '"Linux"'
         }
 
-        response = requests.request("POST", url, headers=headers, data=payload)
+        response = requests.request("POST", url, headers=headers, data=payload, timeout=self.timeout_seconds)
 
         self.print_colored("Verificando resposta do servidor", "yellow")
         if response.headers.get("content-type") == "application/pdf":

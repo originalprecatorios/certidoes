@@ -17,6 +17,7 @@ import undetected_chromedriver as uc
 class Federal_request():
     def __init__(self,pCnpj):
         print('Federal_request')
+        self.timeout_seconds = 10
         self._sitekey = '4a65992d-58fc-4812-8b87-789f7e7c4c4b'
         self._captcha = Solve_Captcha()
         self._r = self._captcha.resolve_hcaptcha(self._sitekey,'https://solucoes.receita.fazenda.gov.br/Servicos/certidaointernet/PF/Emitir')
@@ -43,7 +44,7 @@ class Federal_request():
         'Sec-Fetch-User': '?1'
         }
 
-        response = requests.request("POST", url, headers=headers, data=payload)
+        response = requests.request("POST", url, headers=headers, data=payload, timeout=self.timeout_seconds)
 
         print(response.text)
 
@@ -66,7 +67,7 @@ class Federal_request():
         'Sec-Fetch-User': '?1'
         }
 
-        response = requests.request("GET", url, headers=headers, data=payload)
+        response = requests.request("GET", url, headers=headers, data=payload, timeout=self.timeout_seconds)
 
         print(response.text)
 
@@ -88,7 +89,7 @@ class Federal_request():
         'Sec-Fetch-Site': 'same-origin'
         }
 
-        response = requests.request("GET", url, headers=headers, data=payload)
+        response = requests.request("GET", url, headers=headers, data=payload, timeout=self.timeout_seconds)
 
         print(response.text)
 

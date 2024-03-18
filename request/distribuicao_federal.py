@@ -14,6 +14,7 @@ from create_certificate.send_email import Email_enviar
 
 class Distribuicao_federal():
     def __init__(self,pData,pMongo,pCaptcha,pInstancia,pNome_documento,pTipo):
+        self.timeout_seconds = 10
         self._data = pData
         self._bdMongo = pMongo
         self._captcha = pCaptcha
@@ -64,7 +65,7 @@ class Distribuicao_federal():
         'user-agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/111.0.0.0 Safari/537.36'
         }
 
-        response = requests.request("GET", url, headers=headers, data=payload)
+        response = requests.request("GET", url, headers=headers, data=payload,timeout=self.timeout_seconds)
 
         #bm = str(response.cookies).split('bm_sv=')[1].split(' for')[0]
         self._token = response.text.split('__RequestVerificationToken')[1].split('/>')[0].split('value=')[1].replace('"','').strip()
@@ -95,7 +96,7 @@ class Distribuicao_federal():
         'user-agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36'
         }
 
-        response = requests.request("POST", url, headers=headers, data=payload)
+        response = requests.request("POST", url, headers=headers, data=payload, timeout=self.timeout_seconds)
         
         try:
             soup = BeautifulSoup(response.content, "html.parser")
@@ -130,6 +131,7 @@ class Distribuicao_federal():
         options.add_argument("--headless")
         options.set_preference("general.useragent.override", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.45 Safari/537.36")
         driver = webdriver.Firefox(options=options)
+        driver.implicitly_wait(30)
         driver.get('file:///{}'.format(self._save+'/arquivo.html'))
         time.sleep(2)
         driver.get_full_page_screenshot_as_file(self._data['path']+'{}.png'.format(self._nome))
@@ -197,7 +199,7 @@ class Distribuicao_federal():
         'user-agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/111.0.0.0 Safari/537.36'
         }
 
-        response = requests.request("POST", url, headers=headers, data=payload)
+        response = requests.request("POST", url, headers=headers, data=payload, timeout=self.timeout_seconds)
 
         protocolo = response.text.split('Protocolo:</b> ')[1].split('<br')[0].strip()
 
@@ -226,7 +228,7 @@ class Distribuicao_federal():
         'user-agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/111.0.0.0 Safari/537.36'
         }
 
-        response = requests.request("GET", url, headers=headers, data=payload)
+        response = requests.request("GET", url, headers=headers, data=payload, timeout=self.timeout_seconds)
         self._token = response.text.split('__RequestVerificationToken')[1].split('/>')[0].split('value=')[1].replace('"','').strip()
         self._response = self._captcha.recaptcha('6Le_CtAZAAAAAEbTeETvetg4zQ7kJI0NH5HNHf1X','https://web.trf3.jus.br/certidao-regional/CertidaoCivelEleitoralCriminal/Imprimir')
 
@@ -253,7 +255,7 @@ class Distribuicao_federal():
         'user-agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/111.0.0.0 Safari/537.36'
         }
 
-        response = requests.request("POST", url, headers=headers, data=payload)
+        response = requests.request("POST", url, headers=headers, data=payload, timeout=self.timeout_seconds)
 
         if response.text.find('PODER JUDICIÁRIO') > -1:
    

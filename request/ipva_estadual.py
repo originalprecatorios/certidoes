@@ -6,6 +6,7 @@ from weasyprint import HTML
 class Ipva_estadual:
     def __init__(self,pData,pCaptcha):
         self._data = pData
+        self.timeout_seconds = 10
         self._captcha = pCaptcha
         if os.path.isdir('{}'.format(self._data['path'])):
             print("O diretório existe!")
@@ -13,7 +14,7 @@ class Ipva_estadual:
             os.makedirs('{}'.format(self._data['path']))
     
     def get_cookies(self):
-        x = requests.request("GET", 'https://www.ipva.fazenda.sp.gov.br/ipvanet_consulta/consulta.aspx')
+        x = requests.request("GET", 'https://www.ipva.fazenda.sp.gov.br/ipvanet_consulta/consulta.aspx', timeout=self.timeout_seconds)
         cookie = x.cookies.get_dict()
         self._cookies = '_ga_7RC6MLS8YN=GS1.1.1683597623.5.0.1683597631.0.0.0; _ga=GA1.1.825311961.1661543027; ASP.NET_SessionId={}; TS01308bf5={}; ai_user=7esZ8|2023-07-17T23:00:26.023Z; ai_session=WTFaP|1689685165042|1689685173137'.format(cookie['ASP.NET_SessionId'],cookie['TS01308bf5'])
         soup = BeautifulSoup(x.text, "html.parser")
@@ -47,7 +48,7 @@ class Ipva_estadual:
         'sec-ch-ua-platform': '"Linux"'
         }
 
-        response = requests.request("POST", url, headers=headers, data=payload)
+        response = requests.request("POST", url, headers=headers, data=payload, timeout=self.timeout_seconds)
         '''url = "https://www.ipva.fazenda.sp.gov.br/ipvanet_consulta/Consulta.aspx"
         payload='__EVENTTARGET=&__EVENTARGUMENT=&__VIEWSTATE={}&__VIEWSTATEGENERATOR={}&__EVENTVALIDATION={}&ctl00%24conteudoPaginaPlaceHolder%24txtRenavam={}&ctl00%24conteudoPaginaPlaceHolder%24txtPlaca={}&g-recaptcha-response={}&ctl00%24conteudoPaginaPlaceHolder%24btn_Consultar=Consultar'.format(self._viewstate,self._viewstate_generator,self._event_validation,self._data['renavan'],self._data['placa'].replace('-',''),self._response)       
         headers = {
@@ -88,7 +89,7 @@ class Ipva_estadual:
         'Sec-Fetch-User': '?1'
         }
 
-        response = requests.request("GET", url, headers=headers, data=payload)
+        response = requests.request("GET", url, headers=headers, data=payload, timeout=self.timeout_seconds)
 
         soup = BeautifulSoup(response.text, "html.parser")
         self._viewstate_generator = soup.find("input", {"id": "__VIEWSTATEGENERATOR"})["value"].replace('/','%2F').replace('+','%2B').replace('=','%3D')
@@ -118,7 +119,7 @@ class Ipva_estadual:
         'sec-ch-ua-platform': '"Linux"'
         }
 
-        response = requests.request("POST", url, headers=headers, data=payload)
+        response = requests.request("POST", url, headers=headers, data=payload, timeout=self.timeout_seconds)
 
         pdf_file_path = os.path.join(self._data['path'],'ESTADUAL IPVA.pdf')
         pdf_file_path2 = os.path.join(self._data['path'],'undefined.pdf')

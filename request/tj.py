@@ -14,6 +14,7 @@ import undetected_chromedriver as uc
 class Tj():
     def __init__(self,pData):
         print('Tj')
+        self.timeout_seconds = 10
         self._data = pData
         self._pasta = '/tmp/pdf/tj/{}/'.format(self._data['cpf'].replace('.','').replace('-',''))
         if os.path.isdir(f'{self._pasta}'):
@@ -42,7 +43,7 @@ class Tj():
         'Sec-Fetch-User': '?1'
         }
 
-        response = requests.request("GET", url, headers=headers, data=payload)
+        response = requests.request("GET", url, headers=headers, data=payload, timeout=self.timeout_seconds)
 
         print(response.text)
 

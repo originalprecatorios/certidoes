@@ -16,6 +16,7 @@ class Request_esaj:
 
     def __init__(self,pData,pLink,pMongo, pError,pCaptcha):
         print('Robo Esaj')
+        self.timeout_seconds = 10
         self._data = pData
         self._link = pLink
         self._bdMongo = pMongo
@@ -36,6 +37,7 @@ class Request_esaj:
         options.set_preference("browser.download.manager.showWhenStarting", False)
         #options.add_argument("--headless")
         self._driver = webdriver.Firefox(options=options)
+        self._driver.implicitly_wait(30)
         self._driver.get(self._link)
         time.sleep(2)
         
@@ -95,7 +97,7 @@ class Request_esaj:
         'sec-ch-ua-platform': '"Linux"'
         }
 
-        response = requests.request("POST", url, headers=headers, data=payload)
+        response = requests.request("POST", url, headers=headers, data=payload, timeout=self.timeout_seconds)
 
         print('solicita_arquivo')
     
@@ -121,7 +123,7 @@ class Request_esaj:
         'sec-ch-ua-platform': '"Linux"'
         }
 
-        response = requests.request("GET", url, headers=headers, data=payload)
+        response = requests.request("GET", url, headers=headers, data=payload, timeout=self.timeout_seconds)
         if response.text.replace('\n','').replace('\t','').split('class=""')[4].split('>')[1][:8].isdigit():
             self._arr = {'numero_pedido' : response.text.replace('\n','').replace('\t','').split('class=""')[4].split('>')[1][:8],'data_pedido' : response.text.replace('\n','').replace('\t','').split('class=""')[7].split('>')[1][:10]}
         else:
@@ -150,7 +152,7 @@ class Request_esaj:
             'Sec-Fetch-User': '?1'
             }
 
-        response = requests.request("POST", url, headers=headers, data=payload)
+        response = requests.request("POST", url, headers=headers, data=payload, timeout=self.timeout_seconds)
 
 
         file = io.BytesIO(response.content)
